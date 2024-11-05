@@ -18,6 +18,8 @@ import org.propapel.prospeccion.root.presentation.addlead.AddLeadScreenRoot
 import org.propapel.prospeccion.root.presentation.addlead.AddLeadViewModel
 import org.propapel.prospeccion.root.presentation.completeReminder.CompleteReminderScreenRoot
 import org.propapel.prospeccion.root.presentation.completeReminder.CompleteReminderViewModel
+import org.propapel.prospeccion.root.presentation.createInteraction.CreateInteractionLeadScreeRoot
+import org.propapel.prospeccion.root.presentation.createInteraction.CreateInteractionViewModel
 import org.propapel.prospeccion.root.presentation.createReminder.CreateReminderScreenRoot
 import org.propapel.prospeccion.root.presentation.createReminder.CreateReminderViewModel
 import org.propapel.prospeccion.root.presentation.detailLead.DetailCustomerSMScreenRoot
@@ -118,8 +120,14 @@ fun NavGraphBuilder.proSales(
             }
             DetailCustomerSMScreenRoot(
                 viewModel = viewModel,
+                onUpdateCustomer = {
+                    navController.navigate(Destination.UpdateLead(it))
+                },
                 onDetailReminderLead = {
                     navController.navigate(Destination.DetailReminderCustomer(it))
+                },
+                onAddInteractions = {
+                    navController.navigate(Destination.CreateInteraction(it))
                 },
                 onBack = {
                     navController.navigateUp()
@@ -169,7 +177,10 @@ fun NavGraphBuilder.proSales(
                 viewModel.getLead(customerUpdate.customerId)
             }
             UpdateLeadScreenRoot(
-                viewModel = viewModel
+                viewModel = viewModel,
+                onBack = {
+                    navController.navigateUp()
+                }
             )
         }
         composable<Destination.EditProfile> {
@@ -182,6 +193,16 @@ fun NavGraphBuilder.proSales(
             )
         }
 
+        composable<Destination.CreateInteraction> {navBackStackEntry ->
+            val viewModel = koinViewModel<CreateInteractionViewModel>()
+            val customerId = navBackStackEntry.toRoute<Destination.CreateInteraction>().customerId
+            CreateInteractionLeadScreeRoot(
+                viewModel = viewModel,
+                onBack = {
+                    navController.navigateUp()
+                }
+            )
+        }
 
     }
 }

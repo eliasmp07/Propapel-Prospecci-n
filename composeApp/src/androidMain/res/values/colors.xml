@@ -2,4 +2,5 @@
 <resources>
     <color name="blue_status_bar">#5F8CE5</color> <!-- Color azul -->
     <color name="primary_yellow_ligh">#FFffeed4</color>
+    <color name="white">#FFFFFF</color>
 </resources>

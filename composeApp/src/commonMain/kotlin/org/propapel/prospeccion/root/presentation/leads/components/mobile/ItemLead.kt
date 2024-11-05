@@ -12,6 +12,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -29,14 +31,17 @@ fun ItemLead(
     customer: Customer,
     onClick: (String) -> Unit
 ){
-    ElevatedCard(
+    Card(
         modifier = Modifier.fillMaxWidth(),
         onClick = {
             onClick(customer.idCustomer.toString())
-        }
+        },
+        colors = CardDefaults.cardColors(
+            containerColor = Color.White
+        )
     ){
         Row(
-            modifier = Modifier.clip(RoundedCornerShape(30.dp)).padding(8.dp),
+            modifier = Modifier.padding(8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Box(

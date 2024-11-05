@@ -44,7 +44,6 @@ class UpdateLeadViewModel(
                             isLoading = false,
                             nameCompany = result.data.companyName,
                             name = result.data.contactName,
-                            lastName = result.data.contactName,
                             email = result.data.email,
                             phone = result.data.phoneNumber,
                             address = result.data.address?:"",
@@ -71,9 +70,6 @@ class UpdateLeadViewModel(
             }
             is UpdateLeadAction.OnUpdateEmailChange -> {
                 _state.value = _state.value.copy(email = action.email)
-            }
-            is UpdateLeadAction.OnUpdateLastNameChange -> {
-                _state.value = _state.value.copy(lastName = action.lastName)
             }
             is UpdateLeadAction.OnUpdateNameChange -> {
                 _state.value = _state.value.copy(name = action.name)
@@ -102,6 +98,7 @@ class UpdateLeadViewModel(
                     )
                 }
             }
+            else -> Unit
         }
     }
     private fun updateCustomer(){
@@ -116,7 +113,7 @@ class UpdateLeadViewModel(
                 Customer(
                     idCustomer = _state.value.customerId.toInt(),
                     companyName = _state.value.nameCompany,
-                    contactName = _state.value.name + " " + _state.value.lastName,
+                    contactName = _state.value.name,
                     email = _state.value.email,
                     phoneNumber = _state.value.phone,
                     address = _state.value.address,
@@ -139,14 +136,7 @@ class UpdateLeadViewModel(
                             isSuccess = true,
                             success = "Cliente actualizado correctamente",
                             errorUpdateLead = null,
-                            isUpdatingLead = false,
-                            nameCompany = "",
-                            name = "",
-                            lastName = "",
-                            email = "",
-                            phone = "",
-                            address = "",
-                            typeOfClient = TypeOfClient.NUEVO
+                            isUpdatingLead = false
                         )
                     }
                 }

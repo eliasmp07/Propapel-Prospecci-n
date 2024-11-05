@@ -30,8 +30,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -47,11 +51,17 @@ import org.propapel.prospeccion.root.presentation.detailLead.components.CreateRe
 import org.propapel.prospeccion.root.presentation.detailLead.components.InfoLeadPagerScreen
 import org.propapel.prospeccion.root.presentation.detailLead.components.NotificationPager
 import prospeccion.composeapp.generated.resources.Res
+import prospeccion.composeapp.generated.resources.calendar_date
+import prospeccion.composeapp.generated.resources.cita_client
 import prospeccion.composeapp.generated.resources.customer_person
+import prospeccion.composeapp.generated.resources.notes_appointment
+import prospeccion.composeapp.generated.resources.products
 
 @Composable
 fun DetailCustomerSMScreenRoot(
     viewModel: DetailLeadViewModel,
+    onUpdateCustomer: (String) -> Unit,
+    onAddInteractions: (String) -> Unit,
     onDetailReminderLead: (String) -> Unit,
     onBack: () -> Unit
 ) {
@@ -61,6 +71,8 @@ fun DetailCustomerSMScreenRoot(
         onAction = { action ->
             when (action) {
                 is DetailLeadAction.OnDetailReminderCustomer -> onDetailReminderLead(action.idReminder)
+                is DetailLeadAction.AddInteractionsClick -> onAddInteractions(action.idCustomer)
+                is DetailLeadAction.OnUpdateCustomerClick -> onUpdateCustomer(action.idCustomer)
                 DetailLeadAction.OnBackClick -> onBack()
                 else -> Unit
             }
@@ -76,7 +88,26 @@ fun DetailCustomerSMScreen(
     pages: Array<NotificationPager> = NotificationPager.entries.toTypedArray()
 
 ) {
+
     val pagerState = rememberPagerState(pageCount = { pages.size })
+    // Estado para la imagen a mostrar
+    var currentImageResource by remember { mutableStateOf(Res.drawable.customer_person) }
+    var currentText by remember { mutableStateOf("") }
+
+    LaunchedEffect(pagerState.currentPage) {
+        currentImageResource = when (pagerState.currentPage) {
+            0 -> Res.drawable.customer_person // Cambia según la página
+            1 -> Res.drawable.cita_client // Imagen para la página 1
+            2 -> Res.drawable.calendar_date// Imagen para la página 2
+            else -> Res.drawable.products // Por defecto
+        }
+        currentText  = when(pagerState.currentPage){
+            0 -> "Informacion del cliente"
+            1 -> "Interacciones"
+            2 -> "Proximas citas"
+            else -> "Productos interesados"
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -127,73 +158,27 @@ fun DetailCustomerSMScreen(
                     Box(
                         modifier = Modifier.weight(0.3f).fillMaxWidth()
                     ) {
-                        Column(
-                            modifier = Modifier.align(Alignment.TopStart).padding(start = 16.dp)
-                                .padding(top = innerPadding.calculateTopPadding())
-                        ) {
-                            Row(
-                                modifier = Modifier.animateEnterFromLeft(),
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(8.dp)
-                            ){
-                                Icon(
-                                    imageVector = Icons.Rounded.Business,
-                                    contentDescription = null
-                                )
-                                Text(
-                                    text = "Nombre de la empresa:",
-                                    style = MaterialTheme.typography.titleMedium
-                                )
-                            }
+                        Crossfade(
+                            modifier = Modifier.padding(16.dp).align(Alignment.CenterStart),
+                            targetState = currentText,
+                            animationSpec = tween(durationMillis = 500) // Duración de la animación
+                        ) { text ->
                             Text(
-                                modifier = Modifier.animateEnterFromLeft(),
-                                text = state.customer.companyName,
-                                style = MaterialTheme.typography.bodyMedium
-                            )
-                            Row(
-                                modifier = Modifier.animateEnterFromLeft(),
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(8.dp)
-                            ){
-                                Icon(
-                                    imageVector = Icons.Rounded.Person,
-                                    contentDescription = null
-                                )
-                                Text(
-                                    text = "Contacto:",
-                                    style = MaterialTheme.typography.titleMedium
-                                )
-                            }
-                            Text(
-                                modifier = Modifier.animateEnterFromLeft(),
-                                text = state.customer.contactName,
-                                style = MaterialTheme.typography.bodyMedium
-                            )
-                            Row(
-                                modifier = Modifier.animateEnterFromLeft(),
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(8.dp)
-                            ){
-                                Icon(
-                                    imageVector = Icons.Rounded.Phone,
-                                    contentDescription = null
-                                )
-                                Text(
-                                    text = "Numero de contacto:",
-                                    style = MaterialTheme.typography.titleMedium
-                                )
-                            }
-                            Text(
-                                modifier = Modifier.animateEnterFromLeft(),
-                                text = state.customer.phoneNumber,
-                                style = MaterialTheme.typography.bodyMedium
+                                text = text,
+                                style = MaterialTheme.typography.headlineMedium,
                             )
                         }
-                        Image(
-                            modifier = Modifier.size(200.dp).align(Alignment.BottomEnd),
-                            painter = painterResource(Res.drawable.customer_person),
-                            contentDescription = null
-                        )
+                        Crossfade(
+                            modifier = Modifier.align(Alignment.BottomEnd),
+                            targetState = currentImageResource,
+                            animationSpec = tween(durationMillis = 0) // Duración de la animación
+                        ) { image ->
+                            Image(
+                                modifier = Modifier.size(200.dp).animateEnterBottom(),
+                                painter = painterResource(image),
+                                contentDescription = null
+                            )
+                        }
                     }
                     ElevatedCard(
                         modifier = Modifier.weight(0.7f).fillMaxWidth().animateEnterBottom(initialOffsetY = 100f),

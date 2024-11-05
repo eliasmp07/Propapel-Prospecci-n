@@ -33,7 +33,9 @@ import androidx.compose.material.icons.filled.More
 import androidx.compose.material.icons.filled.NotificationAdd
 import androidx.compose.material.icons.filled.NotificationsOff
 import androidx.compose.material.icons.filled.PersonAddAlt
+import androidx.compose.material.icons.rounded.Business
 import androidx.compose.material.icons.rounded.LocationCity
+import androidx.compose.material.icons.rounded.Person
 import androidx.compose.material.icons.rounded.Phone
 import androidx.compose.material.icons.rounded.TypeSpecimen
 import androidx.compose.material3.ButtonColors
@@ -204,6 +206,66 @@ fun InfoLeadPagerScreen(
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ){
+                            Icon(
+                                imageVector = Icons.Rounded.Business,
+                                contentDescription = null
+                            )
+                            Text(
+                                text = "Nombre de la empresa:",
+                                style = MaterialTheme.typography.titleMedium
+                            )
+                        }
+                        Text(
+                            text = customer.companyName,
+                            style = MaterialTheme.typography.bodyMedium
+                        )
+                        Spacer(
+                            modifier = Modifier.height(8.dp)
+                        )
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ){
+                            Icon(
+                                imageVector = Icons.Rounded.Person,
+                                contentDescription = null
+                            )
+                            Text(
+                                text = "Contacto:",
+                                style = MaterialTheme.typography.titleMedium
+                            )
+                        }
+                        Text(
+                            text = customer.contactName,
+                            style = MaterialTheme.typography.bodyMedium
+                        )
+                        Spacer(
+                            modifier = Modifier.height(8.dp)
+                        )
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ){
+                            Icon(
+                                imageVector = Icons.Rounded.Phone,
+                                contentDescription = null
+                            )
+                            Text(
+                                text = "Numero de contacto:",
+                                style = MaterialTheme.typography.titleMedium
+                            )
+                        }
+                        Text(
+                            text = customer.phoneNumber,
+                            style = MaterialTheme.typography.bodyMedium
+                        )
+                        Spacer(
+                            modifier = Modifier.height(8.dp)
+                        )
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
                             Icon(
                                 imageVector = Icons.Rounded.TypeSpecimen,
@@ -217,6 +279,9 @@ fun InfoLeadPagerScreen(
                         Text(
                             text = customer.typeClient,
                             style = MaterialTheme.typography.bodyMedium
+                        )
+                        Spacer(
+                            modifier = Modifier.height(8.dp)
                         )
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
@@ -234,6 +299,9 @@ fun InfoLeadPagerScreen(
                         Text(
                             text = customer.email,
                             style = MaterialTheme.typography.bodyMedium
+                        )
+                        Spacer(
+                            modifier = Modifier.height(8.dp)
                         )
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
@@ -253,12 +321,15 @@ fun InfoLeadPagerScreen(
                             style = MaterialTheme.typography.bodyMedium
                         )
                         Spacer(
+                            modifier = Modifier.height(8.dp)
+                        )
+                        Spacer(
                             modifier = Modifier.weight(1f),
                         )
                         ProSalesActionButtonOutline(
                             text = "Editar información",
                             onClick = {
-
+                                onAction(DetailLeadAction.OnUpdateCustomerClick(customer.idCustomer.toString()))
                             }
                         )
                     }
@@ -318,7 +389,7 @@ fun InfoLeadPagerScreen(
                             shape = RoundedCornerShape(30.dp),
                             expanded = lazyColumState.isScrolled(),
                             onClick = {
-                                onAction(DetailLeadAction.OnToggleCreateAppointmentDialog)
+                                onAction(DetailLeadAction.AddInteractionsClick(customer.idCustomer.toString()))
                             },
                             text = {
                                 Text(
@@ -353,6 +424,9 @@ fun InfoLeadPagerScreen(
                                     Column(
                                         modifier = Modifier.fillMaxWidth().padding(16.dp)
                                     ) {
+                                        Spacer(
+                                            modifier = Modifier.height(32.dp)
+                                        )
                                         Image(
                                             modifier = Modifier.size(150.dp).align(Alignment.CenterHorizontally),
                                             painter = painterResource(Res.drawable.empty_info),

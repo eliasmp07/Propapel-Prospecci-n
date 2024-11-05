@@ -24,6 +24,7 @@ import org.propapel.prospeccion.root.data.dto.customer.TypeOfClient
 fun ExpisedDropdownMenuTypeClient(
     modifier: Modifier = Modifier,
     title: String  = "Tipo de cliente",
+    colors: Color = Color.White,
     optionSelectable: TypeOfClient = TypeOfClient.NUEVO,
     optionSelectableClick: (TypeOfClient) -> Unit,
     listOptions: List<TypeOfClient> = listOf()
@@ -45,7 +46,7 @@ fun ExpisedDropdownMenuTypeClient(
             modifierTextField = Modifier.clickable {
                 state = !state
             },
-            colors = Color.White,
+            colors = colors,
             readOnly = true,
             state = optionSelectable.name,
             startIcon = null,

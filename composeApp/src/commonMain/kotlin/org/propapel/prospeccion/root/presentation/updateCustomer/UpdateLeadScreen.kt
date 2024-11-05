@@ -76,12 +76,17 @@ import prospeccion.composeapp.generated.resources.no_internet
 
 @Composable
 fun UpdateLeadScreenRoot(
-    viewModel: UpdateLeadViewModel
+    viewModel: UpdateLeadViewModel,
+    onBack: () -> Unit
 ) {
     val state by viewModel.state.collectAsState()
     UpdateLeadScreen(
         state = state,
         onAction = {action ->
+            when(action){
+                UpdateLeadAction.OnBackClick -> onBack()
+                else -> Unit
+            }
             viewModel.onAction(action)
         }
     )
@@ -123,7 +128,7 @@ private fun UpdateLeadScreen(
                         containerColor = MaterialTheme.colorScheme.primary
                     ),
                     onClick = {
-
+                        onAction(UpdateLeadAction.OnBackClick)
                     },
                     content = {
                         Icon(
@@ -193,11 +198,14 @@ private fun UpdateLeadScreen(
                         )
                     ).padding(16.dp)
                 ) {
+                    Spacer(
+                        Modifier.padding(top = innerPadding.calculateTopPadding())
+                    )
                     Text(
                         modifier = Modifier.align(Alignment.CenterHorizontally),
-                        text = "Datos del cliente",
+                        text = "Actualizar información del cliente",
                         textAlign = TextAlign.Center,
-                        color = Color.White,
+                        color = Color.Black,
                         fontWeight = FontWeight.Bold,
                         style = MaterialTheme.typography.headlineSmall,
                     )
@@ -207,6 +215,7 @@ private fun UpdateLeadScreen(
                     )
                     ExpisedDropdownMenuTypeClient(
                         title = "Tipo de cliente",
+                        colors = Color.Black,
                         listOptions = listOf(
                             TypeOfClient.NUEVO,
                             TypeOfClient.DESARROLLO,
@@ -220,7 +229,7 @@ private fun UpdateLeadScreen(
                     ProSalesTextField(
                         title = "Razon social",
                         state = state.nameCompany,
-                        colors = Color.White,
+                        colors = Color.Black,
                         keyboardOptions = KeyboardOptions(
                             keyboardType = KeyboardType.Text,
                             imeAction = ImeAction.Next
@@ -238,7 +247,7 @@ private fun UpdateLeadScreen(
                     ProSalesTextField(
                         title = "Nombre completo",
                         state = state.name,
-                        colors = Color.White,
+                        colors = Color.Black,
                         keyboardOptions = KeyboardOptions(
                             keyboardType = KeyboardType.Text,
                             imeAction = ImeAction.Next
@@ -255,7 +264,7 @@ private fun UpdateLeadScreen(
                     )
                     ProSalesTextField(
                         title = "Correo electronico",
-                        colors = Color.White,
+                        colors = Color.Black,
                         keyboardOptions = KeyboardOptions(
                             keyboardType = KeyboardType.Email,
                             imeAction = ImeAction.Next
@@ -273,7 +282,7 @@ private fun UpdateLeadScreen(
                     )
                     ProSalesTextField(
                         title = "Numero de telefono",
-                        colors = Color.White,
+                        colors = Color.Black,
                         state = state.phone,
                         keyboardOptions = KeyboardOptions(
                             keyboardType = KeyboardType.Phone,
@@ -291,7 +300,7 @@ private fun UpdateLeadScreen(
                     )
                     ProSalesTextField(
                         title = "Direccion",
-                        colors = Color.White,
+                        colors = Color.Black,
                         state = state.address,
                         keyboardOptions = KeyboardOptions(
                             keyboardType = KeyboardType.Text,
@@ -310,10 +319,11 @@ private fun UpdateLeadScreen(
                     Spacer(
                         modifier = Modifier.weight(1f)
                     )
-                    ProSalesActionButton(
+                    ProSalesActionButtonOutline(
                         text = "Actualizar",
                         isLoading = state.isUpdatingLead,
                         onClick = {
+                            focusManager.clearFocus()
                             onAction(UpdateLeadAction.UpdateLeadClick)
                         }
                     )

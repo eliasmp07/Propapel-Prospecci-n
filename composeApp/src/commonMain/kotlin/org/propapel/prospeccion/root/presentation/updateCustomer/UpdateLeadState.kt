@@ -15,7 +15,6 @@ data class UpdateLeadState(
     val success: String = "",
     val nameCompany: String = "",
     val name: String = "",
-    val lastName: String = "",
     val email: String = "",
     val phone: String = "",
     val address: String = "",

@@ -1,5 +1,6 @@
 package org.propapel.prospeccion.root.presentation.account
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -16,7 +17,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.unit.dp
+import org.propapel.prospeccion.core.presentation.designsystem.PrimaryYellowLight
+import org.propapel.prospeccion.core.presentation.designsystem.SoporteSaiBlue30
 import org.propapel.prospeccion.core.presentation.designsystem.components.ProSalesActionButton
 import org.propapel.prospeccion.core.presentation.designsystem.components.ProSalesActionButtonOutline
 import org.propapel.prospeccion.root.presentation.account.components.ImageProfile
@@ -39,7 +43,13 @@ private fun AccountScreen(
     onAction: (AccountSMAction) -> Unit
 ){
     Column(
-        modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState())
+        modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()).background(
+            Brush.verticalGradient(
+                0f to PrimaryYellowLight,
+                0.6f to SoporteSaiBlue30,
+                1f to MaterialTheme.colorScheme.primary
+            )
+        )
     ) {
         ImageProfile(
             profileImg = state.user.image,

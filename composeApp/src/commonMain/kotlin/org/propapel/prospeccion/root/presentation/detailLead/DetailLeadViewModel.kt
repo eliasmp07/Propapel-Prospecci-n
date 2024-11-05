@@ -95,7 +95,7 @@ class DetailLeadViewModel(
                     isLoading = true
                 )
             }
-            val result = customerRepository.getMyCustomers()
+            val result = customerRepository.getCustomerById(id.toString())
             when(result){
                 is ResultExt.Error -> {
                     _state.update {
@@ -106,13 +106,10 @@ class DetailLeadViewModel(
                     }
                 }
                 is ResultExt.Success -> {
-                    val customer = result.data.filter {
-                        it.idCustomer == id
-                    }
                     _state.update {
                         it.copy(
                             isLoading = false,
-                            customer = customer.first()
+                            customer = result.data
                         )
                     }
                 }

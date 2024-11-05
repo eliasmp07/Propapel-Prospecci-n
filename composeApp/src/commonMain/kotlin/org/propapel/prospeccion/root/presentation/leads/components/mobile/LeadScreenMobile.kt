@@ -304,7 +304,7 @@ fun LeadScreenMobile(
                                             onClick = {
                                                 onAction(LeadAction.OnUpdateLeadClick(customer.idCustomer.toString()))
                                             },
-                                            backgroundColor = Color.Red,
+                                            backgroundColor = Color.Green,
                                             icon = Icons.Default.Update,
                                             modifier = Modifier.fillMaxHeight().clip(RoundedCornerShape(topStart = 30.dp, bottomStart = 30.dp))
                                         )

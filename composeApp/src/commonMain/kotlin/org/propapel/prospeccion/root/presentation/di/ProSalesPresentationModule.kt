@@ -5,6 +5,7 @@ import org.koin.dsl.module
 import org.propapel.prospeccion.root.presentation.account.AccountSMViewModel
 import org.propapel.prospeccion.root.presentation.addlead.AddLeadViewModel
 import org.propapel.prospeccion.root.presentation.completeReminder.CompleteReminderViewModel
+import org.propapel.prospeccion.root.presentation.createInteraction.CreateInteractionViewModel
 import org.propapel.prospeccion.root.presentation.createReminder.CreateReminderViewModel
 import org.propapel.prospeccion.root.presentation.dashboard.DashboardSMViewModel
 import org.propapel.prospeccion.root.presentation.detailLead.DetailLeadViewModel
@@ -26,6 +27,7 @@ val proSalesPresentationModule = module {
     viewModelOf(::SearchLeadSMViewModel)
     viewModelOf(::DetailReminderCustomerViewModel)
     viewModelOf(::AccountSMViewModel)
+    viewModelOf(::CreateInteractionViewModel)
     viewModelOf(::UpdateProfileSMViewModel)
     viewModelOf(::LeadSMViewModel)
     viewModelOf(::UserSMViewModel)

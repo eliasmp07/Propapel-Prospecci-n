@@ -23,6 +23,7 @@ import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Dashboard
 import androidx.compose.material.icons.filled.DateRange
@@ -47,10 +48,12 @@ import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSiz
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -58,6 +61,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.imageResource
 import org.jetbrains.compose.resources.vectorResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -171,18 +175,23 @@ fun HomeScreen(
         )
     }
 
+    val pagerState = rememberPagerState(pageCount = { items.size })
+    var selectedItemIndex by remember { mutableStateOf(0) }
+
+
     val windowClass = calculateWindowSizeClass()
     val showNavigationRail = windowClass.widthSizeClass != WindowWidthSizeClass.Compact
-    var selectedItemIndex by rememberSaveable { mutableStateOf(0) }
-    var previousItemIndex by rememberSaveable { mutableStateOf(0) }
+    val corrutine = rememberCoroutineScope()
 
     val viewModelAccount = koinViewModel<AccountSMViewModel>()
     val leadVieModel = koinViewModel<LeadSMViewModel>()
     val dashboardSMViewModel = koinViewModel<DashboardSMViewModel>()
     val userSMViewModel = koinViewModel<UserSMViewModel>()
 
-    val swipeThreshold = 100f // Umbral mínimo de desplazamiento
-    var totalDragAmount by remember { mutableStateOf(0f) }
+
+    LaunchedEffect(pagerState.currentPage) {
+        selectedItemIndex = pagerState.currentPage
+    }
 
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
@@ -222,8 +231,10 @@ fun HomeScreen(
                             ),
                             selected = selectedItemIndex == index,
                             onClick = {
-                                previousItemIndex = selectedItemIndex
                                 selectedItemIndex = index
+                                corrutine.launch {
+                                    pagerState.animateScrollToPage(index)
+                                }
                             },
                             icon = {
                                 Icon(
@@ -246,31 +257,6 @@ fun HomeScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(top = innerPadding.calculateTopPadding())
-                .pointerInput(Unit) {
-                    detectHorizontalDragGestures(
-                        onDragEnd = {
-                            if (abs(totalDragAmount) > swipeThreshold) {
-                                if (totalDragAmount > 0) {
-                                    // Swipe right
-                                    if (selectedItemIndex > 0) {
-                                        previousItemIndex = selectedItemIndex
-                                        selectedItemIndex -= 1
-                                    }
-                                } else {
-                                    // Swipe left
-                                    if (selectedItemIndex < items.size - 1) {
-                                        previousItemIndex = selectedItemIndex
-                                        selectedItemIndex += 1
-                                    }
-                                }
-                            }
-                            totalDragAmount = 0f
-                        },
-                        onHorizontalDrag = { _, dragAmount ->
-                            totalDragAmount += dragAmount
-                        }
-                    )
-                }
         ) {
             if (showNavigationRail) {
                 SidebarMenu(
@@ -280,33 +266,14 @@ fun HomeScreen(
                     initialExpandedState = false
                 )
             }
-
-            // Animación más lenta para las transiciones
-            AnimatedContent(
+            HorizontalPager(
+                state = pagerState,
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(bottom = innerPadding.calculateBottomPadding()),
-                transitionSpec = {
-                    if (selectedItemIndex > previousItemIndex) {
-                        slideInHorizontally(
-                            animationSpec = tween(300),
-                            initialOffsetX = { fullWidth -> fullWidth }) togetherWith
-                                slideOutHorizontally(
-                                    animationSpec = tween(300),
-                                    targetOffsetX = { fullWidth -> -fullWidth })
-                    } else {
-                        slideInHorizontally(
-                            animationSpec = tween(300),
-                            initialOffsetX = { fullWidth -> -fullWidth }) togetherWith
-                                slideOutHorizontally(
-                                    animationSpec = tween(300),
-                                    targetOffsetX = { fullWidth -> fullWidth })
-                    }
-                },
-                targetState = selectedItemIndex
-            ) { stateScreen ->
+            ) { page ->
                 if (state.user.isAdmin) {
-                    when (stateScreen) {
+                    when (page) {
                         0 -> {
                             DashBoardScreenRoot(
                                 dashboardSMViewModel,
@@ -317,7 +284,7 @@ fun HomeScreen(
                                 },
                                 onSearchLead = onSearchLead,
                                 onCreateReminder = onCreateReminder,
-                               windowSizeClass =  windowClass,
+                                windowSizeClass =  windowClass,
                             )
                         }
 
@@ -357,7 +324,7 @@ fun HomeScreen(
                         }
                     }
                 } else {
-                    when (stateScreen) {
+                    when (page) {
                         0 -> {
                             DashBoardScreenRoot(
                                 dashboardSMViewModel,
