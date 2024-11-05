@@ -17,7 +17,6 @@ import org.propapel.prospeccion.core.domain.AuthInfo
 import org.propapel.prospeccion.core.domain.ResultExt
 import org.propapel.prospeccion.core.domain.SessionStorage
 import org.propapel.prospeccion.root.domain.repository.ReminderRepository
-import org.propapel.prospeccion.root.presentation.account.AccountSMAction
 
 class HomeRootViewModel(
     private val sessionStorage: SessionStorage,

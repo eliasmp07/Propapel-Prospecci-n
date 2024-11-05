@@ -35,15 +35,18 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.delay
 import org.jetbrains.compose.resources.painterResource
+import org.propapel.prospeccion.auth.presentation.login.components.ForgotPasswordDialog
+import org.propapel.prospeccion.core.presentation.designsystem.PrimaryYellowLight
+import org.propapel.prospeccion.core.presentation.designsystem.SoporteSaiBlue30
 import org.propapel.prospeccion.core.presentation.designsystem.components.ProSalesActionButton
 import org.propapel.prospeccion.core.presentation.designsystem.components.ProSalesTextField
-import org.propapel.prospeccion.auth.presentation.login.components.ForgotPasswordDialog
 import prospeccion.composeapp.generated.resources.Res
 import prospeccion.composeapp.generated.resources.logo
 
@@ -89,7 +92,11 @@ private fun LoginScreen(
     ) {
         Column(
             modifier = Modifier.fillMaxSize().background(
-                MaterialTheme.colorScheme.primary
+                Brush.verticalGradient(
+                    0f to PrimaryYellowLight,
+                    0.6f to SoporteSaiBlue30,
+                    1f to MaterialTheme.colorScheme.primary
+                )
             )
         ) {
             Spacer(

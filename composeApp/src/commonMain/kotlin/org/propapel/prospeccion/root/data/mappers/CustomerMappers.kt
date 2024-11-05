@@ -4,10 +4,8 @@ import org.propapel.prospeccion.root.data.dto.customer.CreatePurchaseRequest
 import org.propapel.prospeccion.root.data.dto.customer.InteractionDto
 import org.propapel.prospeccion.root.data.dto.customer.OpportunityDto
 import org.propapel.prospeccion.root.data.dto.reminder.CustomerDto
-import org.propapel.prospeccion.root.data.dto.reminder.CustomerReminderDto
 import org.propapel.prospeccion.root.data.dto.reminder.PurchasesDto2
 import org.propapel.prospeccion.root.data.dto.reminder.ReminderDto2
-import org.propapel.prospeccion.root.data.dto.reminder.ReminderResponseDto
 import org.propapel.prospeccion.root.domain.models.Customer
 import org.propapel.prospeccion.root.domain.models.Interaction
 import org.propapel.prospeccion.root.domain.models.Opportunity

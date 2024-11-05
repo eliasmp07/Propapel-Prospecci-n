@@ -1,7 +1,5 @@
 package org.propapel.prospeccion.root.domain.models
 
-import kotlinx.serialization.SerialName
-
 data class PurchaseRequest(
     val customerId: Int = 0,  // Relación con cliente
     val productServiceName: String = "",

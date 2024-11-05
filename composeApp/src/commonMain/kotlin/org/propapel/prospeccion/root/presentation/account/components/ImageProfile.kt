@@ -26,7 +26,6 @@ import coil3.compose.AsyncImage
 import org.jetbrains.compose.resources.painterResource
 import prospeccion.composeapp.generated.resources.Res
 import prospeccion.composeapp.generated.resources.banner_profile
-import prospeccion.composeapp.generated.resources.banner_prueba
 
 @Composable
 fun ImageProfile(

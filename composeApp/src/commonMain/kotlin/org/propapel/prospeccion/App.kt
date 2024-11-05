@@ -20,7 +20,6 @@ import org.propapel.prospeccion.core.presentation.designsystem.SoporteSaiGray
 import org.propapel.prospeccion.core.presentation.designsystem.SoporteSaiGrayDark
 import org.propapel.prospeccion.core.presentation.designsystem.SoporteSaiWhite
 import org.propapel.prospeccion.core.presentation.designsystem.Typography
-import org.propapel.prospeccion.navigation.RootGraph
 
 private val DarkColorScheme = darkColorScheme(
     primary = SoporteSaiBlueDark,

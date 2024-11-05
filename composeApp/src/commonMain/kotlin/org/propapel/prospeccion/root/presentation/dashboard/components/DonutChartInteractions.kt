@@ -39,12 +39,13 @@ fun DonutChartInteractions(
     modifier: Modifier = Modifier,
     customers: List<Customer> = listOf()
 ) {
-    if (customers.isEmpty()){
+    val reminders = customers.flatMap { it.interactions }
+
+    if (reminders.isEmpty()){
         Card(
             shape = RoundedCornerShape(8.dp),
             modifier = modifier
-                .padding(8.dp)
-                .fillMaxWidth(),
+                .fillMaxWidth().padding(horizontal = 16.dp),
             colors = CardDefaults.cardColors(containerColor = Color(0xFFf1f4f9))
         ) {
             Column(
@@ -62,12 +63,13 @@ fun DonutChartInteractions(
                 Text(text = "No haz tenidos citas este mes ni el anterior")
             }
         }
+        return
     }else{
-        val reminders = customers.flatMap { it.interactions }
-
         // Obtener el mes actual y el mes anterior
         val currentDate = Clock.System.now().toLocalDateTime(TimeZone.UTC).date
         val previousMonthDate = currentDate.month.number - 1
+        val previousYear = if (currentDate.month.number == 1) currentDate.year - 1 else currentDate.year
+
 
         // Contar recordatorios por mes
         val currentMonthCount = reminders.count {
@@ -77,7 +79,7 @@ fun DonutChartInteractions(
 
         val previousMonthCount = reminders.count {
             val reminderDate = Instant.fromEpochMilliseconds(it.interactionDate).toLocalDateTime(TimeZone.UTC).date
-            reminderDate.year == previousMonthDate && reminderDate.monthNumber == previousMonthDate
+            reminderDate.year == previousYear && reminderDate.monthNumber == previousMonthDate
         }
 
         // Crear datos para el gráfico
@@ -97,8 +99,7 @@ fun DonutChartInteractions(
         Card(
             shape = RoundedCornerShape(8.dp),
             modifier = modifier
-                .padding(8.dp)
-                .fillMaxWidth(),
+                .fillMaxWidth().padding(horizontal = 16.dp),
             colors = CardDefaults.cardColors(containerColor = Color(0xFFf1f4f9))
         ) {
             Column(

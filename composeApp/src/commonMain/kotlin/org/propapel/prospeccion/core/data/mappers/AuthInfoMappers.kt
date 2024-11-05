@@ -1,7 +1,7 @@
 package org.propapel.prospeccion.core.data.mappers
 
-import org.propapel.prospeccion.core.domain.AuthInfo
 import org.propapel.prospeccion.core.data.networking.AuthInfoSerializable
+import org.propapel.prospeccion.core.domain.AuthInfo
 
 fun AuthInfo.toAuthInfoSerializable(): AuthInfoSerializable {
     return AuthInfoSerializable(

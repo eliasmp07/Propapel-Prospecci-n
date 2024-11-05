@@ -15,6 +15,26 @@ val SoporteSaiDarkRed = Color(0xFFBB3D3D)
 val SoporteSaiDarkRed5 = Color(0x0DBB3D3D)
 val SuccessGreen =  Color(0xFF46D19E)
 
+
+val PrimaryYellowLight = Color(0xFFffeed4)
+val PrimaryYellow = Color(0xFFFFE7BA)
+val PrimaryYellowDark = Color(0xFFe9c16c)
+
+val PrimaryPinkBlended = Color(0xFFe4b1cb)
+val PrimaryPinkLight = Color( 0xFFd6a0df)
+val PrimaryPink = Color(0xFFc073cd)
+val PrimaryPinkDark = Color(0xFF78258b)
+
+val PrimaryVioletLight = Color(0xFFb0a7e2)
+val PrimaryViolet = Color(0xFF9e91e2)
+val PrimaryVioletDark = Color(0xFF52439a)
+
+val PrimaryGreen = Color(0xFF00c29f)
+val PrimaryGreenDark = Color(0xFF008b6c)
+
+val DarkTextColor = Color(0xFF132b4c)
+
+
 val SoporteSaiBlueDark = Color(0xFF4B76C6)   // Un azul más oscuro
 val SoporteSaiBlue30Dark = Color(0x4D3D61A3) // Más transparente y oscuro
 val SoporteSaiBlue10Dark = Color(0x1A3D61A3)

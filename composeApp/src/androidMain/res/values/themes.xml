@@ -2,6 +2,6 @@
 <resources>
 
     <style name="Theme.Propapel" parent="android:Theme.Material.Light.NoActionBar">
-        <item name="android:statusBarColor">@color/blue_status_bar</item>
+        <item name="android:statusBarColor">@color/primary_yellow_ligh</item>
     </style>
 </resources>

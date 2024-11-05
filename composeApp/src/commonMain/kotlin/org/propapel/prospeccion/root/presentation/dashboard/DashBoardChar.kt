@@ -27,14 +27,14 @@ import org.propapel.prospeccion.root.domain.models.Purchase
 import org.propapel.prospeccion.root.presentation.addlead.components.utils.ProductsPropapel
 
 fun aggregateSalesDataByCategory(
-    orders: List<Purchase>,
+    purchases: List<Purchase>,
     products: List<ProductsPropapel>,
 ): Map<String, Double> {
-    val categoryMap = products.associate { it.ordinal.toString() to it.name }
+    val categoryMap = products.associate { it.name to it.name }
 
     val categorySales = mutableMapOf<String, Double>().withDefault { 0.0 }
 
-    orders.forEach { purchase ->
+    purchases.forEach { purchase ->
         val purchaseTitle = categoryMap[purchase.productServiceName]
         if (purchaseTitle != null) {
             categorySales[purchaseTitle] =
@@ -54,7 +54,8 @@ fun DashboardChart(
     val categorySalesPercentage = aggregateSalesDataByCategory(orders, products)
         .mapValues { (it.value / orders.sumOf { order -> order.amount.toDouble() }) * 100 }
 
-    val xAxisData = listOf("0", "18", "28", "55", "75", "100")
+
+    val xAxisData = listOf("Rollitos", "", "28", "55", "75", "100")
     val xAxisDataPoints = xAxisData.size
 
     val testLineParameters: List<LineParameters> =
@@ -78,8 +79,7 @@ fun DashboardChart(
     Card(
         shape = RoundedCornerShape(8.dp),
         modifier = modifier
-            .padding(8.dp)
-            .fillMaxWidth(),
+            .padding(16.dp).fillMaxWidth(),
         colors = CardDefaults.cardColors(containerColor = Color(0xFFf1f4f9))
     ) {
         Column(

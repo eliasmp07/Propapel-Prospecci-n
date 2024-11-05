@@ -13,8 +13,8 @@ import io.ktor.client.statement.HttpResponse
 import io.ktor.util.network.UnresolvedAddressException
 import kotlinx.coroutines.CancellationException
 import kotlinx.serialization.SerializationException
-import org.propapel.prospeccion.core.domain.utils.DataError
 import org.propapel.prospeccion.core.domain.ResultExt
+import org.propapel.prospeccion.core.domain.utils.DataError
 
 suspend inline fun <reified Response: Any> HttpClient.get(
     route: String,
@@ -110,8 +110,8 @@ suspend inline fun <reified T> responseToResult(response: HttpResponse): ResultE
 
 fun constructRoute(route: String): String {
     return when {
-        route.contains("http://192.168.1.4:3002") -> route
-        route.startsWith("/") -> "http://192.168.1.4:3002" + route
-        else -> "http://192.168.1.4:3002" + "/$route"
+        route.contains("http://3.144.8.170:3002") -> route
+        route.startsWith("/") -> "http://3.144.8.170:3002" + route
+        else -> "http://3.144.8.170:3002" + "/$route"
     }
 }

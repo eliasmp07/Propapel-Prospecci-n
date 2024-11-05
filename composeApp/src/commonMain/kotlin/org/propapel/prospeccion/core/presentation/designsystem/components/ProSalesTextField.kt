@@ -36,6 +36,7 @@ import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -70,6 +71,7 @@ import org.propapel.prospeccion.core.presentation.designsystem.SoporteSaiDarkRed
 fun ProSalesTextField(
     modifier: Modifier = Modifier,
     state: String,
+    colors: Color = Color.Black,
     startIcon: ImageVector? = null,
     endIcon: ImageVector? = null,
     onTextChange: (String) -> Unit,
@@ -94,14 +96,16 @@ fun ProSalesTextField(
         if (title != null) {
             Text(
                 text = title,
+                color = colors,
                 fontWeight = FontWeight.Bold
             )
         }
         BasicTextField(
             value = state,
             enabled = enabled,
+            textStyle = TextStyle(color = colors),
             readOnly = readOnly,
-            cursorBrush = SolidColor(Color.Black),
+            cursorBrush = SolidColor(colors),
             visualTransformation = if (isPassword && hidePassword) PasswordVisualTransformation() else VisualTransformation.None,
             maxLines = maxLines,
             keyboardOptions = keyboardOptions,
@@ -111,7 +115,7 @@ fun ProSalesTextField(
                 .background(Color.Black.copy(alpha = 0.05f))
                 .border(
                     width = 1.dp,
-                    color = Color.Black,
+                    color = colors,
                     shape = RoundedCornerShape(30.dp)
                 )
                 .padding(12.dp)
@@ -125,7 +129,8 @@ fun ProSalesTextField(
                     if (startIcon != null) {
                         Icon(
                             imageVector = startIcon,
-                            contentDescription = null
+                            contentDescription = null,
+                            tint = colors
                         )
                         Spacer(modifier = Modifier.width(16.dp))
                     }
@@ -133,6 +138,7 @@ fun ProSalesTextField(
                         if (state.isEmpty() && !isFocused) {
                             Text(
                                 text = hint,
+                                color = colors,
                                 modifier = Modifier.fillMaxWidth()
                             )
                         }
@@ -142,6 +148,7 @@ fun ProSalesTextField(
                         Spacer(modifier = Modifier.width(16.dp))
                         Icon(
                             imageVector = endIcon,
+                            tint = colors,
                             contentDescription = null,
                             modifier = Modifier.padding(end = 8.dp)
                         )
@@ -151,6 +158,7 @@ fun ProSalesTextField(
                         Icon(
                             imageVector = if (hidePassword) Icons.Sharp.Visibility else Icons.Sharp.VisibilityOff,
                             contentDescription = null,
+                            tint = colors,
                             modifier = Modifier
                                 .clip(CircleShape)
                                 .clickable { hidePassword = !hidePassword }

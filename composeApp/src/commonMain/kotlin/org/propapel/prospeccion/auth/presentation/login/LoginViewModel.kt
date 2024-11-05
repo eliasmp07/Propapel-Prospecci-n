@@ -9,12 +9,12 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import org.propapel.prospeccion.core.domain.utils.DataError
-import org.propapel.prospeccion.core.domain.ResultExt
-import org.propapel.prospeccion.core.presentation.ui.UiText
-import org.propapel.prospeccion.core.presentation.ui.asUiText
 import org.propapel.prospeccion.auth.domain.AuthRepository
 import org.propapel.prospeccion.auth.domain.validator.UserValidator
+import org.propapel.prospeccion.core.domain.ResultExt
+import org.propapel.prospeccion.core.domain.utils.DataError
+import org.propapel.prospeccion.core.presentation.ui.UiText
+import org.propapel.prospeccion.core.presentation.ui.asUiText
 import prospeccion.composeapp.generated.resources.Res
 import prospeccion.composeapp.generated.resources.error_no_account
 import prospeccion.composeapp.generated.resources.error_password_incorrect

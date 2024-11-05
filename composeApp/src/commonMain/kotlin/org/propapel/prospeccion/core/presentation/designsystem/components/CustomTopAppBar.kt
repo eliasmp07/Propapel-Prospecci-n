@@ -9,7 +9,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -24,7 +23,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.outlined.LightMode
 import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material.icons.outlined.Person
@@ -61,6 +59,7 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import org.jetbrains.compose.resources.painterResource
 import org.propapel.prospeccion.core.domain.AuthInfo
+import org.propapel.prospeccion.core.presentation.designsystem.PrimaryYellowLight
 import prospeccion.composeapp.generated.resources.Res
 import prospeccion.composeapp.generated.resources.logo
 
@@ -80,24 +79,15 @@ fun CustomTopAppBar(
     var expanded by remember { mutableStateOf(false) }
     var expandedCompact by remember { mutableStateOf(false) }
 
-    var isSearchQuery by remember { mutableStateOf("") }
-
     if (isCompact) {
         TopAppBar(
+            colors = TopAppBarDefaults.topAppBarColors(
+                containerColor = PrimaryYellowLight,
+                scrolledContainerColor = PrimaryYellowLight
+            ),
             scrollBehavior = scrollBehavior,
             title = {
-                Row {
-                    Image(
-                        painter = painterResource(Res.drawable.logo),
-                        contentDescription = null,
-                        modifier = Modifier.size(30.dp)
-                    )
-                    Text(
-                        text = "Prospección", color = Color(0xFF007BFF),
-                        fontWeight = FontWeight.Bold,
-                        fontSize = MaterialTheme.typography.headlineSmall.fontSize
-                    )
-                }
+
             },
             actions = {
                 Card(

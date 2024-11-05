@@ -12,9 +12,12 @@ import kotlinx.coroutines.launch
 import org.propapel.prospeccion.core.domain.ResultExt
 import org.propapel.prospeccion.core.presentation.ui.asUiText
 import org.propapel.prospeccion.root.domain.repository.CustomerRepository
+import org.propapel.prospeccion.root.domain.repository.ReminderRepository
+import org.propapel.prospeccion.root.presentation.detailLead.DetailLeadAction
 
 class LeadSMViewModel(
-    private val customerRepository: CustomerRepository
+    private val customerRepository: CustomerRepository,
+    private val reminderRepository: ReminderRepository
 ) : ViewModel() {
 
     private var _state = MutableStateFlow(LeadSMState())
@@ -29,7 +32,66 @@ class LeadSMViewModel(
     ) {
         when (action) {
             LeadAction.OnRefresh -> onRefresh()
+            is LeadAction.OnToggleCreateAppointmentDialog -> {
+                _state.update {
+                    it.copy(
+                        leadId = action.leadId,
+                        showCreateDate = !it.showCreateDate
+                    )
+                }
+            }
+            is LeadAction.OnNoteAppointmentChange -> {
+                _state.update {
+                    it.copy(
+                        notesAppointment = action.notes
+                    )
+                }
+            }
+            is LeadAction.OnDateNextReminder -> {
+                _state.update {
+                    it.copy(
+                        dateNextReminder = action.date
+                    )
+                }
+            }
+            LeadAction.CreateAppointmentClick -> {
+                createAppointment()
+            }
             else -> Unit
+        }
+    }
+
+    private fun createAppointment(
+    ){
+        viewModelScope.launch(Dispatchers.IO) {
+            _state.update {
+                it.copy(
+                    isCreatingAppointment = true
+                )
+            }
+            val result = reminderRepository.createReminder(
+                reminderDate = _state.value.dateNextReminder,
+                customerId = _state.value.leadId,
+                description = _state.value.notesAppointment
+            )
+            when(result) {
+                is ResultExt.Error -> {
+                    _state.update {
+                        it.copy(
+                            isCreatingAppointment = false
+                        )
+                    }
+                }
+                is ResultExt.Success -> {
+                    _state.update {
+                        it.copy(
+                            leadId = 0,
+                            showCreateDate = !it.showCreateDate,
+                            isCreatingAppointment = false
+                        )
+                    }
+                }
+            }
         }
     }
 

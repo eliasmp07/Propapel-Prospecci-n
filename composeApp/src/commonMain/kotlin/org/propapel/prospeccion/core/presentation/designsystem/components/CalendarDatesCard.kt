@@ -8,8 +8,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -41,12 +41,12 @@ fun CalendarDatesCard(
     if (
         state.reminders.isEmpty()
     ) {
-        Card(
-            shape = RoundedCornerShape(8.dp),
+        ElevatedCard(
+            shape = RoundedCornerShape(20.dp),
             modifier = Modifier
-                .padding(8.dp)
+                .padding(vertical = 8.dp)
                 .fillMaxWidth(),
-            colors = CardDefaults.cardColors(containerColor = Color(0xFFf1f4f9))
+            elevation = CardDefaults.elevatedCardElevation(15.dp)
         ) {
             Column(
                 modifier = Modifier.fillMaxWidth(),
@@ -84,12 +84,12 @@ fun CalendarDatesCard(
             }
         }
 
-        Card(
-            shape = RoundedCornerShape(8.dp),
+        ElevatedCard(
+            shape = RoundedCornerShape(20.dp),
             modifier = modifier
-                .padding(8.dp)
+                .padding(vertical = 8.dp)
                 .fillMaxWidth(),
-            colors = CardDefaults.cardColors(containerColor = Color(0xFFf1f4f9))
+            elevation = CardDefaults.elevatedCardElevation(15.dp)
         ) {
             Column(
                 modifier = Modifier.padding(16.dp),
@@ -136,7 +136,7 @@ fun CalendarDatesCard(
                     // Mostrar los recordatorios filtrados
                     filteredReminders.forEach { reminder ->
                         ItemUserDate(
-                            reminder,
+                            reminder = reminder,
                             onDetailReminder = {
                                 onAction(
                                     DashboardSMAction.OnDetailReminderCustomer(it)

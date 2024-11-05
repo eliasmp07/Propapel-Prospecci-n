@@ -9,6 +9,9 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.datetime.Clock
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import org.propapel.prospeccion.core.domain.ResultExt
 import org.propapel.prospeccion.root.domain.models.PurchaseRequest
 import org.propapel.prospeccion.root.domain.repository.CustomerRepository
@@ -112,6 +115,7 @@ class AddLeadViewModel(
                 }
             }
 
+
             is AddLeadAction.OnProductInterestChange -> {
                 _state.update {
                     it.copy(productInterest = action.product)
@@ -153,7 +157,8 @@ class AddLeadViewModel(
                     products.add(
                         PurchaseRequest(
                             productServiceName = it.productInterest.name,
-                            amount =  if (it.price.isEmpty()) 0.0 else it.price.toDouble(),
+                            purchaseDate = Clock.System.now().toEpochMilliseconds(),
+                            amount = if (it.price.isEmpty()) 0.0 else it.price.replace("$", "").toDouble()
                         )
                     )
                     it.copy(

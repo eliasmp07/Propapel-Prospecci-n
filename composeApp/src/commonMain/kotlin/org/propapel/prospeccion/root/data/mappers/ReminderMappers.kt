@@ -10,7 +10,7 @@ fun ReminderResponseDto.toReminder(): Reminder {
         reminderDate = reminderDate,
         reminderId = reminderId,
         description = description,
-        customer = customer.toCustomer(),
+        customer = customer?.toCustomer()?:Customer(),
         isCompleted = isComplete
     )
 }

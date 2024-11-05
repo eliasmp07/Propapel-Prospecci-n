@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="error_disk_full">Failed to save the item because your disk is full.</string>
-    <string name="error_request_timeout">The request timed out.</string>
-    <string name="error_too_many_requests">You\'ve hit your rate limit.</string>
-    <string name="error_no_internet">Couldn\'t reach server, please check your connection.</string>
-    <string name="error_payload_too_large">The file you\'re trying to upload is too large.</string>
-    <string name="error_server_error">Oops, something went wrong, please try again.</string>
-    <string name="error_serialization">Oops, couldn\'t parse data.</string>
-    <string name="error_unknown">An unknown error occurred.</string>
+    <string name="error_disk_full">No se pudo guardar el elemento porque el disco está lleno.</string>
+    <string name="error_request_timeout">La solicitud ha expirado.</string>
+    <string name="error_too_many_requests">Has alcanzado el límite de solicitudes.</string>
+    <string name="error_no_internet">No se pudo conectar con el servidor, por favor revisa tu conexión.</string>
+    <string name="error_payload_too_large">El archivo que intentas subir es demasiado grande.</string>
+    <string name="error_server_error">Ups, algo salió mal, por favor intenta nuevamente.</string>
+    <string name="error_serialization">Ups, no se pudo interpretar los datos.</string>
+    <string name="error_unknown">Ocurrió un error desconocido.</string>
     <string name="error_password_incorrect">Contraseña incorrecta</string>
-    <string name="error_no_account">El correo electronico ingresado no existe</string>
+    <string name="error_no_account">El correo electrónico ingresado no existe</string>
+    <string name="appointment_customer">Citas</string>
+    <string name="interactions_customer">Interacciones</string>
+    <string name="leads_info">Datos</string>
 </resources>

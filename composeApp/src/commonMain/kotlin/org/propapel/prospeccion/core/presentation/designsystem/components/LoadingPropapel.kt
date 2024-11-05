@@ -8,7 +8,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import org.jetbrains.compose.resources.painterResource
+import org.propapel.prospeccion.core.presentation.designsystem.PrimaryYellowLight
+import org.propapel.prospeccion.core.presentation.designsystem.SoporteSaiBlue30
 import org.propapel.prospeccion.core.presentation.designsystem.components.util.animateLogo
 import prospeccion.composeapp.generated.resources.Res
 import prospeccion.composeapp.generated.resources.logo
@@ -20,7 +23,13 @@ fun LoadingPropapel(
     Box(
         modifier = modifier
             .fillMaxSize()
-            .background(color = MaterialTheme.colorScheme.background.copy(0.8f)),
+            .background(
+                Brush.verticalGradient(
+                    0f to PrimaryYellowLight,
+                    0.6f to SoporteSaiBlue30,
+                    1f to MaterialTheme.colorScheme.primary
+                )
+            ),
         contentAlignment = Alignment.Center
     ){
         Image(

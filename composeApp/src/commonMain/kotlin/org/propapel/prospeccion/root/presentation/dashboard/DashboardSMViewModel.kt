@@ -14,13 +14,14 @@ import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import org.propapel.prospeccion.core.domain.ResultExt
+import org.propapel.prospeccion.core.presentation.ui.asUiText
 import org.propapel.prospeccion.root.domain.repository.CustomerRepository
 import org.propapel.prospeccion.root.domain.repository.ReminderRepository
 
 class DashboardSMViewModel(
     private val reminderRepository: ReminderRepository,
     private val customerRepository: CustomerRepository
-): ViewModel() {
+) : ViewModel() {
 
     private var _state = MutableStateFlow(DashboardSMState())
     val state: StateFlow<DashboardSMState> get() = _state.asStateFlow()
@@ -37,7 +38,12 @@ class DashboardSMViewModel(
             val result = customerRepository.getMyCustomers()
             when (result) {
                 is ResultExt.Error -> {
-                    _state.update { it.copy(myCustomer = emptyList()) }
+                    _state.update {
+                        it.copy(
+                            myCustomer = emptyList(),
+                            error = result.error.asUiText()
+                        )
+                    }
                 }
                 is ResultExt.Success -> {
                     _state.update { it.copy(myCustomer = result.data) }
@@ -49,7 +55,7 @@ class DashboardSMViewModel(
 
     // Método de refresco (separa el loading del refreshing)
     private fun onRefresh() {
-        _state.update { it.copy(isRefreshing = true) }
+        _state.update { it.copy(isRefreshing = true, error = null) }
         getAllMyReminders()
         getAllCustomers()
     }
@@ -59,7 +65,12 @@ class DashboardSMViewModel(
             val result = customerRepository.getAllCustomers()
             when (result) {
                 is ResultExt.Error -> {
-                    _state.update { it.copy(customers = emptyList()) }
+                    _state.update {
+                        it.copy(
+                            customers = emptyList(),
+                            error = result.error.asUiText()
+                        )
+                    }
                 }
                 is ResultExt.Success -> {
                     _state.update { it.copy(customers = result.data) }
@@ -87,12 +98,19 @@ class DashboardSMViewModel(
                     val currentYear = currentMoment.year
 
                     val remindersThisMonth = result.data.filter { reminder ->
-                        val reminderDate = Instant.fromEpochMilliseconds(reminder.reminderDate.toLong()).toLocalDateTime(
-                            TimeZone.currentSystemDefault())
+                        val reminderDate =
+                            Instant.fromEpochMilliseconds(reminder.reminderDate.toLong()).toLocalDateTime(
+                                TimeZone.currentSystemDefault()
+                            )
                         reminderDate.month == currentMonth && reminderDate.year == currentYear
                     }
 
-                    _state.update { it.copy(reminders = result.data, totalRemindersMoth = remindersThisMonth.size.toDouble()) }
+                    _state.update {
+                        it.copy(
+                            reminders = result.data,
+                            totalRemindersMoth = remindersThisMonth.size.toDouble()
+                        )
+                    }
                 }
             }
         }
@@ -100,6 +118,9 @@ class DashboardSMViewModel(
 
     fun onAction(action: DashboardSMAction) {
         when (action) {
+            DashboardSMAction.OnRetryClick -> {
+                onInitialLoad() // Llama el método de carga inicial
+            }
             is DashboardSMAction.OnDateChange -> {
                 _state.update { it.copy(date = action.date) }
             }

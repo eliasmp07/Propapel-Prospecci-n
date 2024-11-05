@@ -14,10 +14,12 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.delay
 
 data class Banner(
     val description: String = "",
@@ -28,21 +30,37 @@ data class Banner(
     val startDate: String = "",
     val type: String = ""
 )
-
 @Composable
-fun BannerPager(state: List<Banner>) {
-    val pagerState = rememberPagerState(pageCount = {
-        state.size
-    })
-    Column{
+fun BannerPager(
+    modifier: Modifier = Modifier,
+    items: List<Pair<Banner?, @Composable () -> Unit>> // Permite que el Banner sea nulo
+) {
+    val pagerState = rememberPagerState(pageCount = { items.size })
+
+    // Auto-desplazamiento del pager
+    LaunchedEffect(pagerState) {
+        while (true) {
+            delay(10000) // Cambia de página cada minuto
+            pagerState.animateScrollToPage((pagerState.currentPage + 1) % items.size)
+        }
+    }
+
+    Column(modifier = modifier) {
         HorizontalPager(
             state = pagerState,
-            modifier = Modifier
-                .fillMaxWidth()
+            modifier = Modifier.fillMaxWidth()
         ) { page ->
-            val banner = state[page]
-            BannerItemMobileScreen(banner = banner)
+            val (banner, content) = items[page]
+            if (banner != null) {
+                // Si hay un banner, mostramos el BannerItemMobileScreen
+                BannerItemMobileScreen(banner = banner)
+            } else {
+                // Si no hay banner, mostramos el composable correspondiente
+                content()
+            }
         }
+
+        // Indicadores de página
         Row(
             Modifier
                 .wrapContentHeight()
@@ -51,7 +69,7 @@ fun BannerPager(state: List<Banner>) {
             horizontalArrangement = Arrangement.Center
         ) {
             repeat(pagerState.pageCount) { iteration ->
-                val color = if (pagerState.currentPage == iteration) Color.DarkGray else Color.LightGray
+                val color = if (pagerState.currentPage == iteration) Color.DarkGray else Color.White
                 Box(
                     modifier = Modifier
                         .padding(2.dp)

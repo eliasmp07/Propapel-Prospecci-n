@@ -19,8 +19,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.StackedLineChart
-import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
@@ -47,13 +47,13 @@ fun DashboardCard(
     val windowClass = calculateWindowSizeClass()
     val showNavigationRail = windowClass.widthSizeClass != WindowWidthSizeClass.Compact
 
-    if (showNavigationRail){
-        Card(
-            shape = RoundedCornerShape(8.dp),
+    if (showNavigationRail) {
+        ElevatedCard(
+            shape = RoundedCornerShape(20.dp),
             modifier = modifier
-                .padding(8.dp)
+                .padding(vertical = 8.dp)
                 .fillMaxWidth(),
-            colors = CardDefaults.cardColors(containerColor = Color(0xFFf1f4f9))
+            elevation = CardDefaults.elevatedCardElevation(15.dp)
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -72,10 +72,17 @@ fun DashboardCard(
                         fontWeight = FontWeight.Bold
                     )
                     Spacer(modifier = Modifier.height(8.dp))
-                    Text(text = title, fontSize = 14.sp)
+                    Text(
+                        text = title,
+                        fontSize = 14.sp
+                    )
                     Spacer(modifier = Modifier.height(4.dp))
                     Row {
-                        Text(text = percentage, fontSize = 14.sp, color = background)
+                        Text(
+                            text = percentage,
+                            fontSize = 14.sp,
+                            color = background
+                        )
                         Icon(
                             imageVector = Icons.Outlined.StackedLineChart,
                             contentDescription = null,
@@ -87,7 +94,10 @@ fun DashboardCard(
                 Box(
                     modifier = Modifier
                         .size(30.dp)
-                        .background(color = background, shape = CircleShape)
+                        .background(
+                            color = background,
+                            shape = CircleShape
+                        )
                         .padding(3.dp),
                     contentAlignment = Alignment.Center
                 ) {
@@ -100,13 +110,13 @@ fun DashboardCard(
                 Spacer(modifier = Modifier.width(8.dp))
             }
         }
-    }else{
-        Card(
-            shape = RoundedCornerShape(8.dp),
+    } else {
+        ElevatedCard(
+            shape = RoundedCornerShape(20.dp),
             modifier = modifier
-                .padding(8.dp)
+                .padding(vertical = 8.dp)
                 .fillMaxWidth(),
-            colors = CardDefaults.cardColors(containerColor = Color(0xFFf1f4f9))
+            elevation = CardDefaults.elevatedCardElevation(15.dp)
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -120,7 +130,10 @@ fun DashboardCard(
                         modifier = Modifier
                             .size(30.dp)
                             .align(Alignment.End)
-                            .background(color = background, shape = CircleShape)
+                            .background(
+                                color = background,
+                                shape = CircleShape
+                            )
                             .padding(3.dp),
                         contentAlignment = Alignment.Center
                     ) {
@@ -137,10 +150,17 @@ fun DashboardCard(
                         fontWeight = FontWeight.Bold
                     )
                     Spacer(modifier = Modifier.height(8.dp))
-                    Text(text = title, fontSize = 14.sp)
+                    Text(
+                        text = title,
+                        fontSize = 14.sp
+                    )
                     Spacer(modifier = Modifier.height(4.dp))
                     Row {
-                        Text(text = percentage, fontSize = 14.sp, color = background)
+                        Text(
+                            text = percentage,
+                            fontSize = 14.sp,
+                            color = background
+                        )
                         Icon(
                             imageVector = Icons.Outlined.StackedLineChart,
                             contentDescription = null,
@@ -152,6 +172,4 @@ fun DashboardCard(
             }
         }
     }
-
-
 }

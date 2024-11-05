@@ -37,6 +37,9 @@ kotlin {
         task("testClasses")
         androidMain.dependencies {
             implementation(compose.preview)
+
+            // Permissions
+            implementation("com.google.accompanist:accompanist-permissions:0.34.0")
             implementation(libs.androidx.activity.compose)
             implementation(libs.koin.android)
             implementation(libs.ktor.client.okhttp)
@@ -79,6 +82,10 @@ kotlin {
 
             implementation(libs.room.runtime)
             implementation(libs.androidx.sqlite.bundled)
+
+            //Time picker
+
+            implementation("network.chaintech:kmp-date-time-picker:1.0.6")
 
             //FILE PICKER
             implementation("com.mohamedrejeb.calf:calf-file-picker:0.5.3")
@@ -125,6 +132,9 @@ android {
         versionCode = 1
         versionName = "1.0"
     }
+    buildFeatures {
+        compose = true
+    }
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
@@ -141,9 +151,6 @@ android {
     }
 }
 
-dependencies {
-    debugImplementation(compose.uiTooling)
-}
 
 compose.desktop {
     application {

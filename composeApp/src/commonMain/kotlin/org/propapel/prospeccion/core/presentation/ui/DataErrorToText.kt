@@ -1,6 +1,5 @@
 package org.propapel.prospeccion.core.presentation.ui
 
-import org.propapel.prospeccion.core.presentation.ui.UiText
 import org.propapel.prospeccion.core.domain.utils.DataError
 import prospeccion.composeapp.generated.resources.Res
 import prospeccion.composeapp.generated.resources.error_disk_full

@@ -10,11 +10,11 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import org.propapel.prospeccion.core.domain.AuthInfo
-import org.propapel.prospeccion.core.domain.SessionStorage
 import org.propapel.prospeccion.core.data.mappers.toAuthInfo
 import org.propapel.prospeccion.core.data.mappers.toAuthInfoSerializable
 import org.propapel.prospeccion.core.data.networking.AuthInfoSerializable
+import org.propapel.prospeccion.core.domain.AuthInfo
+import org.propapel.prospeccion.core.domain.SessionStorage
 
 class SessionStorageImpl(
     private val userPreferences: DataStore<Preferences>

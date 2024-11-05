@@ -1,17 +1,10 @@
 package org.propapel.prospeccion.root.presentation.leads
 
-import androidx.compose.animation.Crossfade
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material3.Text
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Modifier
-import org.propapel.prospeccion.core.presentation.designsystem.components.LoadingPropapel
-import org.propapel.prospeccion.core.presentation.designsystem.components.handleResultView
-import org.propapel.prospeccion.root.presentation.addlead.AddLeadState
 import org.propapel.prospeccion.root.presentation.leads.components.desktop.LeadScreenDesktop
 import org.propapel.prospeccion.root.presentation.leads.components.mobile.LeadScreenMobile
 
@@ -19,6 +12,9 @@ import org.propapel.prospeccion.root.presentation.leads.components.mobile.LeadSc
 fun LeadScreenRoot(
     viewModel: LeadSMViewModel,
     windowSizeClass: WindowSizeClass,
+    onUpdateLead: (String) -> Unit,
+    onDetailLead: (String) -> Unit,
+    onSearchLead: () -> Unit,
     onAddLead : () -> Unit
 ){
     val state by viewModel.state.collectAsState()
@@ -26,9 +22,12 @@ fun LeadScreenRoot(
         windowSizeClass = windowSizeClass,
         onAction = {action ->
             when(action){
+                is LeadAction.OnDetailLeadClick-> onDetailLead(action.leadId)
                 LeadAction.OnAddLead -> {
                     onAddLead()
                 }
+                is LeadAction.OnUpdateLeadClick -> onUpdateLead(action.leadId)
+                LeadAction.OnSearchCustomerClick -> onSearchLead()
                 LeadAction.OnAddLeadClick -> {
                     onAddLead()
                 }

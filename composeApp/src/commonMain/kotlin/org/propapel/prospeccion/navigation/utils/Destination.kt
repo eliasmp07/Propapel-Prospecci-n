@@ -8,6 +8,9 @@ sealed interface Destination {
     data object AuthGraph: Destination
 
     @Serializable
+    data object CreateReminder: Destination
+
+    @Serializable
     data object LoginScreen: Destination
 
     @Serializable
@@ -17,14 +20,22 @@ sealed interface Destination {
     data object DashBoard: Destination
 
     @Serializable
+    data class CompleteReminder(val reminderId: String): Destination
+
+    @Serializable
     data object AddLead: Destination
 
     @Serializable
     data object SelectSucursal: Destination
 
     @Serializable
+    data class UpdateLead(val customerId: String): Destination
+
+    @Serializable
     data object EditProfile: Destination
 
+    @Serializable
+    data object SearchLead: Destination
     @Serializable
     data class DetailCustomer(val idCustomer: String)
 

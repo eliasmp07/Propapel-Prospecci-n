@@ -7,6 +7,7 @@ import org.koin.dsl.KoinAppDeclaration
 import org.propapel.prospeccion.auth.data.di.authDataModule
 import org.propapel.prospeccion.auth.presentation.di.authPresentationModule
 import org.propapel.prospeccion.core.data.di.coreDataModule
+import org.propapel.prospeccion.core.presentation.ui.permissions.permissionsModule
 import org.propapel.prospeccion.root.data.di.rootDataModule
 import org.propapel.prospeccion.root.presentation.di.proSalesPresentationModule
 
@@ -18,6 +19,7 @@ fun initKoin(config:KoinAppDeclaration? = null){
         modules(
             platformModule(),
             //Core
+            permissionsModule,
             coreDataModule,
             //Auth
             authPresentationModule,

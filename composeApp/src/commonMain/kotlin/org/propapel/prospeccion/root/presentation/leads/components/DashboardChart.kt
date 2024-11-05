@@ -23,15 +23,10 @@ import com.aay.compose.baseComponents.model.GridOrientation
 import com.aay.compose.lineChart.LineChart
 import com.aay.compose.lineChart.model.LineParameters
 import com.aay.compose.lineChart.model.LineType
-import org.propapel.prospeccion.root.data.dto.customer.InteractionType
-import org.propapel.prospeccion.root.domain.models.Customer
-import org.propapel.prospeccion.root.domain.models.Interaction
-import org.propapel.prospeccion.root.domain.models.Reminder
-
 import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
-import kotlinx.datetime.LocalDateTime
+import org.propapel.prospeccion.root.domain.models.Interaction
 
 // Convertir la fecha de interacción (milisegundos) a una representación YearMonth
 fun Interaction.toYearMonth(): String {

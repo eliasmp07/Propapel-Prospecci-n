@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
@@ -30,7 +31,14 @@ fun ProSalesActionButton(
     text: String,
     isLoading: Boolean = false,
     modifier: Modifier = Modifier,
+    textColor: Color = Color.Black,
     enabled: Boolean = true,
+    colors: ButtonColors =  ButtonDefaults.buttonColors(
+        containerColor = MaterialTheme.colorScheme.primary,
+        contentColor = MaterialTheme.colorScheme.onPrimary,
+        disabledContainerColor = Color.Gray,
+        disabledContentColor = Color.Black
+    ),
     icon: ImageVector? = null,
     onClick: () -> Unit,
 ) {
@@ -38,13 +46,9 @@ fun ProSalesActionButton(
         modifier = modifier
             .height(IntrinsicSize.Min),
         enabled = enabled,
+        border = BorderStroke(2.dp, textColor),
         shape = RoundedCornerShape(100f),
-        colors = ButtonDefaults.buttonColors(
-            containerColor = MaterialTheme.colorScheme.primary,
-            contentColor = MaterialTheme.colorScheme.onPrimary,
-            disabledContainerColor = Color.Gray,
-            disabledContentColor = Color.Black
-        ),
+        colors =colors,
         onClick = onClick,
         ) {
         Box(
@@ -73,7 +77,8 @@ fun ProSalesActionButton(
                     modifier = Modifier
                         .padding(start = 10.dp)
                         .alpha(if (isLoading) 0f else 1f),
-                    fontWeight = FontWeight.Medium
+                    fontWeight = FontWeight.Medium,
+                    color = textColor
                 )
             }
         }

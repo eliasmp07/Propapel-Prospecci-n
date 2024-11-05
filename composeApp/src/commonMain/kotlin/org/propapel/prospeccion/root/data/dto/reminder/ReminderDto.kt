@@ -2,9 +2,6 @@ package org.propapel.prospeccion.root.data.dto.reminder
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import org.propapel.prospeccion.root.data.dto.customer.InteractionDto
-import org.propapel.prospeccion.root.data.dto.customer.OpportunityDto
-import org.propapel.prospeccion.root.domain.models.Customer
 
 @Serializable
 data class ReminderResponseDto(
@@ -12,7 +9,7 @@ data class ReminderResponseDto(
     @SerialName("reminder_date") val reminderDate: String,
     @SerialName("description")val description: String,
     @SerialName("is_completed")val isComplete: Boolean,
-    @SerialName("customer") val customer: CustomerReminderDto,
+    @SerialName("customer") val customer: CustomerReminderDto?,
 )
 
 @Serializable

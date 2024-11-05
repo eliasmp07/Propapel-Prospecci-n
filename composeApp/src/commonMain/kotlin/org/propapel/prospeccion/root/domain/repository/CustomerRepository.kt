@@ -31,4 +31,6 @@ interface CustomerRepository {
 
     suspend fun getAllCustomers(): ResultExt<List<Customer>, DataError.Network>
     suspend fun getMyCustomers(): ResultExt<List<Customer>, DataError.Network>
+    suspend fun updateCustomer(customer: Customer): EmptyResult<DataError.Network>
+    suspend fun getCustomerById(customerId: String): ResultExt<Customer, DataError.Network>
 }

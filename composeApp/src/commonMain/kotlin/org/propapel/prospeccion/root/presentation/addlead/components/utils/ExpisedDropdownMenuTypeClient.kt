@@ -16,6 +16,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import org.propapel.prospeccion.core.presentation.designsystem.components.ProSalesTextField
 import org.propapel.prospeccion.root.data.dto.customer.TypeOfClient
 
@@ -44,6 +45,7 @@ fun ExpisedDropdownMenuTypeClient(
             modifierTextField = Modifier.clickable {
                 state = !state
             },
+            colors = Color.White,
             readOnly = true,
             state = optionSelectable.name,
             startIcon = null,

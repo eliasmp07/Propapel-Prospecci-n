@@ -12,12 +12,16 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import org.propapel.prospeccion.core.presentation.designsystem.PrimaryYellowLight
+import org.propapel.prospeccion.core.presentation.designsystem.SoporteSaiBlue30
 import org.propapel.prospeccion.core.presentation.designsystem.components.util.shimmerEffect
 
 @Composable
@@ -26,7 +30,13 @@ fun ShimmerEffectDashboard(
 ){
     LazyColumn(
         modifier = modifier
-            .background(Color(0XFFe5f0f9))
+            .background(
+                Brush.verticalGradient(
+                    0f to PrimaryYellowLight,
+                    0.6f to SoporteSaiBlue30,
+                    1f to MaterialTheme.colorScheme.primary
+                )
+            )
             .padding(start = 16.dp, end = 16.dp)
             .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
