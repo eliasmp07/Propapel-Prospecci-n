@@ -21,8 +21,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import org.propapel.prospeccion.core.presentation.designsystem.PrimaryPink
-import org.propapel.prospeccion.core.presentation.designsystem.PrimaryPinkBlended
 import org.propapel.prospeccion.core.presentation.designsystem.components.ProSalesActionButton
 import org.propapel.prospeccion.core.presentation.designsystem.components.ProSalesActionButtonOutline
 import org.propapel.prospeccion.root.data.dto.customer.InteractionType
@@ -63,7 +61,7 @@ fun HeIsInterestedInAProduct(
         )
         Text(
             modifier = Modifier.align(Alignment.CenterHorizontally),
-            text = "¿En tu ${whatIsTypeDate(state.interactionType)} el cliente se intereso en un producto?",
+            text = "¿El cliente se intereso en algun producto o servicio?",
             textAlign = TextAlign.Center,
             fontWeight = FontWeight.Bold,
             color = Color.White,

@@ -7,6 +7,7 @@ data class LoginResponse(
     val refreshToken: String,
     val accessTokenExpirationTimestamp: Long,
     val userId: Int,
+    val roles: List<String>?,
     val isAdmin: Boolean,
     val name: String,
     val lastname: String,

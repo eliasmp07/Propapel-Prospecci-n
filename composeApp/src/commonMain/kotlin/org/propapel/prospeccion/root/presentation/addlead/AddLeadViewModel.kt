@@ -10,13 +10,17 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
+import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
+import org.propapel.prospeccion.auth.domain.validator.UserValidator
 import org.propapel.prospeccion.core.domain.ResultExt
 import org.propapel.prospeccion.root.domain.models.PurchaseRequest
 import org.propapel.prospeccion.root.domain.repository.CustomerRepository
 import org.propapel.prospeccion.root.domain.repository.ReminderRepository
 import org.propapel.prospeccion.root.presentation.addlead.components.utils.ProductsPropapel
+import org.propapel.prospeccion.root.presentation.createReminder.convertLocalDate
 
 class AddLeadViewModel(
     private val customerRepository: CustomerRepository,
@@ -28,9 +32,10 @@ class AddLeadViewModel(
 
 
     init {
+        getAllReminders()
         viewModelScope.launch(Dispatchers.IO) {
             val result = reminderRepository.getAllReminder()
-            when(result){
+            when (result) {
                 is ResultExt.Error -> {
                     _state.update { it.copy(reminders = listOf()) }
                 }
@@ -40,6 +45,7 @@ class AddLeadViewModel(
             }
         }
     }
+
     fun onAction(
         action: AddLeadAction
     ) {
@@ -129,11 +135,20 @@ class AddLeadViewModel(
                 }
             }
             is AddLeadAction.OnDateNextReminder -> {
-                _state.update {
-                    it.copy(
-                        dateNextReminder = action.date
-                    )
+                if (validAvailableDate(convertLocalDate(action.date))) {
+                    _state.update {
+                        it.copy(
+                            showAvailableDayDialog = !it.showAvailableDayDialog
+                        )
+                    }
+                } else {
+                    _state.update {
+                        it.copy(
+                            dateNextReminder = action.date
+                        )
+                    }
                 }
+
             }
             is AddLeadAction.OnRemoveProductInterestClick -> {
                 _state.update {
@@ -158,7 +173,10 @@ class AddLeadViewModel(
                         PurchaseRequest(
                             productServiceName = it.productInterest.name,
                             purchaseDate = Clock.System.now().toEpochMilliseconds(),
-                            amount = if (it.price.isEmpty()) 0.0 else it.price.replace("$", "").toDouble()
+                            amount = if (it.price.isEmpty()) 0.0 else it.price.replace(
+                                "$",
+                                ""
+                            ).toDouble()
                         )
                     )
                     it.copy(
@@ -174,17 +192,26 @@ class AddLeadViewModel(
             }
 
             is AddLeadAction.OnNextScreenClick -> {
-                if (action.screen == ContainerState.FINISH){
+                if (action.screen == ContainerState.FINISH) {
                     createCustomer()
-                }else{
-                    _state.update {
-                        it.copy(
-                            screenState = action.screen
-                        )
+                } else {
+                    if (!validateAndSetErrors()) {
+                        _state.update {
+                            it.copy(
+                                screenState = action.screen
+                            )
+                        }
                     }
                 }
             }
 
+            AddLeadAction.OnToggleDateNoAvailable -> {
+                _state.update {
+                    it.copy(
+                        showAvailableDayDialog = !it.showAvailableDayDialog
+                    )
+                }
+            }
             AddLeadAction.OnSelectHasPendientDateClick -> {
                 _state.update { it.copy(hasPendients = !it.hasPendients) }
             }
@@ -201,13 +228,52 @@ class AddLeadViewModel(
         }
     }
 
-    fun createCustomer(){
+
+    private fun validAvailableDate(date: LocalDateTime): Boolean {
+        // Define el margen mínimo en horas entre recordatorios (por ejemplo, 1 hora)
+        val unaHoraEnMilisegundos = 3600 * 1000
+
+        return _state.value.reminderNoAvailable.any { reminder ->
+            // Compara solo si es el mismo día
+            if (reminder.toInstant(TimeZone.UTC).toEpochMilliseconds() == date.toInstant(TimeZone.UTC)
+                    .toEpochMilliseconds() && reminder.toInstant(TimeZone.UTC)
+                    .toEpochMilliseconds() - date.toInstant(TimeZone.UTC).toEpochMilliseconds() > unaHoraEnMilisegundos
+            ) {
+                true
+            } else {
+                false
+            }
+        }
+    }
+
+    private fun getAllReminders() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val result = reminderRepository.getAllReminder()
+            when (result) {
+                is ResultExt.Error -> {
+                    _state.update { it.copy(reminders = listOf()) }
+                }
+                is ResultExt.Success -> {
+                    val reminderDateForm = result.data.map {
+                        convertLocalDate(it.reminderDate.toLong())
+                    }
+                    _state.update {
+                        it.copy(
+                            reminderNoAvailable = reminderDateForm
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    fun createCustomer() {
         viewModelScope.launch(Dispatchers.IO) {
 
             val result = customerRepository.create(
                 companyName = _state.value.nameCompany,
                 contactName = _state.value.contactName,
-                email =_state.value.email,
+                email = _state.value.email,
                 phoneNumber = _state.value.phoneNumber,
                 address = _state.value.fiscalAddress,
                 description = _state.value.descriptionNextAppointment,
@@ -223,7 +289,7 @@ class AddLeadViewModel(
                 interactionDate = _state.value.dateInteration,
                 status = "Nuevo"
             )
-            when(result){
+            when (result) {
                 is ResultExt.Error -> {
                     _state.update {
                         it.copy(
@@ -234,6 +300,8 @@ class AddLeadViewModel(
                 is ResultExt.Success -> {
                     _state.update {
                         it.copy(
+                            nameCompany = "",
+                            contactName = "",
                             screenState = ContainerState.ISSUCCESS
                         )
                     }
@@ -241,4 +309,43 @@ class AddLeadViewModel(
             }
         }
     }
+
+    /**
+     * Validadores
+     */
+
+    //Funcion que verifica si puede inicar sesión
+    private fun validateAndSetErrors(): Boolean {
+        val razonSocialError = validNameCompany(_state.value.nameCompany)
+
+        _state.update {
+            it.copy(
+                errorRazonSocial = razonSocialError
+            )
+        }
+        return  razonSocialError != null
+    }
+
+    private fun validNameCompany(nameCompany: String): String? {
+        return when {
+            nameCompany.isEmpty() -> "El campo esta vacio"
+            else -> null
+        }
+    }
+
+    private fun validContactName(contactName: String): String? {
+        return when {
+            contactName.isEmpty() -> "El campo esta vacio"
+            else -> null
+        }
+    }
+
+    private fun validPhoneNumber(phoneNumber: String): String? {
+        return when {
+            phoneNumber.isEmpty() -> "El campo esta vacio"
+            else -> null
+        }
+    }
+
+
 }

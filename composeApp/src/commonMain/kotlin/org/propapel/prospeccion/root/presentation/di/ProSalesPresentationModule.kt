@@ -8,6 +8,7 @@ import org.propapel.prospeccion.root.presentation.completeReminder.CompleteRemin
 import org.propapel.prospeccion.root.presentation.createInteraction.CreateInteractionViewModel
 import org.propapel.prospeccion.root.presentation.createReminder.CreateReminderViewModel
 import org.propapel.prospeccion.root.presentation.dashboard.DashboardSMViewModel
+import org.propapel.prospeccion.root.presentation.dates.DatesSMViewModel
 import org.propapel.prospeccion.root.presentation.detailLead.DetailLeadViewModel
 import org.propapel.prospeccion.root.presentation.detailReminderCustomer.DetailReminderCustomerViewModel
 import org.propapel.prospeccion.root.presentation.homeRoot.HomeRootViewModel
@@ -29,6 +30,7 @@ val proSalesPresentationModule = module {
     viewModelOf(::AccountSMViewModel)
     viewModelOf(::CreateInteractionViewModel)
     viewModelOf(::UpdateProfileSMViewModel)
+    viewModelOf(::DatesSMViewModel)
     viewModelOf(::LeadSMViewModel)
     viewModelOf(::UserSMViewModel)
     viewModelOf(::DashboardSMViewModel)

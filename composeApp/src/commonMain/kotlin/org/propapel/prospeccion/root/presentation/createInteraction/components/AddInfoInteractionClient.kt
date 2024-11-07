@@ -7,6 +7,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.DateRange
@@ -24,7 +28,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
@@ -35,8 +42,6 @@ import org.propapel.prospeccion.core.presentation.designsystem.PrimaryVioletDark
 import org.propapel.prospeccion.core.presentation.designsystem.components.ProSalesActionButton
 import org.propapel.prospeccion.core.presentation.designsystem.components.ProSalesTextField
 import org.propapel.prospeccion.root.data.dto.customer.InteractionType
-import org.propapel.prospeccion.root.presentation.addlead.AddLeadAction
-import org.propapel.prospeccion.root.presentation.addlead.ContainerState
 import org.propapel.prospeccion.root.presentation.addlead.components.ExposedDropdownMenuTypeAppointment
 import org.propapel.prospeccion.root.presentation.addlead.components.utils.KottieAnimationUtil
 import org.propapel.prospeccion.root.presentation.createInteraction.CreateInteractionAction
@@ -50,9 +55,7 @@ fun AddInfoInteractionClient(
     onAction: (CreateInteractionAction) -> Unit
 ) {
 
-    var showDatePicker by remember {
-        mutableStateOf(false)
-    }
+    val focusManager = LocalFocusManager.current
 
     val currentDateTime = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
 
@@ -60,12 +63,9 @@ fun AddInfoInteractionClient(
     val currentMonth = currentDateTime.month
     val currentYear = currentDateTime.year
 
-    var date by remember {
-        mutableStateOf("${currentDateTime.dayOfMonth} / ${currentMonth.number} / $currentYear\"")
-    }
 
     Column(
-        modifier = Modifier.fillMaxSize().background(
+        modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()).background(
             Brush.verticalGradient(
                 0f to PrimaryViolet,
                 1f to PrimaryVioletDark
@@ -75,7 +75,7 @@ fun AddInfoInteractionClient(
         IconButton(
             modifier = Modifier.align(Alignment.End).padding(16.dp),
             onClick = {
-
+                onAction(CreateInteractionAction.OnBackClick)
             },
             content = {
                 Icon(
@@ -87,7 +87,7 @@ fun AddInfoInteractionClient(
         )
         Text(
             modifier = Modifier.align(Alignment.CenterHorizontally),
-            text = "Informacion de la cita",
+            text = "Informacion de la interacion",
             fontWeight = FontWeight.ExtraBold,
             style = MaterialTheme.typography.headlineSmall,
             color = Color.White
@@ -114,9 +114,12 @@ fun AddInfoInteractionClient(
             modifier = Modifier.height(8.dp)
         )
         ExposedDropdownMenuTypeAppointment(
-            title = "Tipo de cita",
+            title = "Tipo de interaccion",
             listOptions = listOf(
-                InteractionType.EMAIL, InteractionType.LLAMADA, InteractionType.REUNION_REMOTA, InteractionType.PRESENCIAL
+                InteractionType.EMAIL,
+                InteractionType.LLAMADA,
+                InteractionType.REUNION_REMOTA,
+                InteractionType.PRESENCIAL
             ),
             optionSelectable = state.typeClient,
             optionSelectableClick = {
@@ -127,12 +130,21 @@ fun AddInfoInteractionClient(
             modifier = Modifier.height(8.dp)
         )
         ProSalesTextField(
-            title = "Comentarios sobre la cita",
+            title = "Comentarios",
             colors = Color.White,
             state = state.notesAppointment,
             onTextChange = {
                 onAction(CreateInteractionAction.OnNoteAppointmentChange(it))
             },
+            keyboardOptions = KeyboardOptions(
+                imeAction = ImeAction.Done,
+                keyboardType = KeyboardType.Text
+            ),
+            keyboardActions = KeyboardActions(
+                onDone = {
+                    focusManager.clearFocus()
+                }
+            ),
             startIcon = Icons.Filled.Notes,
             maxLines = 104
         )
@@ -143,7 +155,7 @@ fun AddInfoInteractionClient(
             text = "Guardar",
             isLoading = false,
             onClick = {
-               onAction(CreateInteractionAction.OnNextScreen(CreateInteractionScreenState.He_Client_Intersed_A_Product))
+                onAction(CreateInteractionAction.OnNextScreen(CreateInteractionScreenState.He_Client_Intersed_A_Product))
             }
         )
         Spacer(

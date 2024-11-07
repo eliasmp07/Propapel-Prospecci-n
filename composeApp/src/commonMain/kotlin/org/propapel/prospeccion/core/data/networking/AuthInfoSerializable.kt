@@ -9,6 +9,7 @@ data class AuthInfoSerializable(
     val name: String,
     val isAdmin: Boolean,
     val lastname: String,
+    val roles: List<String>,
     val email: String,
     val accessTokenExpirationTimestamp: Long,
     val userId: Int,

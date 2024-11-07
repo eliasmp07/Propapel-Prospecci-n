@@ -1,7 +1,9 @@
 package org.propapel.prospeccion.core.presentation.designsystem.components
 
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -13,11 +15,22 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDownward
+import androidx.compose.material.icons.filled.ArrowUpward
+import androidx.compose.material.icons.filled.ExpandLess
+import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -41,21 +54,25 @@ import prospeccion.composeapp.generated.resources.img_no_data
 fun PieChartLeadsStatus(
     listCustomer: List<Customer>,
     modifier: Modifier = Modifier,
-    size: Dp = 600.dp
+    size: Dp = 300.dp
 ) {
+
+    var showMoreInfoNew by remember { mutableStateOf(false) }
+    var showMoreInfoDesarrollo by remember { mutableStateOf(false) }
+    var showMoreInfoRecuperacion by remember { mutableStateOf(false) }
 
     if (listCustomer.isEmpty()) {
         // Mostrar un mensaje o gráfico vacío si no hay clientes
-        ElevatedCard (
+        ElevatedCard(
             shape = RoundedCornerShape(20.dp),
             modifier = Modifier
                 .fillMaxWidth().padding(horizontal = 16.dp),
             elevation = CardDefaults.elevatedCardElevation(15.dp)
         ) {
             Column(
-                modifier =Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally
-            ){
+            ) {
                 Text(
                     text = "Estadistica de tipos de clientes",
                     fontSize = 20.sp,
@@ -79,9 +96,9 @@ fun PieChartLeadsStatus(
 
     val customerNew = listCustomer.filter { it.typeClient == TypeOfClient.NUEVO.name }
     val customerDesarrollo = listCustomer.filter { it.typeClient == TypeOfClient.DESARROLLO.name }
-    val customerRecuperacion = listCustomer.filter { it.typeClient == TypeOfClient.RECUPERACION.name }
+    val customerRecuperacion = listCustomer.filter { it.typeClient == TypeOfClient.RECUPERACIÓN.name }
 
-    ElevatedCard (
+    ElevatedCard(
         shape = RoundedCornerShape(20.dp),
         modifier = Modifier
             .fillMaxWidth().padding(horizontal = 16.dp),
@@ -105,9 +122,9 @@ fun PieChartLeadsStatus(
             )
         )
         Column(
-            modifier = Modifier.padding(8.dp).fillMaxWidth(),
+            modifier = Modifier.padding(8.dp).fillMaxWidth().animateContentSize(),
             horizontalAlignment = Alignment.CenterHorizontally
-        ){
+        ) {
             Text(
                 text = "Clientes",
                 fontSize = 20.sp,
@@ -122,31 +139,109 @@ fun PieChartLeadsStatus(
                 modifier = modifier.size(size).padding(top = 8.dp).align(Alignment.CenterHorizontally),
                 legendPosition = LegendPosition.DISAPPEAR,
                 pieChartData = testPieChartData,
-                descriptionStyle = TextStyle(fontSize = 12.sp,),
+                descriptionStyle = TextStyle(fontSize = 12.sp),
                 ratioLineColor = Color.Black,
-                textRatioStyle = TextStyle(color = Color.Black, fontSize = 12.sp),
+                textRatioStyle = TextStyle(
+                    color = Color.Black,
+                    fontSize = 12.sp
+                ),
             )
             Column(
                 modifier = Modifier.fillMaxWidth().padding(8.dp),
                 horizontalAlignment = Alignment.Start
-            ){
+            ) {
                 testPieChartData.forEach {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Box(
-                            modifier = Modifier.size(12.dp).background(it.color, CircleShape)
-                        )
-                        Spacer(
-                            modifier = Modifier.width(8.dp)
-                        )
-                        Text(text = it.partName, style = MaterialTheme.typography.bodyMedium)
+                    Column {
+                        Row(
+                            modifier = Modifier,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Box(
+                                modifier = Modifier.size(12.dp).background(
+                                    it.color,
+                                    CircleShape
+                                )
+                            )
+                            Spacer(
+                                modifier = Modifier.width(8.dp)
+                            )
+                            Text(
+                                text = it.partName,
+                                style = MaterialTheme.typography.bodyMedium,
+                                fontWeight = FontWeight.Bold,
+                            )
+                            IconButton(
+                                onClick = {
+                                    when (it.partName) {
+                                        "Nuevo ${customerNew.size}" -> {
+                                            showMoreInfoNew = !showMoreInfoNew
+                                        }
+                                        "En recuperación ${customerRecuperacion.size}" -> {
+                                            showMoreInfoRecuperacion = !showMoreInfoRecuperacion
+                                        }
+                                        "En desarrollo ${customerDesarrollo.size}" -> {
+                                            showMoreInfoDesarrollo = !showMoreInfoDesarrollo
+                                        }
+                                    }
+                                }
+                            ) {
+                                Icon(
+                                    imageVector = if (it.partName == "Nuevo ${customerNew.size}") {
+                                        if (showMoreInfoNew) {
+                                            Icons.Default.ExpandLess
+                                        } else {
+                                            Icons.Default.ExpandMore
+                                        }
+                                    } else if (it.partName == "En recuperación ${customerRecuperacion.size}") {
+                                        if (showMoreInfoRecuperacion) {
+                                            Icons.Default.ExpandLess
+                                        } else {
+                                            Icons.Default.ExpandMore
+                                        }
+                                    } else {
+                                        if (showMoreInfoDesarrollo) {
+                                            Icons.Default.ExpandLess
+                                        } else {
+                                            Icons.Default.ExpandMore
+                                        }
+                                    },
+                                    contentDescription = null,
+                                    modifier = Modifier.size(24.dp)
+                                )
+                            }
+                        }
+                        if (showMoreInfoNew && it.partName == "Nuevo ${customerNew.size}") {
+                            customerNew.forEach {
+                                Text(
+                                    text = "Empresa: ${it.companyName}",
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = Color.Black,
+                                )
+                            }
+                        }
+                        if (showMoreInfoRecuperacion && it.partName == "En recuperación ${customerRecuperacion.size}") {
+                            customerRecuperacion.forEach {
+                                Text(
+                                    text = "Empresa: ${it.companyName}",
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = Color.Black
+                                )
+                            }
+                        }
+                        if (showMoreInfoDesarrollo && it.partName == "En desarrollo ${customerDesarrollo.size}") {
+                            customerDesarrollo.forEach {
+                                Text(
+                                    text = "Empresa: ${it.companyName}",
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = Color.Black
+                                )
+                            }
+                        }
                     }
                 }
             }
         }
+
     }
-
-
 }
 

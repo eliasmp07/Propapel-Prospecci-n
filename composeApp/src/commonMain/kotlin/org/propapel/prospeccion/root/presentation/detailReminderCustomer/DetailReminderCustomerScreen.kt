@@ -163,40 +163,6 @@ private fun DetailReminderCustomerScreen(
                                 state = state
                             )
                         }
-                        if (state.isTodayAppointment) {
-                            item {
-                                Button(
-                                    colors = ButtonDefaults.buttonColors(
-                                        containerColor = Color.Transparent
-                                    ),
-                                    modifier = Modifier.animateAttention(durationMillis = 2000).padding(
-                                        horizontal = 16.dp,
-                                        vertical = 16.dp
-                                    ).border(
-                                        2.dp,
-                                        Color.White,
-                                        RoundedCornerShape(16.dp),
-                                    ).background(
-                                        shape = RoundedCornerShape(16.dp),
-                                        brush = Brush.verticalGradient(
-                                            colors = listOf(
-                                                Color(0xFFFF6363),
-                                                Color(0xFFAB47BC)
-                                            )
-                                        )
-                                    ).fillMaxWidth(),
-                                    onClick = {
-                                        onAction(DetailReminderCustomerAction.OnCompleteReminderClick(state.remindersDay.reminderId.toString()))
-                                    },
-                                    content = {
-                                        Text(
-                                            text = "Completar",
-                                            color = Color.White
-                                        )
-                                    }
-                                )
-                            }
-                        }
 
                     }
                 }

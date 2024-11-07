@@ -8,6 +8,9 @@ sealed interface Destination {
     data object AuthGraph: Destination
 
     @Serializable
+    data object IntroScreen: Destination
+
+    @Serializable
     data object CreateReminder: Destination
 
     @Serializable

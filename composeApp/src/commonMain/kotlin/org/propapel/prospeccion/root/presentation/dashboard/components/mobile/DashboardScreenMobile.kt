@@ -224,8 +224,8 @@ fun DashboardScreenMobile(
                                     )
                                 } else {
                                     Box(
-                                        modifier = Modifier.clip(RoundedCornerShape(8.dp))
-                                            .fillMaxSize().background(Color.White)
+                                        modifier = Modifier.size(90.dp).clip(CircleShape).background(Color.White),
+                                        contentAlignment = Alignment.Center
                                     ) {
                                         Image(
                                             imageVector = Icons.Outlined.Person,
@@ -233,10 +233,17 @@ fun DashboardScreenMobile(
                                             contentScale = ContentScale.Crop,
                                             modifier = Modifier
                                                 .size(
-                                                    90.dp
+                                                    70.dp
                                                 )
-                                                .clip(RoundedCornerShape(8.dp))
+                                                .clip(CircleShape)
                                                 .pointerHoverIcon(PointerIcon.Hand)
+                                                .border(
+                                                    border = BorderStroke(
+                                                        2.dp,
+                                                        Color.White
+                                                    ),
+                                                    shape = CircleShape
+                                                )
                                         )
                                     }
                                 }

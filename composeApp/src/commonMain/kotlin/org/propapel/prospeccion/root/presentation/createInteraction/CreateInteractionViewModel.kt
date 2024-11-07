@@ -1,20 +1,37 @@
 package org.propapel.prospeccion.root.presentation.createInteraction
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
+import org.propapel.prospeccion.core.domain.ResultExt
+import org.propapel.prospeccion.root.domain.models.Interaction
 import org.propapel.prospeccion.root.domain.models.PurchaseRequest
+import org.propapel.prospeccion.root.domain.repository.InteractionRepository
 import org.propapel.prospeccion.root.presentation.addlead.ContainerState
 import org.propapel.prospeccion.root.presentation.addlead.components.utils.ProductsPropapel
 
 class CreateInteractionViewModel(
-
+    private val interactionRepository: InteractionRepository
 ) : ViewModel(){
+
     private val _state = MutableStateFlow(CreateInteractionLeadState())
     val state: StateFlow<CreateInteractionLeadState> get() = _state.asStateFlow()
+
+
+    fun onChangeIdCustomer(idCustomer: String){
+        _state.update {
+            it.copy(
+                idCustomer = idCustomer,
+            )
+        }
+    }
 
     fun onAction(
         action: CreateInteractionAction
@@ -35,7 +52,7 @@ class CreateInteractionViewModel(
                 _state.value = _state.value.copy(screenState = CreateInteractionScreenState.InfoInteractionScreen)
             }
             is CreateInteractionAction.OnTypeClientChange -> {
-                _state.value = _state.value.copy(typeClient = action.typeClient)
+                _state.value = _state.value.copy(typeClient = action.typeClient, notesAppointment = action.typeClient.name)
             }
             is CreateInteractionAction.OnNoteAppointmentChange -> {
                 _state.value = _state.value.copy(notesAppointment = action.notes)
@@ -76,6 +93,41 @@ class CreateInteractionViewModel(
     }
 
     private fun createCustomer(){
+        viewModelScope.launch(Dispatchers.IO) {
+            _state.update {
+                it.copy(
+                    isCreatingInteraction = true,
+                    isSuccessCreate = false
+                )
+            }
+            val result = interactionRepository.create(
+                idCustomer = _state.value.idCustomer,
+                interaction = Interaction(
+                    interactionType = _state.value.typeClient.name,
+                    interactionDate = Clock.System.now().toEpochMilliseconds(),
+                    notes = _state.value.notesAppointment,
+                ),
+                purchese = _state.value.productsIntereses,
+            )
 
+            when(result){
+                is ResultExt.Error -> {
+                    _state.update {
+                        it.copy(
+                            isCreatingInteraction = false,
+                            isSuccessCreate = false
+                        )
+                    }
+                }
+                is ResultExt.Success -> {
+                    _state.update {
+                        it.copy(
+                            isSuccessCreate = true,
+                            isCreatingInteraction = false
+                        )
+                    }
+                }
+            }
+        }
     }
 }

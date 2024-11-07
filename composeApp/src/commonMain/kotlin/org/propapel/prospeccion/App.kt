@@ -5,7 +5,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.compositionLocalOf
+import androidx.compose.runtime.remember
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import org.propapel.prospeccion.core.presentation.designsystem.CompactDimens
+import org.propapel.prospeccion.core.presentation.designsystem.Dimens
 import org.propapel.prospeccion.core.presentation.designsystem.SoporteSaiBlack
 import org.propapel.prospeccion.core.presentation.designsystem.SoporteSaiBlackDark
 import org.propapel.prospeccion.core.presentation.designsystem.SoporteSaiBlue
@@ -21,7 +26,7 @@ import org.propapel.prospeccion.core.presentation.designsystem.SoporteSaiGrayDar
 import org.propapel.prospeccion.core.presentation.designsystem.SoporteSaiWhite
 import org.propapel.prospeccion.core.presentation.designsystem.Typography
 
-private val DarkColorScheme = darkColorScheme(
+val DarkColorScheme = darkColorScheme(
     primary = SoporteSaiBlueDark,
     background = SoporteSaiBlackDark,
     surface = SoporteSaiBlackDark,
@@ -36,7 +41,7 @@ private val DarkColorScheme = darkColorScheme(
     errorContainer = SoporteSaiDarkRed5Dark
 )
 
-private val LightColorScheme = lightColorScheme(
+val LightColorScheme = lightColorScheme(
     primary = SoporteSaiBlue,
     background = SoporteSaiWhite,
     surface = SoporteSaiWhite,
@@ -50,6 +55,13 @@ private val LightColorScheme = lightColorScheme(
     error = SoporteSaiDarkRed,
     errorContainer = SoporteSaiDarkRed5
 )
+
+/**
+ * Thema para aplicacion IOS Y WINDOWS
+ *
+ * @param darkTheme
+ * @param content Contentido que ira con el tema
+ */
 @Composable
 @Preview
 fun App(
@@ -64,4 +76,19 @@ fun App(
             content()
         }
     )
+}
+
+@Composable
+fun ProvideAppUtils(
+    appDimens: Dimens,
+    content: @Composable () -> Unit,
+) {
+    val appDimens = remember { appDimens }
+    CompositionLocalProvider(LocalAppDimens provides appDimens) {
+        content()
+    }
+}
+
+val LocalAppDimens = compositionLocalOf {
+    CompactDimens
 }

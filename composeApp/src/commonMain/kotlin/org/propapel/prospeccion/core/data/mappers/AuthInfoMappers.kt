@@ -11,6 +11,7 @@ fun AuthInfo.toAuthInfoSerializable(): AuthInfoSerializable {
         isAdmin = isAdmin,
         lastname = lastname,
         email = email,
+        roles = roles,
         userId = userId.toInt(),
         accessTokenExpirationTimestamp = accessTokenExpirationTimestamp,
         image = image
@@ -24,6 +25,7 @@ fun AuthInfoSerializable.toAuthInfo(): AuthInfo {
         name = name,
         isAdmin = isAdmin,
         lastname = lastname,
+        roles =  roles,
         email = email,
         accessTokenExpirationTimestamp = accessTokenExpirationTimestamp,
         image = image?:"",

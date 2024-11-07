@@ -1,6 +1,7 @@
 package org.propapel.prospeccion.root.presentation.addlead
 
 import kotlinx.datetime.Clock
+import kotlinx.datetime.LocalDateTime
 import org.propapel.prospeccion.root.data.dto.customer.InteractionType
 import org.propapel.prospeccion.root.data.dto.customer.TypeOfClient
 import org.propapel.prospeccion.root.domain.models.PurchaseRequest
@@ -36,6 +37,13 @@ data class AddLeadState(
     val dateInteration: Long = Clock.System.now().toEpochMilliseconds(),
     val notes: String = "",
 
-    val reminders: List<Reminder> = listOf()
+    val reminders: List<Reminder> = listOf(),
+    val reminderNoAvailable: List<LocalDateTime> = listOf(),
+    val showAvailableDayDialog: Boolean = false,
+    //Error textFieds
+    val errorRazonSocial: String? = null,
+    val errorNameCompany: String? = null,
+    val errorEmailLead: String? = null,
+    val errorPhoneNumber: String? = null,
 
 )

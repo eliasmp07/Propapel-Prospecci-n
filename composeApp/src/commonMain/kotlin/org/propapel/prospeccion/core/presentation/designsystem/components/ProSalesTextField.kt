@@ -177,6 +177,7 @@ fun ProSalesTextField(
                 Spacer(modifier = Modifier.width(5.dp))
                 Text(
                     text = error,
+                    color = colors,
                     fontWeight = FontWeight.Bold
                 )
             }
@@ -185,7 +186,7 @@ fun ProSalesTextField(
                 Text(
                     modifier = Modifier.clickable { isClickableText() },
                     text = additionalInfo,
-                    color = MaterialTheme.colors.onBackground,
+                    color = colors,
                     fontWeight = FontWeight.Bold
                 )
             }

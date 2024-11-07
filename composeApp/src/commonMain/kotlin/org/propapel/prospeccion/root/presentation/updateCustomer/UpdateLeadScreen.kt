@@ -219,7 +219,7 @@ private fun UpdateLeadScreen(
                         listOptions = listOf(
                             TypeOfClient.NUEVO,
                             TypeOfClient.DESARROLLO,
-                            TypeOfClient.RECUPERACION
+                            TypeOfClient.RECUPERACIÓN
                         ),
                         optionSelectable = state.typeOfClient,
                         optionSelectableClick = {

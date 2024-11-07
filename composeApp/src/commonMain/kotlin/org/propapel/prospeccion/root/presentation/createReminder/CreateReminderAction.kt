@@ -9,4 +9,6 @@ sealed interface CreateReminderAction {
     data class OnDateNextReminder(val date: Long): CreateReminderAction
     data class OnCustomerChange(val customer: Customer): CreateReminderAction
     data object OnBackClick: CreateReminderAction
+    data object OnToggleDateNoAvailable: CreateReminderAction
+    data object OnShowDatePicker: CreateReminderAction
 }

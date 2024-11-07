@@ -30,6 +30,7 @@ class AuthRepositoryImpl(
                     accessTokenExpirationTimestamp = result.data.accessTokenExpirationTimestamp,
                     image =  result.data.image?:"",
                     name = result.data.name,
+                    roles = result.data.roles?: emptyList(),
                     isAdmin = result.data.isAdmin,
                     lastname = result.data.lastname,
                     email = result.data.email,

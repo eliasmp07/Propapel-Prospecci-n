@@ -85,12 +85,12 @@ fun DonutChartInteractions(
         // Crear datos para el gráfico
         val testPieChartData: List<PieChartData> = listOf(
             PieChartData(
-                partName = monthGet(currentDate.monthNumber) ,
+                partName = "${monthGet(currentDate.monthNumber)} ${currentMonthCount.toDouble()}" ,
                 data = currentMonthCount.toDouble(),
                 color = MaterialTheme.colorScheme.primary,
             ),
             PieChartData(
-                partName = monthGet(previousMonthDate),
+                partName = "${monthGet(previousMonthDate)} ${previousMonthCount.toDouble()}",
                 data = previousMonthCount.toDouble(),
                 color = Color(0xFF50A29F),
             )

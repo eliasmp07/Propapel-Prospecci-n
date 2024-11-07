@@ -63,7 +63,7 @@ fun HadDateWithClientScreen(
         )
         Text(
             modifier = Modifier.align(Alignment.CenterHorizontally),
-            text = "¿Ha tenido su primera intervesion con el cliente?",
+            text = "¿Es tu primera interacción?",
             textAlign = TextAlign.Center,
             fontWeight = FontWeight.Bold,
             color  = Color.White,

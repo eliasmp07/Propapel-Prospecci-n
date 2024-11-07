@@ -19,6 +19,7 @@ sealed interface AddLeadAction {
     //Remider
     data class OnDateNextReminder(val date: Long): AddLeadAction
     data class OnDescriptionNextReminderChange(val description: String): AddLeadAction
+    data object OnToggleDateNoAvailable: AddLeadAction
 
     data class OnNoteChange(val note: String): AddLeadAction
 

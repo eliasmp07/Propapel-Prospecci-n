@@ -6,8 +6,10 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Business
 import androidx.compose.material.icons.filled.Close
@@ -47,7 +49,7 @@ fun OportunityAddScreen(
     onAction: (AddLeadAction) -> Unit
 ){
     Column(
-        modifier = Modifier.fillMaxSize().background(
+        modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()).background(
             Brush.verticalGradient(
                 0f to PrimaryViolet,
                 1f to PrimaryVioletDark

@@ -1,15 +1,21 @@
 package org.propapel.prospeccion.root.presentation.dates
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
@@ -22,6 +28,7 @@ import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,6 +39,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.intl.Locale
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.datetime.Clock
@@ -39,14 +47,25 @@ import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import network.chaintech.kmp_date_time_picker.utils.withDayOfMonth
+import org.jetbrains.compose.resources.painterResource
 import org.propapel.prospeccion.core.presentation.designsystem.PrimaryYellowLight
 import org.propapel.prospeccion.core.presentation.designsystem.SoporteSaiBlue30
+import org.propapel.prospeccion.root.domain.models.Reminder
+import org.propapel.prospeccion.root.presentation.createReminder.convertLocalDate
+import org.propapel.prospeccion.root.presentation.dashboard.components.ItemUserDate
 import org.propapel.prospeccion.root.presentation.dates.components.CalendarDateSelector
 import org.propapel.prospeccion.root.presentation.dates.components.mobile.CalendarGrid
+import prospeccion.composeapp.generated.resources.Res
+import prospeccion.composeapp.generated.resources.empty_info
 
 @Composable
-fun DateScreenRoot(){
-    DateScreen()
+fun DateScreenRoot(
+    viewModel: DatesSMViewModel
+) {
+    val state by viewModel.state.collectAsState()
+    DateScreen(
+        state = state
+    )
 }
 
 fun LocalDate.plusMonths(months: Int): LocalDate {
@@ -63,17 +82,27 @@ fun LocalDate.plusMonths(months: Int): LocalDate {
     }
 
     // Asegurarse de que el día sea válido
-    val daysInNewMonth = getDaysInMonth(newYear, newMonth)
+    val daysInNewMonth = getDaysInMonth(
+        newYear,
+        newMonth
+    )
     val newDay = this.dayOfMonth.coerceAtMost(daysInNewMonth)
 
-    return LocalDate(newYear, newMonth, newDay)
+    return LocalDate(
+        newYear,
+        newMonth,
+        newDay
+    )
 }
 
 fun LocalDate.minusMonths(months: Int): LocalDate {
     return this.plusMonths(-months)
 }
 
-private fun getDaysInMonth(year: Int, month: Int): Int {
+private fun getDaysInMonth(
+    year: Int,
+    month: Int
+): Int {
     return when (month) {
         1 -> if (year % 4 == 0 && (year % 100 != 0 || year % 400 == 0)) 29 else 28 // Enero
         2 -> 31 // Febrero
@@ -92,9 +121,14 @@ private fun getDaysInMonth(year: Int, month: Int): Int {
 }
 
 @Composable
-private fun DateScreen() {
-    val currentDateTime = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()) // Cambiado a la zona horaria local
+private fun DateScreen(
+    state: DatesSMState
+) {
+    val currentDateTime = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
     var currentMonth by remember { mutableStateOf(currentDateTime.date) }
+
+    // Estado para almacenar la fecha seleccionada
+    var selectedDate by remember { mutableStateOf<LocalDate?>(null) }
 
     Box(
         modifier = Modifier.fillMaxSize().background(
@@ -105,33 +139,153 @@ private fun DateScreen() {
             )
         )
     ) {
-        Column(
+        LazyColumn(
             modifier = Modifier.fillMaxSize().padding(16.dp)
         ) {
-            val dates = generateDatesForMonth(currentMonth, startFromSunday = true) // Cambia a true si quieres empezar desde domingo
-            CalendarView(
-                month = currentMonth,
-                date = dates,
-                displayNext = true,
-                displayPrev = true,
-                onClickNext = {
-                    currentMonth = currentMonth.plusMonths(1) // Sumar un mes
-                },
-                onClickPrev = {
-                    currentMonth = currentMonth.minusMonths(1) // Restar un mes
-                },
-                onClick = { date ->
-                    // Lógica para manejar clic en una fecha
-                },
-                startFromSunday = false
-            )
+            item {
+                val dates = generateDatesForMonth(
+                    currentMonth,
+                    startFromSunday = true
+                )
+
+                CalendarView(
+                    datesReminder = state.datesReminders,
+                    month = currentMonth,
+                    date = dates,
+                    displayNext = true,
+                    displayPrev = true,
+                    onClickNext = { currentMonth = currentMonth.plusMonths(1) },
+                    onClickPrev = { currentMonth = currentMonth.minusMonths(1) },
+                    onClick = { date ->
+                        if (selectedDate != null && selectedDate == date) {
+                            selectedDate = null
+                        } else {
+                            selectedDate = date
+                        }
+                    }, // Actualiza la fecha seleccionada
+                    startFromSunday = false
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
+                ) {
+                    Box(
+                        modifier = Modifier.size(24.dp).background(
+                            shape = CircleShape,
+                            color = Color.Red.copy(alpha = 0.5f)
+                        )
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        text = "Días ocupados",
+                        color = Color.White,
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
+                ) {
+                    Box(
+                        modifier = Modifier.size(24.dp).background(
+                            shape = CircleShape,
+                            color = Color.White
+                        )
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        text = "Días libres",
+                        style = MaterialTheme.typography.titleMedium,
+                        color = Color.White
+                    )
+                }
+                // Mostrar las citas si hay una fecha seleccionada
+                selectedDate?.let { date ->
+                    DisplayAppointments(
+                        date,
+                        state.datesReminders,
+                        state.reminders
+                    )
+                }
+            }
         }
     }
 }
 
-fun generateDatesForMonth(month: LocalDate, startFromSunday: Boolean): List<Pair<LocalDate, Boolean>> {
+@Composable
+fun DisplayAppointments(
+    date: LocalDate,
+    dates: List<LocalDate>,
+    reminders: List<Reminder>
+) {
+
+    val appointments = dates.filter { it == date }
+
+    val appointmentsReminder = reminders.filter { convertLocalDate(it.reminderDate.toLong()).date == date }
+
+
+    Column(
+        modifier = Modifier.padding(16.dp).fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            "Citas para ${date.dayOfMonth} de ${date.formatToMonthString()}:",
+            fontWeight = FontWeight.Bold,
+            style = MaterialTheme.typography.titleMedium,
+            textAlign = TextAlign.Center,
+            color = Color.White
+        )
+        Spacer(
+            modifier = Modifier.height(8.dp)
+        )
+        if (appointments.isEmpty()) {
+            Spacer(
+                modifier = Modifier.height(8.dp)
+            )
+            Image(
+                modifier = Modifier.size(150.dp).align(Alignment.CenterHorizontally),
+                painter = painterResource(Res.drawable.empty_info),
+                contentDescription = null
+            )
+            Spacer(
+                modifier = Modifier.height(8.dp)
+            )
+            Text(
+                text = "No tienes ningun cita programada para este día",
+                style = MaterialTheme.typography.titleMedium,
+                textAlign = TextAlign.Center,
+                color = Color.White
+            )
+
+        } else {
+            appointmentsReminder.forEach { reminder ->
+                ItemUserDate(
+                    reminder = reminder,
+                    onDetailReminder = {
+
+                    }
+                )
+            }
+        }
+    }
+}
+
+
+fun generateDatesForMonth(
+    month: LocalDate,
+    startFromSunday: Boolean
+): List<Pair<LocalDate, Boolean>> {
     val firstDayOfMonth = month.withDayOfMonth(1)
-    val daysInMonth = getDaysInMonth(firstDayOfMonth.year, firstDayOfMonth.monthNumber)
+    val daysInMonth = getDaysInMonth(
+        firstDayOfMonth.year,
+        firstDayOfMonth.monthNumber
+    )
 
     // Obtener el día de la semana del primer día del mes (0 = Lunes, 6 = Domingo)
     val firstDayOfWeek = firstDayOfMonth.dayOfWeek.ordinal
@@ -141,7 +295,10 @@ fun generateDatesForMonth(month: LocalDate, startFromSunday: Boolean): List<Pair
 
     // Calcular cuántos días agregar del mes anterior
     val previousMonth = firstDayOfMonth.minusMonths(1)
-    val daysInPreviousMonth = getDaysInMonth(previousMonth.year, previousMonth.monthNumber)
+    val daysInPreviousMonth = getDaysInMonth(
+        previousMonth.year,
+        previousMonth.monthNumber
+    )
 
     // Determina el índice inicial para la lista de días
     val startIndex = if (startFromSunday) {
@@ -163,7 +320,11 @@ fun generateDatesForMonth(month: LocalDate, startFromSunday: Boolean): List<Pair
             // Si no es bisiesto, no agregues la fecha 29
             continue
         }
-        val date = LocalDate(firstDayOfMonth.year, firstDayOfMonth.monthNumber, day)
+        val date = LocalDate(
+            firstDayOfMonth.year,
+            firstDayOfMonth.monthNumber,
+            day
+        )
         dates.add(date to false)
     }
 
@@ -176,12 +337,10 @@ fun isLeapYear(year: Int): Boolean {
 }
 
 
-
-
-
 @Composable
 fun CalendarView(
     month: LocalDate,
+    datesReminder: List<LocalDate>,
     date: List<Pair<LocalDate, Boolean>>?,  // Cambiado a List en lugar de ImmutableList
     displayNext: Boolean,
     displayPrev: Boolean,
@@ -227,6 +386,7 @@ fun CalendarView(
             CalendarGrid(
                 date = date,  // Se pasa la lista mutable a CalendarGrid
                 onClick = onClick,
+                datesReminder = datesReminder,
                 startFromSunday = startFromSunday,
                 modifier = Modifier
                     .wrapContentHeight()
@@ -236,10 +396,21 @@ fun CalendarView(
         }
     }
 }
+
 fun LocalDate.formatToMonthString(): String {
     val monthNames = listOf(
-        "January", "February", "March", "April", "May", "June",
-        "July", "August", "September", "October", "November", "December"
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December"
     )
     return monthNames[this.month.ordinal].replaceFirstChar { it.uppercase() }
 }

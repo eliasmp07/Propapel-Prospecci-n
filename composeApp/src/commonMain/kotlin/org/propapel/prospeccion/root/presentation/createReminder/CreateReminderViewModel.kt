@@ -9,6 +9,12 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.datetime.Instant
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toInstant
+import kotlinx.datetime.toLocalDateTime
 import org.propapel.prospeccion.core.domain.ResultExt
 import org.propapel.prospeccion.core.presentation.ui.asUiText
 import org.propapel.prospeccion.root.domain.models.Customer
@@ -18,15 +24,19 @@ import org.propapel.prospeccion.root.domain.repository.ReminderRepository
 class CreateReminderViewModel(
     private val reminderRepository: ReminderRepository,
     private val customerRepository: CustomerRepository
-): ViewModel() {
+) : ViewModel() {
 
     private var _state = MutableStateFlow(CreateReminderState())
     val state: StateFlow<CreateReminderState> get() = _state.asStateFlow()
 
+    init {
+        getAllReminders()
+    }
+
     fun onAction(
         action: CreateReminderAction
-    ){
-        when(action){
+    ) {
+        when (action) {
             CreateReminderAction.CreateAppointmentClick -> {
                 createReminder()
             }
@@ -37,10 +47,44 @@ class CreateReminderViewModel(
                     )
                 }
             }
-            is CreateReminderAction.OnDateNextReminder -> {
+            CreateReminderAction.OnShowDatePicker -> {
                 _state.update {
                     it.copy(
-                        dateNextReminder = action.date
+                        showDatePicker = !it.showDatePicker
+                    )
+                }
+            }
+            is CreateReminderAction.OnDateNextReminder -> {
+                if (validAvailableDate(convertLocalDate(action.date))) {
+                    _state.update {
+                        it.copy(
+                            dateNoAvailable = !it.dateNoAvailable
+                        )
+                    }
+
+                } else {
+                    _state.update {
+                        it.copy(
+                            showDatePicker = !it.showDatePicker,
+                            dateNextReminder = action.date
+                        )
+                    }
+                }
+
+            }
+            CreateReminderAction.OnBackClick -> {
+                if (_state.value.isSuccessCreate) {
+                    _state.update {
+                        it.copy(
+                            isSuccessCreate = false
+                        )
+                    }
+                }
+            }
+            CreateReminderAction.OnToggleDateNoAvailable -> {
+                _state.update {
+                    it.copy(
+                        dateNoAvailable = !it.dateNoAvailable
                     )
                 }
             }
@@ -55,7 +99,34 @@ class CreateReminderViewModel(
         }
     }
 
-    fun getAllMyCustomers(){
+    fun getAllReminders() {
+        viewModelScope.launch {
+            val result = reminderRepository.getAllReminder()
+            when (result) {
+                is ResultExt.Error -> {
+                    _state.update {
+                        it.copy(
+                            error = result.error.asUiText(),
+                            reminders = listOf()
+                        )
+                    }
+                }
+                is ResultExt.Success -> {
+
+                    val reminderDateForm = result.data.map {
+                        convertLocalDate(it.reminderDate.toLong())
+                    }
+                    _state.update {
+                        it.copy(
+                            reminders = reminderDateForm
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    fun getAllMyCustomers() {
         viewModelScope.launch(Dispatchers.IO) {
             _state.update {
                 it.copy(
@@ -63,10 +134,11 @@ class CreateReminderViewModel(
                 )
             }
             val result = customerRepository.getMyCustomers()
-            when(result){
+            when (result) {
                 is ResultExt.Error -> {
                     _state.update {
                         it.copy(
+                            error = result.error.asUiText(),
                             isLoading = false
                         )
                     }
@@ -74,7 +146,7 @@ class CreateReminderViewModel(
                 is ResultExt.Success -> {
                     _state.update {
                         it.copy(
-                            customer = result.data.first(),
+                            customer = result.data.firstOrNull() ?: Customer(),
                             customers = result.data,
                             isLoading = false
                         )
@@ -84,7 +156,7 @@ class CreateReminderViewModel(
         }
     }
 
-    fun createReminder(){
+    fun createReminder() {
         viewModelScope.launch(Dispatchers.IO) {
             _state.update {
                 it.copy(
@@ -97,7 +169,7 @@ class CreateReminderViewModel(
                 customerId = _state.value.customer.idCustomer,
                 description = _state.value.notesAppointment
             )
-            when(result){
+            when (result) {
                 is ResultExt.Error -> {
                     _state.update {
                         it.copy(
@@ -108,6 +180,7 @@ class CreateReminderViewModel(
                 is ResultExt.Success -> {
                     _state.update {
                         it.copy(
+                            isSuccessCreate = true,
                             isCreatingAppointment = false,
                             error = null,
                         )
@@ -116,4 +189,25 @@ class CreateReminderViewModel(
             }
         }
     }
+
+
+    private fun validAvailableDate(date: LocalDateTime): Boolean {
+        val margenMinimoMillis = 3_600_000 // 1 hora en milisegundos
+
+        return _state.value.reminders.any { reminder ->
+            // Calcula la diferencia en milisegundos entre el recordatorio y la fecha dada
+            val diferenciaMillis = kotlin.math.abs(
+                reminder.toInstant(TimeZone.UTC).toEpochMilliseconds() - date.toInstant(TimeZone.UTC).toEpochMilliseconds()
+            )
+
+            // Valida si la diferencia es menor que el margen mínimo en milisegundos
+            diferenciaMillis < margenMinimoMillis
+        }
+    }
+
+
+}
+
+fun convertLocalDate(date: Long): LocalDateTime {
+    return Instant.fromEpochMilliseconds(date).toLocalDateTime(TimeZone.UTC)
 }

@@ -11,8 +11,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.DateRange
@@ -61,6 +63,7 @@ import org.propapel.prospeccion.root.presentation.addlead.AddLeadAction
 import org.propapel.prospeccion.root.presentation.addlead.AddLeadState
 import org.propapel.prospeccion.root.presentation.addlead.ContainerState
 import org.propapel.prospeccion.root.presentation.addlead.components.utils.KottieAnimationUtil
+import org.propapel.prospeccion.root.presentation.createReminder.components.DialogDayNoAvailable
 
 @Composable
 fun AddInfoRemiderAppointmentScreen(
@@ -78,7 +81,7 @@ fun AddInfoRemiderAppointmentScreen(
 
 
     Column(
-        modifier = modifier.fillMaxSize().background(
+        modifier = modifier.fillMaxSize().verticalScroll(rememberScrollState()).background(
             Brush.verticalGradient(
                 colors = listOf(
                     Color(0xFF00BCD4), // Cian claro
@@ -103,7 +106,7 @@ fun AddInfoRemiderAppointmentScreen(
         )
         Text(
             modifier = Modifier.align(Alignment.CenterHorizontally),
-            text = "Datos de la proxima cita",
+            text = "Informacion de la siguiente interaccion",
             textAlign = TextAlign.Center,
             fontWeight = FontWeight.Bold,
             color = Color.White,
@@ -193,11 +196,16 @@ fun AddInfoRemiderAppointmentScreen(
                 selectedDate = dateTimeToString(it, "dd-MM-yyyy hh:mm a")
                 showDatePicker = false
             },
-            dateTimePickerView = DateTimePickerView.DIALOG_VIEW,
+            dateTimePickerView = DateTimePickerView.BOTTOM_SHEET_VIEW,
             onDismiss = {
                 showDatePicker = false
             }
         )
+    }
+    if (state.showAvailableDayDialog) {
+        DialogDayNoAvailable {
+            onAction(AddLeadAction.OnToggleDateNoAvailable)
+        }
     }
 
 }

@@ -174,7 +174,7 @@ fun DetailCustomerSMScreen(
                             animationSpec = tween(durationMillis = 0) // Duración de la animación
                         ) { image ->
                             Image(
-                                modifier = Modifier.size(200.dp).animateEnterBottom(),
+                                modifier = Modifier.size(150.dp).animateEnterBottom(),
                                 painter = painterResource(image),
                                 contentDescription = null
                             )

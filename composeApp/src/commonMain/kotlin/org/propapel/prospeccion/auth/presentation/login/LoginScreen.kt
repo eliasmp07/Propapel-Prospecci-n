@@ -16,7 +16,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
@@ -88,16 +90,16 @@ private fun LoginScreen(
         mutableStateOf(false)
     }
     Box(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize().background(
+            Brush.verticalGradient(
+                0f to PrimaryYellowLight,
+                0.6f to SoporteSaiBlue30,
+                1f to MaterialTheme.colorScheme.primary
+            )
+        )
     ) {
         Column(
-            modifier = Modifier.fillMaxSize().background(
-                Brush.verticalGradient(
-                    0f to PrimaryYellowLight,
-                    0.6f to SoporteSaiBlue30,
-                    1f to MaterialTheme.colorScheme.primary
-                )
-            )
+            modifier = Modifier.fillMaxSize()
         ) {
             Spacer(
                 modifier = Modifier.weight(0.2f)

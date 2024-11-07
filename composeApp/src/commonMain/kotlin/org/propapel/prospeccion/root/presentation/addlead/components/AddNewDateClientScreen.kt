@@ -7,6 +7,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.DateRange
@@ -24,7 +28,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction.Companion
 import androidx.compose.ui.unit.dp
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
@@ -47,6 +53,8 @@ fun AddNewDateClientScreen(
     onAction: (AddLeadAction) -> Unit
 ) {
 
+    val focusManager = LocalFocusManager.current
+
     var showDatePicker by remember {
         mutableStateOf(false)
     }
@@ -62,7 +70,7 @@ fun AddNewDateClientScreen(
     }
 
     Column(
-        modifier = Modifier.fillMaxSize().background(
+        modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()).background(
             Brush.verticalGradient(
                 0f to PrimaryViolet,
                 1f to PrimaryVioletDark
@@ -84,7 +92,7 @@ fun AddNewDateClientScreen(
         )
         Text(
             modifier = Modifier.align(Alignment.CenterHorizontally),
-            text = "Informacion de la cita",
+            text = "Informacion de la interacion",
             fontWeight = FontWeight.ExtraBold,
             style = MaterialTheme.typography.headlineSmall,
             color = Color.White
@@ -111,7 +119,7 @@ fun AddNewDateClientScreen(
             modifier = Modifier.height(8.dp)
         )
         ExposedDropdownMenuTypeAppointment(
-            title = "Tipo de cita",
+            title = "Tipo de interaccion",
             listOptions = listOf(
                 InteractionType.EMAIL, InteractionType.LLAMADA, InteractionType.REUNION_REMOTA, InteractionType.PRESENCIAL
             ),
@@ -131,7 +139,16 @@ fun AddNewDateClientScreen(
                 onAction(AddLeadAction.OnNoteChange(it))
             },
             startIcon = Icons.Filled.Notes,
-            maxLines = 104
+            maxLines = 104,
+            keyboardOptions = KeyboardOptions(
+                imeAction = androidx.compose.ui.text.input.ImeAction.Done,
+                keyboardType = androidx.compose.ui.text.input.KeyboardType.Text
+            ),
+            keyboardActions = KeyboardActions(
+                onDone = {
+                    focusManager.clearFocus()
+                }
+            )
         )
         Spacer(
             modifier = Modifier.weight(1f)

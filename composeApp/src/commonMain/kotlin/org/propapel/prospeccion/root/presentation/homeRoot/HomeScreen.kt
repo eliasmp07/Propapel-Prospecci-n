@@ -76,6 +76,7 @@ import org.propapel.prospeccion.root.presentation.account.AccountScreenRoot
 import org.propapel.prospeccion.root.presentation.dashboard.DashBoardScreenRoot
 import org.propapel.prospeccion.root.presentation.dashboard.DashboardSMViewModel
 import org.propapel.prospeccion.root.presentation.dates.DateScreenRoot
+import org.propapel.prospeccion.root.presentation.dates.DatesSMViewModel
 import org.propapel.prospeccion.root.presentation.leads.LeadSMViewModel
 import org.propapel.prospeccion.root.presentation.leads.LeadScreenRoot
 import org.propapel.prospeccion.root.presentation.users.UserSMViewModel
@@ -129,8 +130,8 @@ fun HomeScreen(
                 ),
                 NavigationItem(
                     "Leads",
-                    Icons.Outlined.StackedLineChart,
-                    Icons.Default.StackedLineChart,
+                    Icons.Outlined.Groups,
+                    Icons.Default.Groups,
                     false
                 ),
                 NavigationItem(
@@ -160,8 +161,8 @@ fun HomeScreen(
                 ),
                 NavigationItem(
                     "Leads",
-                    Icons.Outlined.StackedLineChart,
-                    Icons.Default.StackedLineChart,
+                    Icons.Outlined.Groups,
+                    Icons.Default.Groups,
                     false
                 ),
                 NavigationItem(
@@ -187,6 +188,7 @@ fun HomeScreen(
     val leadVieModel = koinViewModel<LeadSMViewModel>()
     val dashboardSMViewModel = koinViewModel<DashboardSMViewModel>()
     val userSMViewModel = koinViewModel<UserSMViewModel>()
+    val datesViewModel = koinViewModel<DatesSMViewModel>()
 
 
     LaunchedEffect(pagerState.currentPage) {
@@ -289,7 +291,9 @@ fun HomeScreen(
                         }
 
                         1 -> {
-                            DateScreenRoot()  // Pantalla de Citas
+                            DateScreenRoot(
+                                viewModel = datesViewModel
+                            )  // Pantalla de Citas
                         }
 
                         2 -> {
@@ -344,7 +348,9 @@ fun HomeScreen(
                         }
 
                         1 -> {
-                            DateScreenRoot()  // Pantalla de Citas
+                            DateScreenRoot(
+                                viewModel = datesViewModel
+                            )  // Pantalla de Citas
                         }
 
                         2 -> {

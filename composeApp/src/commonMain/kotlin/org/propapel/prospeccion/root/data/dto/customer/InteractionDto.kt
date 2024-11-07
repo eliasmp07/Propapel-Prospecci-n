@@ -13,6 +13,14 @@ data class InteractionDto(
 )
 
 @Serializable
+data class InteractionResponseDto(
+    @SerialName("interaction_id")val interactionId: Int,  // Relación con cliente
+    @SerialName("interaction_type") val interactionType: String,
+    @SerialName("interaction_date") val interactionDate: Long,
+    val notes: String? = null
+)
+
+@Serializable
 enum class InteractionType {
     PRESENCIAL, LLAMADA, REUNION_REMOTA, EMAIL
 }

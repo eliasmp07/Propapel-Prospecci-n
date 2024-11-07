@@ -65,7 +65,7 @@ fun ExposedDropdownMenuCustomer(
             }) {
             listOptions.forEach { option ->
                 DropdownMenuItem(
-                    text = { Text(text = option.contactName) },
+                    text = { Text(text = option.companyName) },
                     onClick = {
                         state = !state
                         optionSelectableClick(option)

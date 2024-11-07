@@ -38,6 +38,7 @@ fun CalendarDatesCard(
     modifier: Modifier = Modifier,
     onAction: (DashboardSMAction) -> Unit = {}
 ) {
+
     if (
         state.reminders.isEmpty()
     ) {

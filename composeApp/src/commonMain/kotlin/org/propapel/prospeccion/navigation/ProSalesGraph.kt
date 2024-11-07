@@ -81,7 +81,7 @@ fun NavGraphBuilder.proSales(
 
         composable<Destination.CreateReminder> {
             val viewModel = koinViewModel<CreateReminderViewModel>()
-            LaunchedEffect(Unit){
+            LaunchedEffect(Unit) {
                 viewModel.getAllMyCustomers()
             }
             CreateReminderScreenRoot(
@@ -105,6 +105,9 @@ fun NavGraphBuilder.proSales(
             val viewModel = koinViewModel<SearchLeadSMViewModel>()
             SearchLeadSMScreenRoot(
                 viewModel = viewModel,
+                onBack = {
+                    navController.navigateUp()
+                },
                 onDetailCustomer = {
                     navController.navigate(Destination.DetailCustomer(it))
                 })
@@ -115,7 +118,7 @@ fun NavGraphBuilder.proSales(
 
             val viewModel = koinViewModel<DetailLeadViewModel>()
             val detailCustomer = navBackEntry.toRoute<Destination.DetailCustomer>()
-            LaunchedEffect(Unit){
+            LaunchedEffect(Unit) {
                 viewModel.getCustomerById(detailCustomer.idCustomer.toInt())
             }
             DetailCustomerSMScreenRoot(
@@ -173,7 +176,7 @@ fun NavGraphBuilder.proSales(
         composable<Destination.UpdateLead> { navBackEntry ->
             val customerUpdate = navBackEntry.toRoute<Destination.UpdateLead>()
             val viewModel = koinViewModel<UpdateLeadViewModel>()
-            LaunchedEffect(Unit){
+            LaunchedEffect(Unit) {
                 viewModel.getLead(customerUpdate.customerId)
             }
             UpdateLeadScreenRoot(
@@ -193,9 +196,14 @@ fun NavGraphBuilder.proSales(
             )
         }
 
-        composable<Destination.CreateInteraction> {navBackStackEntry ->
+        composable<Destination.CreateInteraction> { navBackStackEntry ->
             val viewModel = koinViewModel<CreateInteractionViewModel>()
             val customerId = navBackStackEntry.toRoute<Destination.CreateInteraction>().customerId
+
+            LaunchedEffect(Unit) {
+                viewModel.onChangeIdCustomer(customerId)
+            }
+
             CreateInteractionLeadScreeRoot(
                 viewModel = viewModel,
                 onBack = {

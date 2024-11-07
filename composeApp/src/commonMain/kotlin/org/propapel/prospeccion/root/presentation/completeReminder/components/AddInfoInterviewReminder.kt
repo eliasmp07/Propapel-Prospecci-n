@@ -35,9 +35,6 @@ import org.propapel.prospeccion.core.presentation.designsystem.PrimaryVioletDark
 import org.propapel.prospeccion.core.presentation.designsystem.components.ProSalesActionButton
 import org.propapel.prospeccion.core.presentation.designsystem.components.ProSalesTextField
 import org.propapel.prospeccion.root.data.dto.customer.InteractionType
-import org.propapel.prospeccion.root.presentation.addlead.AddLeadAction
-import org.propapel.prospeccion.root.presentation.addlead.ContainerState
-import org.propapel.prospeccion.root.presentation.addlead.components.DatePickerDialog
 import org.propapel.prospeccion.root.presentation.addlead.components.ExposedDropdownMenuTypeAppointment
 import org.propapel.prospeccion.root.presentation.addlead.components.utils.KottieAnimationUtil
 import org.propapel.prospeccion.root.presentation.completeReminder.CompleteReminderAction

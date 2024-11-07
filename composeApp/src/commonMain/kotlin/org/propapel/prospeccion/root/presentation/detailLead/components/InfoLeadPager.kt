@@ -206,7 +206,7 @@ fun InfoLeadPagerScreen(
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.spacedBy(8.dp)
-                        ){
+                        ) {
                             Icon(
                                 imageVector = Icons.Rounded.Business,
                                 contentDescription = null
@@ -226,7 +226,7 @@ fun InfoLeadPagerScreen(
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.spacedBy(8.dp)
-                        ){
+                        ) {
                             Icon(
                                 imageVector = Icons.Rounded.Person,
                                 contentDescription = null
@@ -246,7 +246,7 @@ fun InfoLeadPagerScreen(
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.spacedBy(8.dp)
-                        ){
+                        ) {
                             Icon(
                                 imageVector = Icons.Rounded.Phone,
                                 contentDescription = null
@@ -479,7 +479,7 @@ fun InfoLeadPagerScreen(
                         ) {
                             if (customer.purchase.isNotEmpty()) {
                                 items(customer.purchase) {
-                                    Text(text = it.productServiceName)
+                                    ItemProductInteresed(it)
                                 }
                             } else {
                                 item {
@@ -509,29 +509,6 @@ fun InfoLeadPagerScreen(
 
                             }
                         }
-
-                        ExtendedFloatingActionButton(
-                            modifier = Modifier.align(Alignment.BottomEnd).padding(16.dp),
-                            containerColor = MaterialTheme.colorScheme.primary,
-                            icon = {
-                                Icon(
-                                    imageVector = vectorResource(Res.drawable.ic_product),
-                                    contentDescription = null,
-                                    tint = Color.White
-                                )
-                            },
-                            shape = RoundedCornerShape(30.dp),
-                            expanded = lazyColumState.isScrolled(),
-                            onClick = {
-                                onAction(DetailLeadAction.OnToggleCreateAppointmentDialog)
-                            },
-                            text = {
-                                Text(
-                                    text = "Agregar un producto de interes",
-                                    color = Color.White
-                                )
-                            }
-                        )
                     }
                 }
             }
@@ -650,7 +627,8 @@ fun ButtonItemDirectAccess(
             )
             Text(
                 text = text,
-                color = Color.White
+                color = Color.White,
+                style = MaterialTheme.typography.bodyMedium,
             )
         }
 

@@ -5,6 +5,7 @@ data class AuthInfo(
     val refreshToken: String = "",
     val userId: String = "",
     val name: String = "",
+    val roles: List<String> = emptyList(),
     val isAdmin: Boolean = false,
     val lastname: String = "",
     val email: String = "",

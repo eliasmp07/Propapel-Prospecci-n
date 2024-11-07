@@ -42,11 +42,18 @@ fun AddLeadScreenRoot(
     onBack: () -> Unit
 ) {
     val state by viewModel.state.collectAsState()
+
     AddLeadScreen(
         state = state,
         onAction = { action ->
             when (action) {
-                AddLeadAction.OnBackClick -> onBack()
+                AddLeadAction.OnBackClick -> {
+                    if (state.contactName.isNotEmpty() || state.nameCompany.isNotEmpty()) {
+                        viewModel.onAction(AddLeadAction.OnNextScreenClick(ContainerState.FINISH))
+                    } else {
+                        onBack()
+                    }
+                }
                 else -> Unit
             }
             viewModel.onAction(action)

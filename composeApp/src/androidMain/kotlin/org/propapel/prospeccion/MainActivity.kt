@@ -12,6 +12,7 @@ import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
@@ -61,7 +62,7 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-fun Context.limitFromScale(maxFontScale: Float = 1.1F, maxDpiScale: Float = 0.9F): Context{
+fun Context.limitFromScale(maxFontScale: Float = 1.4F, maxDpiScale: Float = 1.1F): Context{
     val configuration = resources.configuration
     val defaultDeviceDensity = DisplayMetrics.DENSITY_DEVICE_STABLE
     val maximumDpiScale = (defaultDeviceDensity * maxDpiScale).toInt()

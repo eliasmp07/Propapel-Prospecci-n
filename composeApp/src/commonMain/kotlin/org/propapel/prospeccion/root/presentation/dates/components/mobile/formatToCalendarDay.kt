@@ -30,7 +30,8 @@ private fun LocalDate.formatToCalendarDay(): String = this.dayOfMonth.toString()
 @Composable
 fun CalendarCell(
     date: LocalDate,
-    signal: Boolean,
+    isBusy: Boolean,
+
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -47,7 +48,7 @@ fun CalendarCell(
             .clip(RoundedCornerShape(CornerSize(8.dp)))
             .clickable(onClick = onClick)
     ) {
-        if (signal) {
+        if (isBusy) {
             Box(
                 modifier = Modifier
                     .aspectRatio(1f)
@@ -55,7 +56,7 @@ fun CalendarCell(
                     .padding(8.dp)
                     .background(
                         shape = CircleShape,
-                        color = colorScheme.tertiaryContainer.copy(alpha = 0.7f)
+                        color = Color.Red.copy(alpha = 0.5f)
                     )
             )
         }
@@ -93,21 +94,31 @@ fun WeekdayCell(weekday: Int, modifier: Modifier = Modifier) {
 fun CalendarGrid(
     date: List<Pair<LocalDate, Boolean>>,
     onClick: (LocalDate) -> Unit,
+    datesReminder: List<LocalDate>,
     startFromSunday: Boolean,
     modifier: Modifier = Modifier,
 ) {
     val weekdayFirstDay = date.first().first.dayOfWeekIso()
+
     val weekdays = getWeekDays(startFromSunday)
     CalendarCustomLayout(modifier = modifier) {
         weekdays.forEach {
             WeekdayCell(weekday = it)
         }
-        // Adds Spacers to align the first day of the month to the correct weekday
+
+        // Añade espacios para alinear el primer día del mes con el día correcto de la semana
         repeat(if (!startFromSunday) weekdayFirstDay - 2 else weekdayFirstDay - 1) {
             Spacer(modifier = Modifier)
         }
-        date.forEach {
-            CalendarCell(date = it.first, signal = it.second, onClick = { onClick(it.first) })
+
+        // Recorre cada fecha solo una vez y verifica si está en la lista de recordatorios
+        date.forEach { day ->
+            val isReminder = datesReminder.any { it == day.first } // Comprueba si está en datesReminder
+            CalendarCell(
+                date = day.first,
+                isBusy = isReminder,
+                onClick = { onClick(day.first) }
+            )
         }
     }
 }

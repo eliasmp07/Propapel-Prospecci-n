@@ -7,8 +7,11 @@ import org.propapel.prospeccion.root.presentation.addlead.components.utils.Produ
 data class CreateInteractionLeadState(
     val screenState: CreateInteractionScreenState = CreateInteractionScreenState.InfoInteractionScreen,
     val typeClient : InteractionType = InteractionType.PRESENCIAL,
+    val idCustomer: String = "",
     val notesAppointment: String = "",
     val productsIntereses: List<PurchaseRequest> = emptyList(),
     val productInterested: ProductsPropapel= ProductsPropapel.PAPELERIA,
     val price : String = "",
+    val isCreatingInteraction: Boolean = false,
+    val isSuccessCreate: Boolean = false
 )

@@ -64,6 +64,7 @@ import org.jetbrains.compose.resources.painterResource
 import org.propapel.prospeccion.core.presentation.designsystem.PrimaryYellowLight
 import org.propapel.prospeccion.core.presentation.designsystem.SoporteSaiBlue
 import org.propapel.prospeccion.core.presentation.designsystem.SoporteSaiBlue30
+import org.propapel.prospeccion.core.presentation.designsystem.SuccessGreen
 import org.propapel.prospeccion.core.presentation.designsystem.components.PieChartLeadsStatus
 import org.propapel.prospeccion.core.presentation.designsystem.components.util.animateEnterFromLeft
 import org.propapel.prospeccion.root.presentation.addlead.components.utils.ProductsPropapel
@@ -130,7 +131,7 @@ fun LeadScreenMobile(
                         ) {
                             Text(
                                 text = "Clientes potenciales (Leads)",
-                                style = MaterialTheme.typography.titleMedium,
+                                style = MaterialTheme.typography.headlineMedium,
                                 fontWeight = FontWeight.Bold,
                                 color = Color.Black
                             )
@@ -211,7 +212,7 @@ fun LeadScreenMobile(
             if (ordes.isNotEmpty()) {
                 item {
                     DashboardChart(
-                        title = "Producto que los usuarios",
+                        title = "Producto con mas interes",
                         orders = ordes,
                         products = listOf(
                             ProductsPropapel.ROLLITOS,
@@ -304,16 +305,22 @@ fun LeadScreenMobile(
                                             onClick = {
                                                 onAction(LeadAction.OnUpdateLeadClick(customer.idCustomer.toString()))
                                             },
-                                            backgroundColor = Color.Green,
+                                            backgroundColor = MaterialTheme.colorScheme.primary,
                                             icon = Icons.Default.Update,
-                                            modifier = Modifier.fillMaxHeight().clip(RoundedCornerShape(topStart = 30.dp, bottomStart = 30.dp))
+                                            modifier = Modifier.fillMaxHeight().clip(
+                                                RoundedCornerShape(
+                                                    topStart = 30.dp,
+                                                    bottomStart = 30.dp
+                                                )
+                                            )
                                         )
                                         ActionIcon(
                                             onClick = {
                                                 onAction(LeadAction.OnToggleCreateAppointmentDialog(customer.idCustomer))
                                             },
-                                            backgroundColor = SoporteSaiBlue,
+                                            backgroundColor = SuccessGreen,
                                             icon = Icons.Default.CalendarMonth,
+                                            tint = Color.White,
                                             modifier = Modifier.fillMaxHeight()
                                         )
                                     },
@@ -356,7 +363,7 @@ fun LeadScreenMobile(
         )
     }
 
-    if (state.showCreateDate){
+    if (state.showCreateDate) {
         CreateReminderLeadDialog(
             state = state,
             onAction = onAction,

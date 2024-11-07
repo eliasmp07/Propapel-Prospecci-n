@@ -15,12 +15,15 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import org.propapel.prospeccion.core.domain.ResultExt
 import org.propapel.prospeccion.core.presentation.ui.asUiText
+import org.propapel.prospeccion.root.data.dto.customer.InteractionType
 import org.propapel.prospeccion.root.domain.repository.CustomerRepository
+import org.propapel.prospeccion.root.domain.repository.InteractionRepository
 import org.propapel.prospeccion.root.domain.repository.ReminderRepository
 
 class DashboardSMViewModel(
     private val reminderRepository: ReminderRepository,
-    private val customerRepository: CustomerRepository
+    private val customerRepository: CustomerRepository,
+    private val interactionRepository: InteractionRepository
 ) : ViewModel() {
 
     private var _state = MutableStateFlow(DashboardSMState())
@@ -34,6 +37,12 @@ class DashboardSMViewModel(
     private fun onInitialLoad() {
         _state.update { it.copy(isLoading = true) }
         getAllMyReminders()
+        getMyInteractions()
+        getAllCustomers()
+        getMyCustomer()
+    }
+
+    private fun getMyCustomer(){
         viewModelScope.launch(Dispatchers.IO) {
             val result = customerRepository.getMyCustomers()
             when (result) {
@@ -49,7 +58,6 @@ class DashboardSMViewModel(
                     _state.update { it.copy(myCustomer = result.data) }
                 }
             }
-            getAllCustomers()
         }
     }
 
@@ -57,6 +65,7 @@ class DashboardSMViewModel(
     private fun onRefresh() {
         _state.update { it.copy(isRefreshing = true, error = null) }
         getAllMyReminders()
+        getMyInteractions()
         getAllCustomers()
     }
 
@@ -85,9 +94,9 @@ class DashboardSMViewModel(
         }
     }
 
-    private fun getAllMyReminders() {
+    private fun getMyInteractions() {
         viewModelScope.launch(Dispatchers.IO) {
-            val result = reminderRepository.getAllMyReminders()
+            val result = customerRepository.getMyCustomers()
             when (result) {
                 is ResultExt.Error -> {
                     _state.update { it.copy(reminders = listOf()) }
@@ -97,18 +106,39 @@ class DashboardSMViewModel(
                     val currentMonth = currentMoment.month
                     val currentYear = currentMoment.year
 
-                    val remindersThisMonth = result.data.filter { reminder ->
+                    val remindersThisMonth = result.data.flatMap {
+                        it.interactions
+                    }
+
+                    val interactions = remindersThisMonth.filter {interaction ->
                         val reminderDate =
-                            Instant.fromEpochMilliseconds(reminder.reminderDate.toLong()).toLocalDateTime(
+                            Instant.fromEpochMilliseconds(interaction.interactionDate).toLocalDateTime(
                                 TimeZone.currentSystemDefault()
                             )
-                        reminderDate.month == currentMonth && reminderDate.year == currentYear
+                        reminderDate.month == currentMonth && reminderDate.year == currentYear && interaction.interactionType == InteractionType.PRESENCIAL.name
                     }
 
                     _state.update {
                         it.copy(
+                            totalRemindersMoth = interactions.size.toDouble()
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    private fun getAllMyReminders() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val result = reminderRepository.getAllMyReminders()
+            when (result) {
+                is ResultExt.Error -> {
+                    _state.update { it.copy(reminders = listOf()) }
+                }
+                is ResultExt.Success -> {
+                    _state.update {
+                        it.copy(
                             reminders = result.data,
-                            totalRemindersMoth = remindersThisMonth.size.toDouble()
                         )
                     }
                 }

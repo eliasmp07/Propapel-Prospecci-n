@@ -14,5 +14,5 @@ data class OpportunityDto(
 
 @Serializable
 enum class TypeOfClient {
-    NUEVO, RECUPERACION, DESARROLLO
+    NUEVO, RECUPERACIÓN, DESARROLLO
 }

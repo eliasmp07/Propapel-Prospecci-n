@@ -34,6 +34,7 @@ fun aggregateSalesDataByCategory(
 
     val categorySales = mutableMapOf<String, Double>().withDefault { 0.0 }
 
+
     purchases.forEach { purchase ->
         val purchaseTitle = categoryMap[purchase.productServiceName]
         if (purchaseTitle != null) {
@@ -92,13 +93,17 @@ fun DashboardChart(
             ) {
                 Text(text = title, fontSize = 16.sp, color = Color.Gray)
                 Spacer(modifier = Modifier.weight(1f))
-                Text(text = "View All", fontSize = 13.sp, color = Color.Gray)
             }
             Spacer(modifier = Modifier.height(8.dp))
 
             LineChart(
                 modifier = Modifier.fillMaxWidth()
                     .height(300.dp),
+                descriptionStyle = TextStyle(
+                    fontSize = 14.sp,
+                    color = Color.Gray,
+                    fontWeight = FontWeight.W400
+                ),
                 linesParameters = testLineParameters,
                 isGrid = true,
                 gridColor = Color.Blue,
