@@ -144,10 +144,14 @@ class CreateReminderViewModel(
                     }
                 }
                 is ResultExt.Success -> {
+                    val newList = result.data.toMutableList()
+                    newList.sortBy {
+                        it.companyName.uppercase()
+                    }
                     _state.update {
                         it.copy(
-                            customer = result.data.firstOrNull() ?: Customer(),
-                            customers = result.data,
+                            customer = newList[0],
+                            customers = newList,
                             isLoading = false
                         )
                     }

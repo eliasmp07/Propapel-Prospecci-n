@@ -57,10 +57,17 @@ class SearchLeadSMViewModel(
                         )
                     }
                     is ResultExt.Success -> {
-                        // Filtrar los clientes según la query
-                        val filteredCustomers = result.data.filter { customer ->
-                            customer.companyName.lowercase().contains(query)
+                        val newList = result.data.toMutableList()
+
+                        newList.sortBy {
+                            it.companyName.uppercase()
                         }
+                        // Filtrar los clientes según la query
+                        val filteredCustomers = newList
+                            .filter { customer ->
+                            customer.companyName.lowercase().contains(query.uppercase())
+                        }
+
                         currentState.copy(
                             isSearching = false,
                             isEmpty = filteredCustomers.isEmpty(),

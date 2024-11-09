@@ -5,8 +5,10 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -80,38 +82,39 @@ private fun SearchLeadSMScreen(
                 )
             )
     ) {
-        Spacer(
-            modifier = Modifier.width(16.dp)
-        )
-        IconButton(
-            modifier = Modifier.padding(16.dp),
-            colors = IconButtonDefaults.iconButtonColors(
-                containerColor = MaterialTheme.colorScheme.primary
-            ),
-            onClick = {
-                onAction(SearchLeadSMAction.OnBack)
-            },
-            content = {
-                Icon(
-                    imageVector = Icons.Filled.ArrowBackIosNew,
-                    contentDescription = null,
-                    tint = Color.White
-                )
-            }
-        )
-        SearchTextField(
-            modifier = Modifier
-                .padding(horizontal = 16.dp),
-            text = state.query,
-            onValueChange = {
-                onAction(SearchLeadSMAction.OnChangeQuery(it))
-            },
-            shouldShowHint = false,
-            onSearch = {
-                onAction(SearchLeadSMAction.OnSearch)
-            }
-        )
 
+        Row(
+            modifier = Modifier.fillMaxWidth().padding(8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            IconButton(
+                colors = IconButtonDefaults.iconButtonColors(
+                    containerColor = MaterialTheme.colorScheme.primary
+                ),
+                onClick = {
+                    onAction(SearchLeadSMAction.OnBack)
+                },
+                content = {
+                    Icon(
+                        imageVector = Icons.Filled.ArrowBackIosNew,
+                        contentDescription = null,
+                        tint = Color.White
+                    )
+                }
+            )
+            SearchTextField(
+                modifier = Modifier
+                    .padding(horizontal = 16.dp),
+                text = state.query,
+                onValueChange = {
+                    onAction(SearchLeadSMAction.OnChangeQuery(it))
+                },
+                shouldShowHint = false,
+                onSearch = {
+                    onAction(SearchLeadSMAction.OnSearch)
+                }
+            )
+        }
         val result = handleResultView(
             isLoading = state.isSearching,
             contentLoading = {

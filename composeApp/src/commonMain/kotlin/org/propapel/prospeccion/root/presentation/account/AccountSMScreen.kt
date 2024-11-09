@@ -18,6 +18,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import org.propapel.prospeccion.core.presentation.designsystem.PrimaryYellowLight
 import org.propapel.prospeccion.core.presentation.designsystem.SoporteSaiBlue30
@@ -59,7 +60,7 @@ private fun AccountScreen(
             modifier = Modifier.padding(8.dp)
         ) {
             Text(text = state.user.name + " " +state.user.lastname, style = MaterialTheme.typography.headlineMedium)
-            Text(text = "Ventas", style = MaterialTheme.typography.titleMedium)
+            Text(text = if(state.user.roles.isEmpty()) "" else state.user.roles.first(), style = MaterialTheme.typography.titleMedium)
             Spacer(
                 modifier = Modifier.height(8.dp)
             )
@@ -68,6 +69,7 @@ private fun AccountScreen(
             ) {
                if(state.user.isAdmin){
                    ProSalesActionButton(
+                       textColor = Color.White,
                        modifier = Modifier.weight(1f),
                        text = "Cambiar de sucursal",
                        onClick = {

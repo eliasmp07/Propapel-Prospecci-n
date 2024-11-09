@@ -1,7 +1,11 @@
+@file:OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
+
 package org.propapel.prospeccion.root.presentation.dashboard
 
+import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
+import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -13,18 +17,19 @@ import org.propapel.prospeccion.root.presentation.dashboard.components.mobile.Da
 fun DashBoardScreenRoot(
     viewModel: DashboardSMViewModel,
     onDetailReminderCustomer: (String) -> Unit,
-    onMoveLeadScreen:() -> Unit,
+    onMoveLeadScreen: () -> Unit,
     onCreateReminder: () -> Unit,
     onSearchLead: () -> Unit,
     user: AuthInfo,
     windowSizeClass: WindowSizeClass
-){
+) {
     val state by viewModel.state.collectAsState()
     DashboardScreen(
-        state = state,user,
+        state = state,
+        user,
         windowSizeClass = windowSizeClass,
-        onAction = {action ->
-            when(action){
+        onAction = { action ->
+            when (action) {
                 DashboardSMAction.OnCreateReminderClick -> onCreateReminder()
                 is DashboardSMAction.OnDetailReminderCustomer -> {
                     onDetailReminderCustomer(action.idReminder)
@@ -45,10 +50,22 @@ private fun DashboardScreen(
     windowSizeClass: WindowSizeClass,
     onAction: (DashboardSMAction) -> Unit,
 ) {
-    if (windowSizeClass.widthSizeClass == WindowWidthSizeClass.Compact){
-        DashboardScreenMobile(state = state, user = user, onAction = onAction )
-    }else{
-        DashboardScreenWindows()
+    if (windowSizeClass.isMobile) {
+        DashboardScreenMobile(
+            state = state,
+            user = user,
+            onAction = onAction
+        )
+    } else {
+        DashboardScreenWindows(
+            state = state,
+            user = user,
+            onAction = onAction
+        )
     }
 
 }
+
+
+val WindowSizeClass.isMobile: Boolean
+    get() = this.widthSizeClass == WindowWidthSizeClass.Compact

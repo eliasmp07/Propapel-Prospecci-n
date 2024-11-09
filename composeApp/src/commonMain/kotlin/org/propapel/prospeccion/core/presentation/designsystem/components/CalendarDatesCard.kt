@@ -50,7 +50,7 @@ fun CalendarDatesCard(
             elevation = CardDefaults.elevatedCardElevation(15.dp)
         ) {
             Column(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().padding(16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
@@ -58,6 +58,9 @@ fun CalendarDatesCard(
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color(0xFF007BFF)
+                )
+                Spacer(
+                    modifier = Modifier.height(8.dp)
                 )
                 Image(
                     painter = painterResource(Res.drawable.img_no_data),

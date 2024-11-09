@@ -3,6 +3,7 @@ package org.propapel.prospeccion
 import android.Manifest
 import android.app.Activity
 import android.content.Context
+import android.content.pm.ActivityInfo
 import android.os.Build
 import android.os.Bundle
 import android.util.DisplayMetrics
@@ -28,6 +29,7 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         installSplashScreen().apply {
             setKeepOnScreenCondition {
                 viewModel.state.isCheckingAuth

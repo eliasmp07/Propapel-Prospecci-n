@@ -85,12 +85,12 @@ fun DonutChartInteractions(
         // Crear datos para el gráfico
         val testPieChartData: List<PieChartData> = listOf(
             PieChartData(
-                partName = "${monthGet(currentDate.monthNumber)} ${currentMonthCount.toDouble()}" ,
+                partName = "${monthGet(currentDate.monthNumber)} $currentMonthCount" ,
                 data = currentMonthCount.toDouble(),
                 color = MaterialTheme.colorScheme.primary,
             ),
             PieChartData(
-                partName = "${monthGet(previousMonthDate)} ${previousMonthCount.toDouble()}",
+                partName = "${monthGet(previousMonthDate)} $previousMonthCount",
                 data = previousMonthCount.toDouble(),
                 color = Color(0xFF50A29F),
             )
@@ -108,15 +108,16 @@ fun DonutChartInteractions(
                 Text(text = "Citas del mes anterior y actual", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
                 Spacer(modifier = Modifier.height(8.dp))
                 DonutChart(
-                    modifier = Modifier.fillMaxWidth().height(400.dp),
+                    modifier = Modifier.fillMaxWidth().height(300.dp),
                     pieChartData = testPieChartData,
                     centerTitle = "Citas",
                     legendPosition = LegendPosition.BOTTOM,
-                    centerTitleStyle = TextStyle(color = Color(0xFF071952)),
+                    centerTitleStyle = MaterialTheme.typography.bodyMedium,
+                    textRatioStyle = MaterialTheme.typography.bodyMedium,
                     outerCircularColor = Color.LightGray,
                     innerCircularColor = Color.Gray,
                     ratioLineColor = Color.LightGray,
-                    descriptionStyle = TextStyle(fontSize = 12.sp, textAlign = TextAlign.Center)
+                    descriptionStyle = MaterialTheme.typography.bodyMedium
                 )
             }
         }

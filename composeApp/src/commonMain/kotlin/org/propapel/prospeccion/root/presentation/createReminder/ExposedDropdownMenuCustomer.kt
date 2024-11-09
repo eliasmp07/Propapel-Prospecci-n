@@ -24,11 +24,16 @@ import org.propapel.prospeccion.root.domain.models.Customer
 @Composable
 fun ExposedDropdownMenuCustomer(
     modifier: Modifier = Modifier,
-    title: String  = "Lead",
+    title: String = "Lead",
     optionSelectable: Customer = Customer(),
     optionSelectableClick: (Customer) -> Unit,
     listOptions: List<Customer> = listOf()
 ) {
+    var selectionText by remember {
+        mutableStateOf(
+            "Selecciona una opción"
+        )
+    }
     var state by remember {
         mutableStateOf(
             false
@@ -48,7 +53,7 @@ fun ExposedDropdownMenuCustomer(
             },
             colors = Color.White,
             readOnly = true,
-            state = optionSelectable.companyName,
+            state = selectionText,
             startIcon = null,
             endIcon = if (state) Icons.Filled.ArrowDropUp else Icons.Filled.ArrowDropDown,
             hint = "",
@@ -63,11 +68,19 @@ fun ExposedDropdownMenuCustomer(
             onDismissRequest = {
                 state = !state
             }) {
+            DropdownMenuItem(
+                text = { Text(text = "Seleccionar opción") },
+                onClick = {
+                    state = !state
+
+                }
+            )
             listOptions.forEach { option ->
                 DropdownMenuItem(
                     text = { Text(text = option.companyName) },
                     onClick = {
                         state = !state
+                        selectionText = option.companyName
                         optionSelectableClick(option)
                     }
                 )
@@ -75,3 +88,5 @@ fun ExposedDropdownMenuCustomer(
         }
     }
 }
+
+

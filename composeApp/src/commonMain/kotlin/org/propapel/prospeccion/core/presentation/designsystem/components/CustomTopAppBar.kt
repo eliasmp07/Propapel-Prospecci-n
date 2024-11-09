@@ -9,10 +9,12 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -57,16 +59,27 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import kotlinx.datetime.Instant
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import org.jetbrains.compose.resources.painterResource
 import org.propapel.prospeccion.core.domain.AuthInfo
 import org.propapel.prospeccion.core.presentation.designsystem.PrimaryYellowLight
+import org.propapel.prospeccion.root.domain.models.Reminder
+import org.propapel.prospeccion.root.presentation.homeRoot.components.DropdownListObjects
 import prospeccion.composeapp.generated.resources.Res
+import prospeccion.composeapp.generated.resources.customer_ref
 import prospeccion.composeapp.generated.resources.logo
 
+fun converteDate(date: Long): String {
+    val dateConverte = Instant.fromEpochMilliseconds(date).toLocalDateTime(TimeZone.UTC).date
+    return "${dateConverte.dayOfMonth}/${dateConverte.monthNumber}/${dateConverte.year}"
+}
 @Composable
 fun CustomTopAppBar(
     windowSizeClass: WindowSizeClass,
     user: AuthInfo,
+    reminders: List<Reminder>,
     totalNotifications: Int,
     onLogout: () -> Unit = {},
     scrollBehavior: TopAppBarScrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(),
@@ -78,6 +91,9 @@ fun CustomTopAppBar(
     val isCompact = windowSizeClass.widthSizeClass == WindowWidthSizeClass.Compact
     var expanded by remember { mutableStateOf(false) }
     var expandedCompact by remember { mutableStateOf(false) }
+    var showReminders by remember {
+        mutableStateOf(false)
+    }
 
     if (isCompact) {
         TopAppBar(
@@ -90,15 +106,20 @@ fun CustomTopAppBar(
 
             },
             actions = {
-                Card(
-                    modifier = Modifier.size(40.dp),
-                    shape = RoundedCornerShape(8.dp),
-                    colors = CardDefaults.cardColors(
-                        containerColor = Color(0xFFe6f0f9)
-                    )
+                Box(
+                    modifier = Modifier.clickable {
+                        showReminders = !showReminders
+                    }
                 ) {
                     Box(
-                        modifier = Modifier.fillMaxSize(),
+                        modifier = Modifier.size(
+                            35.dp
+                        ).clip(RoundedCornerShape(8.dp)).clickable {
+                            showReminders = !showReminders
+                        }.background(
+                            Color(0xFFe6f0f9),
+                            shape = RoundedCornerShape(8.dp)
+                        ),
                         contentAlignment = Alignment.Center
                     ) {
                         BadgedBox(badge = {
@@ -115,13 +136,63 @@ fun CustomTopAppBar(
                             )
                         }
                     }
+                    if (reminders.isNotEmpty()) {
+                        DropdownMenu(
+                            modifier = Modifier.align(Alignment.TopEnd),
+                            expanded = showReminders,
+                            onDismissRequest = { showReminders = !showReminders }) {
+                            reminders.forEach {
+                                Card(
+                                    modifier = Modifier.fillMaxWidth().padding(8.dp),
+                                    shape = RoundedCornerShape(8.dp),
+                                    colors = CardDefaults.cardColors(
+                                        containerColor = Color(0xFFe6f0f9)
+                                    )
+                                ) {
+                                    Row(
+                                        modifier = Modifier.fillMaxWidth().padding(8.dp),
+                                        horizontalArrangement = Arrangement.Start,
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ){
+                                        Image(
+                                            modifier = Modifier.size(
+                                                50.dp
+                                            ),
+                                            painter = painterResource(Res.drawable.customer_ref),
+                                            contentDescription = null,
+                                        )
+                                        Spacer(
+                                            modifier = Modifier.width(8.dp)
+                                        )
+                                        Column {
+                                            Text(
+                                                text = "Tienes programada una cita",
+                                                style = MaterialTheme.typography.titleSmall,
+                                            )
+                                            Text(
+                                                text = "Haz programando una cita con ${it.customer.companyName}",
+                                                color = Color.Gray,
+                                                style = MaterialTheme.typography.bodyMedium
+                                            )
+                                            Text(
+                                                text = "Fecha: ${converteDate(it.reminderDate.toLong())}",
+                                                color = Color.Gray,
+                                                style = MaterialTheme.typography.bodyMedium
+                                            )
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
                 }
                 Spacer(
                     modifier = Modifier.width(8.dp)
                 )
                 AnimatedVisibility(
                     visible = !isProfile
-                ){
+                ) {
                     Box(
                         modifier = Modifier.clickable {
                             expandedCompact = !expandedCompact
@@ -133,7 +204,7 @@ fun CustomTopAppBar(
                             },
                             contentAlignment = Alignment.Center
                         ) {
-                            if (profileImage.isNotBlank()){
+                            if (profileImage.isNotBlank()) {
                                 AsyncImage(
                                     model = profileImage,
                                     contentDescription = "Image",
@@ -143,12 +214,12 @@ fun CustomTopAppBar(
                                         .clip(RoundedCornerShape(8.dp))
                                         .pointerHoverIcon(PointerIcon.Hand)
                                 )
-                            }else{
+                            } else {
                                 Box(
                                     modifier = Modifier.clip(RoundedCornerShape(8.dp))
                                         .align(Alignment.Center)
                                         .fillMaxSize().background(Color.White)
-                                ){
+                                ) {
                                     Image(
                                         imageVector = Icons.Outlined.Person,
                                         contentDescription = "Image",
@@ -163,9 +234,15 @@ fun CustomTopAppBar(
                             Box(
                                 modifier = Modifier
                                     .size(10.dp)
-                                    .background(Color.Green, CircleShape)
+                                    .background(
+                                        Color.Green,
+                                        CircleShape
+                                    )
                                     .align(Alignment.TopEnd)
-                                    .offset(x = (-2).dp, y = 2.dp)
+                                    .offset(
+                                        x = (-2).dp,
+                                        y = 2.dp
+                                    )
                             )
                         }
                         DropdownMenu(
@@ -180,7 +257,7 @@ fun CustomTopAppBar(
                                     expandedCompact = !expandedCompact
                                 },
                                 leadingIcon = {
-                                    if (profileImage.isNotBlank()){
+                                    if (profileImage.isNotBlank()) {
                                         AsyncImage(
                                             model = profileImage,
                                             contentDescription = "Image",
@@ -190,11 +267,11 @@ fun CustomTopAppBar(
                                                 .clip(RoundedCornerShape(8.dp))
                                                 .pointerHoverIcon(PointerIcon.Hand)
                                         )
-                                    }else{
+                                    } else {
                                         Box(
                                             modifier = Modifier.clip(RoundedCornerShape(8.dp))
                                                 .size(50.dp).background(Color.White)
-                                        ){
+                                        ) {
                                             Image(
                                                 imageVector = Icons.Outlined.Person,
                                                 contentDescription = "Image",
@@ -309,25 +386,59 @@ fun CustomTopAppBar(
                                 }
                             }
                         }) {
-                            Icon(
-                                imageVector = Icons.Outlined.Notifications,
-                                contentDescription = "Notifications",
-                                modifier = Modifier.pointerHoverIcon(PointerIcon.Hand)
+                            IconButton(
+                                onClick = {
+                                    showReminders = !showReminders
+                                },
+                                content = {
+                                    Icon(
+                                        imageVector = Icons.Outlined.Notifications,
+                                        contentDescription = "Notifications",
+                                        modifier = Modifier.pointerHoverIcon(PointerIcon.Hand)
+                                    )
+                                }
                             )
                         }
+                        if (reminders.isNotEmpty()) {
+                            DropdownListObjects(
+                                modifier = Modifier.align(Alignment.TopEnd),
+                                listOptions = reminders,
+                                expanded = showReminders,
+                                onSearch = {
+
+                                },
+                                onValueChange = {
+
+                                },
+                                content = {
+                                    items(it.size) { index ->
+                                        DropdownMenuItem(
+                                            text = {
+                                                Text(it[index].description)
+                                            },
+                                            onClick = {
+                                                showReminders = false
+                                            }
+                                        )
+                                    }
+                                }
+                            )
+                        }
+
                     }
+
                 }
 
                 Spacer(modifier = Modifier.width(20.dp))
                 AnimatedVisibility(
                     visible = !isProfile
-                ){
+                ) {
                     Box(
                         modifier = Modifier.size(35.dp),
                         contentAlignment = Alignment.Center
                     ) {
                         AsyncImage(
-                            model = profileImage,
+                            model = user.image,
                             contentDescription = "Image",
                             contentScale = ContentScale.Crop,
                             modifier = Modifier
@@ -338,9 +449,15 @@ fun CustomTopAppBar(
                         Box(
                             modifier = Modifier
                                 .size(10.dp)
-                                .background(Color.Green, CircleShape)
+                                .background(
+                                    Color.Green,
+                                    CircleShape
+                                )
                                 .align(Alignment.TopEnd)
-                                .offset(x = (-2).dp, y = 2.dp)
+                                .offset(
+                                    x = (-2).dp,
+                                    y = 2.dp
+                                )
                         )
                     }
                 }
@@ -353,7 +470,7 @@ fun CustomTopAppBar(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
-                            text = "Elias Mena",
+                            text = "${user.name} ${user.lastname}",
                             fontSize = MaterialTheme.typography.titleMedium.fontSize,
                             fontWeight = FontWeight.Bold,
                             color = Color.Black

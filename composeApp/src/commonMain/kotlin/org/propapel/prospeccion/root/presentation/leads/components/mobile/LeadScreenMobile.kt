@@ -2,6 +2,7 @@
 
 package org.propapel.prospeccion.root.presentation.leads.components.mobile
 
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -26,6 +27,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Business
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.Delete
@@ -42,6 +44,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -252,14 +255,20 @@ fun LeadScreenMobile(
                     Card(
                         shape = RoundedCornerShape(30.dp),
                         modifier = Modifier
-                            .padding(8.dp)
+                            .padding(16.dp)
                             .fillMaxWidth(),
                         colors = CardDefaults.cardColors(containerColor = Color(0xFFf1f4f9))
                     ) {
                         Column(
-                            modifier = Modifier.fillParentMaxWidth(),
+                            modifier = Modifier.fillParentMaxWidth().padding(16.dp),
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
+                            Text(
+                                text = "Leads",
+                                fontSize = 20.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Color(0xFF007BFF)
+                            )
                             Image(
                                 painter = painterResource(Res.drawable.img_no_data),
                                 contentDescription = null,
@@ -268,7 +277,10 @@ fun LeadScreenMobile(
                             Spacer(
                                 modifier = Modifier.height(8.dp)
                             )
-                            Text("No tienes clientes agregados")
+                            Text(
+                                "No tienes leads registrados",
+                                style = MaterialTheme.typography.bodyMedium
+                            )
 
                         }
                     }
@@ -278,28 +290,75 @@ fun LeadScreenMobile(
                     Card(
                         shape = RoundedCornerShape(30.dp),
                         modifier = Modifier
-                            .padding(16.dp).fillMaxWidth(),
+                            .padding(16.dp)
+                            .fillMaxWidth(),
                         colors = CardDefaults.cardColors(containerColor = Color(0xFFf1f4f9))
                     ) {
                         Column(
                             modifier = Modifier.padding(16.dp)
                         ) {
                             Text(
+                                modifier = Modifier.align(Alignment.CenterHorizontally),
                                 text = "Mis clientes",
                                 fontSize = 20.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = Color.Black
                             )
                             Spacer(modifier = Modifier.height(8.dp))
-                            state.customers.forEachIndexed { index, customer ->
+
+                            // Tamaño de página y cálculo del número total de páginas
+                            val pageSize = 5
+                            val totalCustomers = state.customers.size
+                            val totalPages = (totalCustomers + pageSize - 1) / pageSize  // Redondeo hacia arriba
+                            var page by remember { mutableIntStateOf(1) }
+
+                            // Controles de navegación de página
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                verticalAlignment = Alignment.CenterVertically,
+                            ) {
+                                IconButton(
+                                    onClick = { if (page > 1) page-- },
+                                    content = {
+                                        Icon(
+                                            imageVector = Icons.Default.ArrowBack,
+                                            contentDescription = null
+                                        )
+                                    }
+                                )
+                                Spacer(modifier = Modifier.weight(1f))
+                                Text(
+                                    text = "Página $page de $totalPages",
+                                    style = MaterialTheme.typography.bodyMedium
+                                )
+                                Spacer(modifier = Modifier.weight(1f))
+                                IconButton(
+                                    onClick = { if (page < totalPages) page++ },
+                                    content = {
+                                        Icon(
+                                            imageVector = Icons.Default.ArrowBack,
+                                            contentDescription = null,
+                                            modifier = Modifier.rotate(180f)
+                                        )
+                                    }
+                                )
+                            }
+
+
+                            // Contenido de la página actual
+                            val startIndex = (page - 1) * pageSize
+                            val endIndex = minOf(startIndex + pageSize, totalCustomers)
+
+                            // Obtener sublista de clientes para la página actual
+                            val customersToShow = getSubList(state.customers, startIndex, endIndex - 1)
+                                ?: emptyList()
+
+                            // Mostrar cada cliente de la sublista
+                            customersToShow.forEachIndexed { index, customer ->
                                 SwipeableItemWithActions(
                                     isRevealed = false,
-                                    onExpanded = {
-
-                                    },
-                                    onCollapsed = {
-
-                                    },
+                                    onExpanded = { /* Acción cuando se expande */ },
+                                    onCollapsed = { /* Acción cuando se colapsa */ },
                                     actions = {
                                         ActionIcon(
                                             onClick = {
@@ -307,12 +366,14 @@ fun LeadScreenMobile(
                                             },
                                             backgroundColor = MaterialTheme.colorScheme.primary,
                                             icon = Icons.Default.Update,
-                                            modifier = Modifier.fillMaxHeight().clip(
-                                                RoundedCornerShape(
-                                                    topStart = 30.dp,
-                                                    bottomStart = 30.dp
+                                            modifier = Modifier
+                                                .fillMaxHeight()
+                                                .clip(
+                                                    RoundedCornerShape(
+                                                        topStart = 30.dp,
+                                                        bottomStart = 30.dp
+                                                    )
                                                 )
-                                            )
                                         )
                                         ActionIcon(
                                             onClick = {
@@ -336,6 +397,7 @@ fun LeadScreenMobile(
                         }
                     }
                 }
+
             }
         }
         ExtendedFloatingActionButton(
@@ -345,7 +407,7 @@ fun LeadScreenMobile(
                 Icon(
                     imageVector = Icons.Filled.PersonAddAlt,
                     contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onPrimary
+                    tint = Color.White
                 )
             },
             expanded = lazyColumState.isScrolled(),
@@ -353,7 +415,7 @@ fun LeadScreenMobile(
                 onAction(LeadAction.OnAddLeadClick)
             },
             text = {
-                Text(text = "Agregar lead")
+                Text(text = "Agregar lead", color = Color.White)
             }
         )
         PullRefreshIndicator(
@@ -373,6 +435,10 @@ fun LeadScreenMobile(
         )
     }
 
+}
+
+fun <T> getSubList(list: List<T>, start: Int, end: Int): List<T>? {
+    return list.subList(start, end + 1)
 }
 
 @Composable

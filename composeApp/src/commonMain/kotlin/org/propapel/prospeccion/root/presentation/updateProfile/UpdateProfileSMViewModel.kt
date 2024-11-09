@@ -106,6 +106,24 @@ class UpdateProfileSMViewModel(
                     )
                 }
             }
+            is UpdateProfileSMAction.OnChangeLastName -> {
+                _state.update {
+                    it.copy(
+                        user = it.user.copy(
+                            lastname = action.lastName
+                        )
+                    )
+                }
+            }
+            is UpdateProfileSMAction.OnChangeName -> {
+                _state.update {
+                    it.copy(
+                        user = it.user.copy(
+                            name = action.name
+                        )
+                    )
+                }
+            }
             else -> Unit
         }
     }

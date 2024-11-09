@@ -27,6 +27,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Text
+import androidx.compose.material3.windowsizeclass.WindowSizeClass
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -53,17 +55,22 @@ import org.propapel.prospeccion.core.presentation.designsystem.SoporteSaiBlue30
 import org.propapel.prospeccion.root.domain.models.Reminder
 import org.propapel.prospeccion.root.presentation.createReminder.convertLocalDate
 import org.propapel.prospeccion.root.presentation.dashboard.components.ItemUserDate
+import org.propapel.prospeccion.root.presentation.dashboard.isMobile
 import org.propapel.prospeccion.root.presentation.dates.components.CalendarDateSelector
+import org.propapel.prospeccion.root.presentation.dates.components.desktop.DatesScreenDesktop
 import org.propapel.prospeccion.root.presentation.dates.components.mobile.CalendarGrid
+import org.propapel.prospeccion.root.presentation.dates.components.mobile.DatesScreenMobile
 import prospeccion.composeapp.generated.resources.Res
 import prospeccion.composeapp.generated.resources.empty_info
 
 @Composable
 fun DateScreenRoot(
+    windowWidthSizeClass: WindowSizeClass,
     viewModel: DatesSMViewModel
 ) {
     val state by viewModel.state.collectAsState()
     DateScreen(
+        windowWidthSizeClass,
         state = state
     )
 }
@@ -122,99 +129,15 @@ private fun getDaysInMonth(
 
 @Composable
 private fun DateScreen(
+    windowWidthSizeClass: WindowSizeClass,
     state: DatesSMState
-) {
-    val currentDateTime = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
-    var currentMonth by remember { mutableStateOf(currentDateTime.date) }
-
-    // Estado para almacenar la fecha seleccionada
-    var selectedDate by remember { mutableStateOf<LocalDate?>(null) }
-
-    Box(
-        modifier = Modifier.fillMaxSize().background(
-            Brush.verticalGradient(
-                0f to PrimaryYellowLight,
-                0.6f to SoporteSaiBlue30,
-                1f to MaterialTheme.colorScheme.primary
-            )
+){
+    if (windowWidthSizeClass.isMobile){
+        DatesScreenMobile(
+            state = state
         )
-    ) {
-        LazyColumn(
-            modifier = Modifier.fillMaxSize().padding(16.dp)
-        ) {
-            item {
-                val dates = generateDatesForMonth(
-                    currentMonth,
-                    startFromSunday = true
-                )
-
-                CalendarView(
-                    datesReminder = state.datesReminders,
-                    month = currentMonth,
-                    date = dates,
-                    displayNext = true,
-                    displayPrev = true,
-                    onClickNext = { currentMonth = currentMonth.plusMonths(1) },
-                    onClickPrev = { currentMonth = currentMonth.minusMonths(1) },
-                    onClick = { date ->
-                        if (selectedDate != null && selectedDate == date) {
-                            selectedDate = null
-                        } else {
-                            selectedDate = date
-                        }
-                    }, // Actualiza la fecha seleccionada
-                    startFromSunday = false
-                )
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
-                ) {
-                    Box(
-                        modifier = Modifier.size(24.dp).background(
-                            shape = CircleShape,
-                            color = Color.Red.copy(alpha = 0.5f)
-                        )
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text(
-                        text = "Días ocupados",
-                        color = Color.White,
-                        style = MaterialTheme.typography.titleMedium
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
-                ) {
-                    Box(
-                        modifier = Modifier.size(24.dp).background(
-                            shape = CircleShape,
-                            color = Color.White
-                        )
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text(
-                        text = "Días libres",
-                        style = MaterialTheme.typography.titleMedium,
-                        color = Color.White
-                    )
-                }
-                // Mostrar las citas si hay una fecha seleccionada
-                selectedDate?.let { date ->
-                    DisplayAppointments(
-                        date,
-                        state.datesReminders,
-                        state.reminders
-                    )
-                }
-            }
-        }
+    } else {
+        DatesScreenDesktop()
     }
 }
 

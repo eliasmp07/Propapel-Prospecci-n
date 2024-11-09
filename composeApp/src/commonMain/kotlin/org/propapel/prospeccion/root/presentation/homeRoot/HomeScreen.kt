@@ -15,6 +15,7 @@ import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
@@ -28,11 +29,15 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Dashboard
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Groups
+import androidx.compose.material.icons.filled.MyLocation
+import androidx.compose.material.icons.filled.Paid
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.StackedLineChart
 import androidx.compose.material.icons.outlined.Dashboard
 import androidx.compose.material.icons.outlined.DateRange
 import androidx.compose.material.icons.outlined.Groups
+import androidx.compose.material.icons.outlined.MyLocation
+import androidx.compose.material.icons.outlined.Paid
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.StackedLineChart
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -96,7 +101,7 @@ fun HomeScreen(
     onLogout: () -> Unit,
     onSearchLead: () -> Unit,
     onDetailReminderCustomer: (String) -> Unit,
-    onCreateReminder :() -> Unit,
+    onCreateReminder: () -> Unit,
     onUpdateProfile: () -> Unit
 ) {
     val state by viewModel.state.collectAsState()
@@ -130,8 +135,8 @@ fun HomeScreen(
                 ),
                 NavigationItem(
                     "Leads",
-                    Icons.Outlined.Groups,
-                    Icons.Default.Groups,
+                    Icons.Outlined.MyLocation,
+                    Icons.Default.MyLocation,
                     false
                 ),
                 NavigationItem(
@@ -161,8 +166,8 @@ fun HomeScreen(
                 ),
                 NavigationItem(
                     "Leads",
-                    Icons.Outlined.Groups,
-                    Icons.Default.Groups,
+                    Icons.Outlined.MyLocation,
+                    Icons.Default.MyLocation,
                     false
                 ),
                 NavigationItem(
@@ -200,6 +205,7 @@ fun HomeScreen(
         topBar = {
             CustomTopAppBar(
                 user = state.user,
+                reminders = state.reminders,
                 profileImage = state.user.image,
                 totalNotifications = state.reminders.size,
                 scrollBehavior = scrollBehavior,
@@ -264,7 +270,12 @@ fun HomeScreen(
                 SidebarMenu(
                     items = items,
                     selectedItemIndex = selectedItemIndex,
-                    onMenuItemClick = { index -> selectedItemIndex = index },
+                    onMenuItemClick = { index ->
+                        selectedItemIndex = index
+                        corrutine.launch {
+                            pagerState.animateScrollToPage(index)
+                        }
+                    },
                     initialExpandedState = false
                 )
             }
@@ -286,16 +297,16 @@ fun HomeScreen(
                                 },
                                 onSearchLead = onSearchLead,
                                 onCreateReminder = onCreateReminder,
-                                windowSizeClass =  windowClass,
+                                windowSizeClass = windowClass,
                             )
                         }
 
                         1 -> {
                             DateScreenRoot(
-                                viewModel = datesViewModel
+                                viewModel = datesViewModel,
+                                windowWidthSizeClass = windowClass
                             )  // Pantalla de Citas
                         }
-
                         2 -> {
                             UsersSMScreenRoot(
                                 viewModel = userSMViewModel,
@@ -349,10 +360,10 @@ fun HomeScreen(
 
                         1 -> {
                             DateScreenRoot(
-                                viewModel = datesViewModel
+                                viewModel = datesViewModel,
+                                windowWidthSizeClass = windowClass
                             )  // Pantalla de Citas
                         }
-
                         2 -> {
                             LeadScreenRoot(
                                 viewModel = leadVieModel,

@@ -157,7 +157,7 @@ private fun UpdateProfileSMSScreen(
                     title = "Nombre",
                     state = state.user.name,
                     onTextChange = {
-
+                        onAction(UpdateProfileSMAction.OnChangeName(it))
                     }
                 )
                 Spacer(
@@ -167,7 +167,7 @@ private fun UpdateProfileSMSScreen(
                     title = "Apellidos",
                     state = state.user.lastname,
                     onTextChange = {
-
+                        onAction(UpdateProfileSMAction.OnChangeLastName(it))
                     }
                 )
                 /*

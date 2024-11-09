@@ -106,8 +106,11 @@ class LeadSMViewModel(
                 }
 
                 is ResultExt.Success -> {
-
-                    _state.update { it.copy(customers = result.data, isRefreshing = false, error = null) }
+                    val newList = result.data.toMutableList()
+                    newList.sortBy {
+                        it.companyName.uppercase()
+                    }
+                    _state.update { it.copy(customers = newList, isRefreshing = false, error = null) }
                 }
             }
         }

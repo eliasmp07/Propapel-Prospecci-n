@@ -65,7 +65,6 @@ val LightColorScheme = lightColorScheme(
 @Composable
 @Preview
 fun App(
-    darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable() () -> Unit = {}
 ) {
     val colorScheme = LightColorScheme

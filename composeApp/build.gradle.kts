@@ -91,7 +91,6 @@ kotlin {
             implementation("com.mohamedrejeb.calf:calf-file-picker:0.5.3")
             implementation("com.mohamedrejeb.calf:calf-file-picker-coil:0.5.1")
 
-            api(libs.compose.webview.multiplatform)
             api(libs.datastore.preferences)
             api(libs.datastore)
 

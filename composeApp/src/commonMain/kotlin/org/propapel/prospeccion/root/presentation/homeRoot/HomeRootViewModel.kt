@@ -22,6 +22,8 @@ class HomeRootViewModel(
     private val sessionStorage: SessionStorage,
     private val reminderRepository: ReminderRepository
 ): ViewModel() {
+
+
     private var _state = MutableStateFlow(HomeSMRootState())
     val state: StateFlow<HomeSMRootState> get() = _state.asStateFlow()
     init {
@@ -29,12 +31,11 @@ class HomeRootViewModel(
         viewModelScope.launch(Dispatchers.IO) {
             _state.update {
                 it.copy(
-                    user = sessionStorage.get()?: AuthInfo()
+                    user = sessionStorage.get() ?: AuthInfo()
                 )
             }
         }
     }
-
 
 
     private fun getAllMyReminders() {

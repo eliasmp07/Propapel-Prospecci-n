@@ -9,5 +9,5 @@ data class UpdateProfileSMState(
     val isError: Boolean = false,
     val error: String = "",
     val isSuccess: Boolean = false,
-    val success: String = ""
+    val success: String = "",
 )

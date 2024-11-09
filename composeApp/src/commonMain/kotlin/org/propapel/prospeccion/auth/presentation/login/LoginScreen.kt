@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
+
 package org.propapel.prospeccion.auth.presentation.login
 
 import androidx.compose.animation.AnimatedVisibility
@@ -28,6 +30,8 @@ import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
+import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -79,6 +83,8 @@ private fun LoginScreen(
     state: LoginState,
     onAction: (LoginAction) -> Unit
 ) {
+    val windowSizeClass = calculateWindowSizeClass()
+
     LaunchedEffect(state.isError) {
         if (state.isError) {
             delay(2000) // Espera de 2 segundos
@@ -160,7 +166,6 @@ private fun LoginScreen(
                         isClickableText = {
                             toggleDialogForgotPassword = !toggleDialogForgotPassword
                         },
-                        additionalInfo = "¿Olvidastes tu contraseña?"
                     )
                     Spacer(Modifier.height(16.dp))
                     ProSalesActionButton(

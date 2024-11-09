@@ -23,14 +23,19 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import org.propapel.prospeccion.core.domain.AuthInfo
 import org.propapel.prospeccion.core.presentation.designsystem.components.CalendarDatesCard
 import org.propapel.prospeccion.core.presentation.designsystem.components.DashboardCard
 import org.propapel.prospeccion.core.presentation.designsystem.components.SalesPeopleCard
+import org.propapel.prospeccion.root.presentation.dashboard.DashboardSMAction
+import org.propapel.prospeccion.root.presentation.dashboard.DashboardSMState
 import org.propapel.prospeccion.root.presentation.dashboard.DonutChartServices
 
 @Composable
 fun DashboardScreenWindows(
-
+    state: DashboardSMState,
+    user: AuthInfo,
+    onAction: (DashboardSMAction) -> Unit
 ) {
     LazyColumn(
         modifier = Modifier
@@ -51,13 +56,13 @@ fun DashboardScreenWindows(
                     verticalArrangement = Arrangement.Center
                 ) {
                     Text(
-                        text = "Dashboard",
+                        text = "Inicio",
                         fontSize = 24.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color(0xFF007BFF)
                     )
                     Text(
-                        "Bienvenido a tu Dashboard",
+                        "Bienvenido de nuevo, ${user.name}",
                         fontSize = MaterialTheme.typography.bodyMedium.fontSize
                     )
                 }
@@ -75,7 +80,7 @@ fun DashboardScreenWindows(
                 ) {
                     DashboardCard(
                         title = "Clientes",
-                        value = "24",
+                        value = state.myCustomer.size.toString(),
                         percentage = "15%",
                         modifier = Modifier.weight(1f),
                         icon = Icons.Outlined.Groups,
@@ -112,8 +117,7 @@ fun DashboardScreenWindows(
             Row(
                 modifier = Modifier.fillMaxWidth()
             ) {
-                DonutChartServices(Modifier.weight(1f))
-                DonutChartServices(Modifier.weight(1f))
+
             }
         }
         item {
@@ -123,8 +127,6 @@ fun DashboardScreenWindows(
                     .padding(vertical = 8.dp),
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                SalesPeopleCard(modifier = Modifier.weight(1f))
-                CalendarDatesCard(modifier = Modifier.weight(1f))
             }
             Spacer(modifier = Modifier.height(16.dp))
         }

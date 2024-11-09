@@ -67,17 +67,19 @@ fun PieChartLeadsStatus(
             shape = RoundedCornerShape(20.dp),
             modifier = Modifier
                 .fillMaxWidth().padding(horizontal = 16.dp),
-            elevation = CardDefaults.elevatedCardElevation(15.dp)
         ) {
             Column(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().padding(8.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "Estadistica de tipos de clientes",
+                    text = "No hay informacion",
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color(0xFF007BFF)
+                )
+                Spacer(
+                    modifier = Modifier.height(8.dp)
                 )
                 Image(
                     painter = painterResource(Res.drawable.img_no_data),
@@ -87,7 +89,10 @@ fun PieChartLeadsStatus(
                 Spacer(
                     modifier = Modifier.height(8.dp)
                 )
-                Text("No tienes clientes")
+                Text("No tienes clientes", )
+                Spacer(
+                    modifier = Modifier.height(8.dp)
+                )
             }
         }
         return

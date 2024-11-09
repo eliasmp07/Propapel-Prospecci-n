@@ -79,13 +79,7 @@ fun CreateReminderDialog(
                 modifier = modifier
             ) {
                 Column(
-                    modifier = Modifier.background(
-                        brush = Brush.verticalGradient(
-                            0f to PrimaryYellowLight,
-                            0.6f to SoporteSaiBlue30,
-                            1f to MaterialTheme.colorScheme.primary
-                        )
-                    ).padding(16.dp)
+                    modifier = Modifier.padding(16.dp)
                 ) {
                     IconButton(
                         modifier = Modifier.align(Alignment.End),
