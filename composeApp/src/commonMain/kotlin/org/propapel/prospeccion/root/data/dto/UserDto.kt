@@ -8,6 +8,5 @@ data class UserDto(
     val name: String,
     val phone: String?,
     val image: String?,
-    val isAdmin: Boolean
 
 )

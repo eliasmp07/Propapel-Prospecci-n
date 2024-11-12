@@ -149,6 +149,9 @@ android {
         targetCompatibility = JavaVersion.VERSION_11
     }
 }
+dependencies {
+    debugImplementation(libs.androidx.ui.tooling)
+}
 
 
 compose.desktop {

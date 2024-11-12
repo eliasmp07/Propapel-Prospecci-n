@@ -6,7 +6,7 @@ data class AuthInfo(
     val userId: String = "",
     val name: String = "",
     val roles: List<String> = emptyList(),
-    val isAdmin: Boolean = false,
+    val sucursales: List<String> = emptyList(),
     val lastname: String = "",
     val email: String = "",
     val accessTokenExpirationTimestamp: Long = 0L,

@@ -7,7 +7,7 @@ data class AuthInfoSerializable(
     val accessToken: String,
     val refreshToken: String,
     val name: String,
-    val isAdmin: Boolean,
+    val sucursales: List<String>,
     val lastname: String,
     val roles: List<String>,
     val email: String,

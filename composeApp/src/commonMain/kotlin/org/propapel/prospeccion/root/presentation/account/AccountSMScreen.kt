@@ -13,6 +13,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -25,15 +26,19 @@ import org.propapel.prospeccion.core.presentation.designsystem.SoporteSaiBlue30
 import org.propapel.prospeccion.core.presentation.designsystem.components.ProSalesActionButton
 import org.propapel.prospeccion.core.presentation.designsystem.components.ProSalesActionButtonOutline
 import org.propapel.prospeccion.root.presentation.account.components.ImageProfile
+import org.propapel.prospeccion.root.presentation.account.components.desktop.AccountScreenDesktop
+import org.propapel.prospeccion.root.presentation.dashboard.isMobile
 
 @Composable
 fun AccountScreenRoot(
     viewModel: AccountSMViewModel,
+    windowSizeClass: WindowSizeClass,
     onAction: (AccountSMAction) -> Unit
 ){
     val state by viewModel.state.collectAsState()
     AccountScreen(
         state = state,
+        windowSizeClass = windowSizeClass,
         onAction = onAction
     )
 }
@@ -41,8 +46,10 @@ fun AccountScreenRoot(
 @Composable
 private fun AccountScreen(
     state: AccountSMState,
+    windowSizeClass: WindowSizeClass,
     onAction: (AccountSMAction) -> Unit
 ){
+    if (windowSizeClass.isMobile){
     Column(
         modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()).background(
             Brush.verticalGradient(
@@ -54,7 +61,7 @@ private fun AccountScreen(
     ) {
         ImageProfile(
             profileImg = state.user.image,
-            isAdmin = state.user.isAdmin
+            isAdmin = state.user.roles.contains("Administrador") || state.user.roles.contains("Gerente Regional")
         )
         Column(
             modifier = Modifier.padding(8.dp)
@@ -67,7 +74,7 @@ private fun AccountScreen(
             Row(
                 modifier = Modifier.fillMaxWidth()
             ) {
-               if(state.user.isAdmin){
+               if(state.user.sucursales.size > 1){
                    ProSalesActionButton(
                        textColor = Color.White,
                        modifier = Modifier.weight(1f),
@@ -98,5 +105,10 @@ private fun AccountScreen(
                 }
             )
         }
+    }} else{
+        AccountScreenDesktop(
+            state = state,
+            onAction = onAction
+        )
     }
 }

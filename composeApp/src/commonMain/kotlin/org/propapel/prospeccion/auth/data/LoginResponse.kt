@@ -8,7 +8,7 @@ data class LoginResponse(
     val accessTokenExpirationTimestamp: Long,
     val userId: Int,
     val roles: List<String>?,
-    val isAdmin: Boolean,
+    val sucursales: List<String>?,
     val name: String,
     val lastname: String,
     val email: String,

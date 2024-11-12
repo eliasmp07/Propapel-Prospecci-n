@@ -104,6 +104,9 @@ fun HomeScreen(
     onCreateReminder: () -> Unit,
     onUpdateProfile: () -> Unit
 ) {
+
+    val windowClass = calculateWindowSizeClass()
+
     val state by viewModel.state.collectAsState()
 
     val topAppBarState = rememberTopAppBarState()
@@ -111,7 +114,7 @@ fun HomeScreen(
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(
         state = topAppBarState
     )
-    val (items, isAdmin) = if (state.user.isAdmin) {
+    val (items, isAdmin) = if (state.user.roles.isNotEmpty()) {
         Pair(
             listOf(
                 NavigationItem(
@@ -185,7 +188,6 @@ fun HomeScreen(
     var selectedItemIndex by remember { mutableStateOf(0) }
 
 
-    val windowClass = calculateWindowSizeClass()
     val showNavigationRail = windowClass.widthSizeClass != WindowWidthSizeClass.Compact
     val corrutine = rememberCoroutineScope()
 
@@ -285,7 +287,7 @@ fun HomeScreen(
                     .fillMaxSize()
                     .padding(bottom = innerPadding.calculateBottomPadding()),
             ) { page ->
-                if (state.user.isAdmin) {
+                if (state.user.roles.isNotEmpty()) {
                     when (page) {
                         0 -> {
                             DashBoardScreenRoot(
@@ -328,6 +330,7 @@ fun HomeScreen(
                         4 -> {
                             AccountScreenRoot(
                                 viewModelAccount,
+                                windowSizeClass = windowClass,
                                 onAction = { action ->
                                     when (action) {
                                         AccountSMAction.EditProfileClick -> onUpdateProfile()
@@ -378,6 +381,7 @@ fun HomeScreen(
                         3 -> {
                             AccountScreenRoot(
                                 viewModelAccount,
+                                windowSizeClass = windowClass,
                                 onAction = { action ->
                                     when (action) {
                                         AccountSMAction.EditProfileClick -> onUpdateProfile()

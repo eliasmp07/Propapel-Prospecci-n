@@ -15,7 +15,6 @@ data class User(
     val name: String = "",
     val phone: String = "",
     val image: String = "",
-    val isAdmin: Boolean = false
 )
 
 fun UserDto.toUser(): User{
@@ -24,6 +23,5 @@ fun UserDto.toUser(): User{
         name,
         phone?:"",
         image?:"",
-        isAdmin
     )
 }

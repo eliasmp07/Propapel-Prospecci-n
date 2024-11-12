@@ -29,9 +29,9 @@ class AuthRepositoryImpl(
                 AuthInfo(
                     accessTokenExpirationTimestamp = result.data.accessTokenExpirationTimestamp,
                     image =  result.data.image?:"",
+                    sucursales = result.data.sucursales?: emptyList(),
                     name = result.data.name,
                     roles = result.data.roles?: emptyList(),
-                    isAdmin = result.data.isAdmin,
                     lastname = result.data.lastname,
                     email = result.data.email,
                     userId =  result.data.userId.toString(),

@@ -144,17 +144,6 @@ fun ItemUser(
                             .pointerHoverIcon(PointerIcon.Hand)
                     )
                 }
-                if (user.isAdmin){
-                    Icon(
-                        modifier = Modifier
-                            .size(20.dp)
-                            .align(Alignment.TopEnd)
-                            .offset(x = (-2).dp, y = 2.dp),
-                        imageVector = Icons.Outlined.WorkspacePremium,
-                        contentDescription = null,
-                        tint = Color.Yellow
-                    )
-                }
 
             }
             Column {
@@ -167,7 +156,6 @@ fun ItemUser(
             Spacer(
                 modifier = Modifier.weight(0.3f)
             )
-            Text(text = if(user.isAdmin) "Es admin" else  "No es admin",  style = MaterialTheme.typography.titleSmall, color = Color.White)
             Spacer(
                 modifier = Modifier.width(8.dp)
             )
