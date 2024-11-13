@@ -10,6 +10,7 @@ data class PurchaseRequest(
 data class Purchase(
     val purcheseId: Int,
     val productServiceName: String,
+    val isIntoProduct: Boolean,
     val purchaseDate: Int,
     val amount: String
 )

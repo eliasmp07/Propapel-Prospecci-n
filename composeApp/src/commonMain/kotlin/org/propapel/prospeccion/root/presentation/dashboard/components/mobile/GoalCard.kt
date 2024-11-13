@@ -39,7 +39,8 @@ fun GoalCard(
     title: String,            // Título de la meta
     currentValue: Float,      // Valor actual de progreso
     goalValue: Float,         // Valor meta
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier
+        .aspectRatio(16f / 7f),
     icon: ImageVector,
     background: Color,
 ) {
@@ -48,11 +49,10 @@ fun GoalCard(
     val windowClass = calculateWindowSizeClass()
     val showNavigationRail = windowClass.widthSizeClass != WindowWidthSizeClass.Compact
 
-    Box(modifier = modifier) {  // Asegúrate de que el modificador se pase
+    Box(modifier = Modifier) {  // Asegúrate de que el modificador se pase
         ElevatedCard(
             shape = RoundedCornerShape(20.dp),
-            modifier = Modifier
-                .aspectRatio(16f / 7f)// Asegúrate de que ocupe el ancho completo
+            modifier = modifier
                 .padding(horizontal = 8.dp),
             elevation = CardDefaults.elevatedCardElevation(15.dp)
         ) {

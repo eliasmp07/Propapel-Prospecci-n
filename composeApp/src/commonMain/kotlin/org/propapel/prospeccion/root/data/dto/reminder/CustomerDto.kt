@@ -18,13 +18,14 @@ data class CustomerDto(
     @SerialName("type_of_client") val typeClient: String,
     val opportunities: List<OpportunityDto>? = null,
     val interactions: List<InteractionDto>? = null,
-    @SerialName("purchases")val purchases: List<PurchasesDto2>? = null,
+    @SerialName("purchases")val purchases: List<PurchaseResponseDto>? = null,
     @SerialName("reminders")val reminders: List<ReminderDto2>? = null
 )
 
 @Serializable
-data class PurchasesDto2(
+data class PurchaseResponseDto(
     @SerialName("purchase_id") val purcheseId: Int,
+    @SerialName("isIntoProduct") val isIntoProduct: Boolean,
     @SerialName("product_service_name")val productServiceName: String,
     @SerialName("purchase_date")val purchaseDate: Int,
     val amount: String

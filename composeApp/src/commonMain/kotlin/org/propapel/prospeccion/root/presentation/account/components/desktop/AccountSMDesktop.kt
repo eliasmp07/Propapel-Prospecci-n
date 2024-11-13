@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -33,17 +34,19 @@ fun AccountScreenDesktop(
     Row(
         modifier = Modifier
             .fillMaxSize()
-            .background(
-                Color.White
-            )
+            .background(Color(0XFFe5f0f9))
             .padding(16.dp)
     ) {
         // Imagen de perfil y roles
-        Column (
+        Column(
             modifier = Modifier
-                .width(300.dp)
+                .weight(0.5f)
+                .height(500.dp)
                 .padding(end = 16.dp)
-                .background(MaterialTheme.colorScheme.surface)
+                .background(
+                    MaterialTheme.colorScheme.surface,
+                    shape = RoundedCornerShape(30.dp)
+                )
                 .padding(16.dp)
         ) {
             ImageProfile(
@@ -64,9 +67,12 @@ fun AccountScreenDesktop(
         // Botones y opciones
         Column(
             modifier = Modifier
-                .fillMaxWidth()
+                .weight(0.5f)
                 .padding(16.dp)
-                .background(MaterialTheme.colorScheme.surface)
+                .background(
+                    MaterialTheme.colorScheme.surface,
+                    shape = RoundedCornerShape(30.dp)
+                )
                 .padding(16.dp)
         ) {
             Row(

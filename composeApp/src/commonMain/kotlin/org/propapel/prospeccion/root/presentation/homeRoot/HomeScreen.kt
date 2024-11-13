@@ -218,6 +218,9 @@ fun HomeScreen(
                 editProfile = { onUpdateProfile() },
                 windowSizeClass = windowClass,
                 onDarkTheme = onDarkTheme,
+                onSearch = {
+                    onSearchLead()
+                },
                 isProfile = selectedItemIndex == items.lastIndex
             )
         },

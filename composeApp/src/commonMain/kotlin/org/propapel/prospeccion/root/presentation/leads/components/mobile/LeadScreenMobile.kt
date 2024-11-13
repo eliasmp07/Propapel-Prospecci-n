@@ -247,7 +247,7 @@ fun LeadScreenMobile(
                 PieChartLeadsStatus(
                     modifier = Modifier,
                     listCustomer = state.customers,
-                    size = 300.dp
+                    size = 270.dp
                 )
             }
             if (state.customers.isEmpty()) {

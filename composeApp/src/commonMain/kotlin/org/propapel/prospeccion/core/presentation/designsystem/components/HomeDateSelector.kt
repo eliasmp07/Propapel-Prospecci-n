@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.PointerIcon
+import androidx.compose.ui.input.pointer.pointerHoverIcon
 import androidx.compose.ui.unit.dp
 import kotlinx.datetime.DatePeriod
 import kotlinx.datetime.LocalDate
@@ -37,7 +39,7 @@ fun HomeDateSelector(
         for (i in 0 until datesToShow) {
             val date = startOfWeek.plus(DatePeriod(days = i))
             HomeDateItem(
-                modifier = Modifier.weight(1f),
+                modifier = Modifier.weight(1f).pointerHoverIcon(PointerIcon.Hand),
                 date = date,
                 isSelected = selectedDate == date
             ) {

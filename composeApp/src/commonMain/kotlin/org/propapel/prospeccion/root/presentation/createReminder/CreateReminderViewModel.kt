@@ -100,7 +100,7 @@ class CreateReminderViewModel(
     }
 
     fun getAllReminders() {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO){
             val result = reminderRepository.getAllReminder()
             when (result) {
                 is ResultExt.Error -> {

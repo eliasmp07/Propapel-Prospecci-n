@@ -27,6 +27,7 @@ import org.propapel.prospeccion.core.presentation.designsystem.components.ProSal
 import org.propapel.prospeccion.core.presentation.designsystem.components.ProSalesActionButtonOutline
 import org.propapel.prospeccion.root.presentation.account.components.ImageProfile
 import org.propapel.prospeccion.root.presentation.account.components.desktop.AccountScreenDesktop
+import org.propapel.prospeccion.root.presentation.account.components.mobile.AccountScreenMobile
 import org.propapel.prospeccion.root.presentation.dashboard.isMobile
 
 @Composable
@@ -50,62 +51,11 @@ private fun AccountScreen(
     onAction: (AccountSMAction) -> Unit
 ){
     if (windowSizeClass.isMobile){
-    Column(
-        modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()).background(
-            Brush.verticalGradient(
-                0f to PrimaryYellowLight,
-                0.6f to SoporteSaiBlue30,
-                1f to MaterialTheme.colorScheme.primary
-            )
+        AccountScreenMobile(
+            state = state,
+            onAction = onAction
         )
-    ) {
-        ImageProfile(
-            profileImg = state.user.image,
-            isAdmin = state.user.roles.contains("Administrador") || state.user.roles.contains("Gerente Regional")
-        )
-        Column(
-            modifier = Modifier.padding(8.dp)
-        ) {
-            Text(text = state.user.name + " " +state.user.lastname, style = MaterialTheme.typography.headlineMedium)
-            Text(text = if(state.user.roles.isEmpty()) "" else state.user.roles.first(), style = MaterialTheme.typography.titleMedium)
-            Spacer(
-                modifier = Modifier.height(8.dp)
-            )
-            Row(
-                modifier = Modifier.fillMaxWidth()
-            ) {
-               if(state.user.sucursales.size > 1){
-                   ProSalesActionButton(
-                       textColor = Color.White,
-                       modifier = Modifier.weight(1f),
-                       text = "Cambiar de sucursal",
-                       onClick = {
-                           onAction(AccountSMAction.OnSelectSucursal)
-                       },
-                   )
-                   Spacer(
-                       modifier = Modifier.width(8.dp)
-                   )
-               }
-               ProSalesActionButtonOutline(
-                    modifier = Modifier.weight(1f),
-                    text = "Editar perfil",
-                    onClick = {
-                        onAction(AccountSMAction.EditProfileClick)
-                    }
-                )
-            }
-            Spacer(
-                modifier = Modifier.height(8.dp)
-            )
-            ProSalesActionButtonOutline(
-                text = "Cerrar sessión",
-                onClick = {
-                    onAction(AccountSMAction.OnLogoutClick)
-                }
-            )
-        }
-    }} else{
+    } else{
         AccountScreenDesktop(
             state = state,
             onAction = onAction

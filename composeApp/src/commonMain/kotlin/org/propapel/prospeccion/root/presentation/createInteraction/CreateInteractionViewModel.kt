@@ -52,7 +52,7 @@ class CreateInteractionViewModel(
                 _state.value = _state.value.copy(screenState = CreateInteractionScreenState.InfoInteractionScreen)
             }
             is CreateInteractionAction.OnTypeClientChange -> {
-                _state.value = _state.value.copy(typeClient = action.typeClient, notesAppointment = action.typeClient.name)
+                _state.value = _state.value.copy(typeClient = action.typeClient)
             }
             is CreateInteractionAction.OnNoteAppointmentChange -> {
                 _state.value = _state.value.copy(notesAppointment = action.notes)

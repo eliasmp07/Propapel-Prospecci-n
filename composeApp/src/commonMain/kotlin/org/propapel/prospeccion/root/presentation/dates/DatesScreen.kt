@@ -137,7 +137,9 @@ private fun DateScreen(
             state = state
         )
     } else {
-        DatesScreenDesktop()
+        DatesScreenDesktop(
+            state = state
+        )
     }
 }
 

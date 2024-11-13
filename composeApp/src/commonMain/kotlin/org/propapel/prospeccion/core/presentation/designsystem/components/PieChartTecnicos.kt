@@ -54,7 +54,7 @@ import prospeccion.composeapp.generated.resources.img_no_data
 fun PieChartLeadsStatus(
     listCustomer: List<Customer>,
     modifier: Modifier = Modifier,
-    size: Dp = 300.dp
+    size: Dp = 270.dp
 ) {
 
     var showMoreInfoNew by remember { mutableStateOf(false) }

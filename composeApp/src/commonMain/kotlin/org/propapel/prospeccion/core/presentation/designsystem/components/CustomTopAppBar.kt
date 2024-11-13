@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -25,6 +26,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.LightMode
 import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material.icons.outlined.Person
@@ -34,6 +36,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -52,6 +55,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.PointerIcon
 import androidx.compose.ui.input.pointer.pointerHoverIcon
@@ -67,6 +71,7 @@ import org.propapel.prospeccion.core.domain.AuthInfo
 import org.propapel.prospeccion.core.presentation.designsystem.PrimaryYellowLight
 import org.propapel.prospeccion.root.domain.models.Reminder
 import org.propapel.prospeccion.root.presentation.homeRoot.components.DropdownListObjects
+import org.propapel.prospeccion.root.presentation.leads.LeadAction
 import prospeccion.composeapp.generated.resources.Res
 import prospeccion.composeapp.generated.resources.customer_ref
 import prospeccion.composeapp.generated.resources.logo
@@ -82,6 +87,7 @@ fun CustomTopAppBar(
     reminders: List<Reminder>,
     totalNotifications: Int,
     onLogout: () -> Unit = {},
+    onSearch: () -> Unit,
     scrollBehavior: TopAppBarScrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(),
     editProfile: () -> Unit,
     isProfile: Boolean = false,
@@ -343,9 +349,72 @@ fun CustomTopAppBar(
                     fontWeight = FontWeight.Bold,
                     fontSize = MaterialTheme.typography.headlineSmall.fontSize
                 )
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth().padding(horizontal = 32.dp).weight(0.4f).pointerHoverIcon(PointerIcon.Hand)
+                ) {
+                   Card(
+                        shape = RoundedCornerShape(20.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(50.dp),
+                        colors = CardDefaults.cardColors(
+                            containerColor = Color.White
+                        ),
+                        onClick = {
+                            onSearch()
+                        },
+                        elevation = CardDefaults.elevatedCardElevation(15.dp)
+                    ) {
+                        Row(
+                            modifier = Modifier.fillMaxSize(),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            // Left side with the gradient and month
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxHeight()
+                                    .width(50.dp)
+                                    .background(
+                                        brush = Brush.verticalGradient(
+                                            colors = listOf(
+                                                Color(0xFFFFA726),  // Naranja claro
+                                                Color(0xFFFF5722)
+                                            )
+                                        )
+                                    ),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Filled.Search,
+                                    contentDescription = null,
+                                    tint = Color.Black
+                                )
+                            }
+                            // Right side with the date and schedule
+                            Column(
+                                modifier = Modifier
+                                    .padding(16.dp)
+                                    .weight(1f)
+                                    .fillMaxHeight(),
+                                verticalArrangement = Arrangement.Center
+                            ) {
+                                Text(
+                                    text = "Nombre",
+                                    style = MaterialTheme.typography.bodyMedium.copy(
+                                        color = Color.Black.copy(
+                                            alpha = 0.5f
+                                        )
+                                    )
+                                )
+                            }
 
-                Spacer(modifier = Modifier.weight(4f))
-
+                        }
+                    }
+                }
+                Spacer(
+                    modifier = Modifier.weight(0.2f)
+                )
                 Card(
                     modifier = Modifier.size(40.dp),
                     shape = RoundedCornerShape(8.dp),
@@ -367,7 +436,6 @@ fun CustomTopAppBar(
                     }
                 }
                 Spacer(modifier = Modifier.width(10.dp))
-                val item = 4
                 Card(
                     modifier = Modifier.size(40.dp),
                     shape = RoundedCornerShape(8.dp),
@@ -380,9 +448,9 @@ fun CustomTopAppBar(
                         contentAlignment = Alignment.Center
                     ) {
                         BadgedBox(badge = {
-                            if (item > 0) {
+                            if (totalNotifications > 0) {
                                 Badge {
-                                    Text(text = item.toString())
+                                    Text(text = totalNotifications.toString())
                                 }
                             }
                         }) {
@@ -400,29 +468,53 @@ fun CustomTopAppBar(
                             )
                         }
                         if (reminders.isNotEmpty()) {
-                            DropdownListObjects(
+                            DropdownMenu(
                                 modifier = Modifier.align(Alignment.TopEnd),
-                                listOptions = reminders,
                                 expanded = showReminders,
-                                onSearch = {
-
-                                },
-                                onValueChange = {
-
-                                },
-                                content = {
-                                    items(it.size) { index ->
-                                        DropdownMenuItem(
-                                            text = {
-                                                Text(it[index].description)
-                                            },
-                                            onClick = {
-                                                showReminders = false
-                                            }
+                                onDismissRequest = { showReminders = !showReminders }) {
+                                reminders.forEach {
+                                    Card(
+                                        modifier = Modifier.fillMaxWidth().padding(8.dp),
+                                        shape = RoundedCornerShape(8.dp),
+                                        colors = CardDefaults.cardColors(
+                                            containerColor = Color(0xFFe6f0f9)
                                         )
+                                    ) {
+                                        Row(
+                                            modifier = Modifier.fillMaxWidth().padding(8.dp),
+                                            horizontalArrangement = Arrangement.Start,
+                                            verticalAlignment = Alignment.CenterVertically
+                                        ){
+                                            Image(
+                                                modifier = Modifier.size(
+                                                    50.dp
+                                                ),
+                                                painter = painterResource(Res.drawable.customer_ref),
+                                                contentDescription = null,
+                                            )
+                                            Spacer(
+                                                modifier = Modifier.width(8.dp)
+                                            )
+                                            Column {
+                                                Text(
+                                                    text = "Tienes programada una cita",
+                                                    style = MaterialTheme.typography.titleSmall,
+                                                )
+                                                Text(
+                                                    text = "Haz programando una cita con ${it.customer.companyName}",
+                                                    color = Color.Gray,
+                                                    style = MaterialTheme.typography.bodyMedium
+                                                )
+                                                Text(
+                                                    text = "Fecha: ${converteDate(it.reminderDate.toLong())}",
+                                                    color = Color.Gray,
+                                                    style = MaterialTheme.typography.bodyMedium
+                                                )
+                                            }
+                                        }
                                     }
                                 }
-                            )
+                            }
                         }
 
                     }

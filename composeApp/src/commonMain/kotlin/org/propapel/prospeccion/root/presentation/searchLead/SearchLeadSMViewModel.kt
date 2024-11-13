@@ -65,7 +65,7 @@ class SearchLeadSMViewModel(
                         // Filtrar los clientes según la query
                         val filteredCustomers = newList
                             .filter { customer ->
-                            customer.companyName.lowercase().contains(query.uppercase())
+                            customer.companyName.lowercase().contains(query)
                         }
 
                         currentState.copy(

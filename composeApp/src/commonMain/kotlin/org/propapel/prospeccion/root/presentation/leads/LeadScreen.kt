@@ -35,7 +35,6 @@ fun LeadScreenRoot(
             }
             viewModel.onAction(action)
         },
-        onAddLead = onAddLead,
         state = state
     )
 }
@@ -45,7 +44,6 @@ private fun LeadScreen(
     state: LeadSMState,
     windowSizeClass: WindowSizeClass,
     onAction : (LeadAction) -> Unit,
-    onAddLead :() -> Unit
 ){
     if (windowSizeClass.widthSizeClass == WindowWidthSizeClass.Compact){
         LeadScreenMobile(

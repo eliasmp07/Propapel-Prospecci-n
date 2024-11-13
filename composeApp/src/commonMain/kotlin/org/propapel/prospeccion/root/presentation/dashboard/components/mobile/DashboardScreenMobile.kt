@@ -355,7 +355,7 @@ fun DashboardScreenMobile(
                             .padding(vertical = 8.dp)
                     ) {
                         PieChartLeadsStatus(
-                            size = 300.dp,
+                            size = 270.dp,
                             listCustomer = state.myCustomer
                         )
                     }

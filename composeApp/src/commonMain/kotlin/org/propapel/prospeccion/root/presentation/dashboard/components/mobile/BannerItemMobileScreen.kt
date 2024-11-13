@@ -22,10 +22,11 @@ import prospeccion.composeapp.generated.resources.banner_prueba
 
 @Composable
 fun BannerItemMobileScreen(
+    modifier: Modifier = Modifier.aspectRatio(16f / 7f),
     banner: Banner,
 ) {
     ElevatedCard(
-        modifier = Modifier.aspectRatio(16f / 7f).padding(horizontal = 8.dp),
+        modifier = modifier.padding(horizontal = 8.dp),
         shape = RoundedCornerShape(20.dp),
         onClick = {
         }

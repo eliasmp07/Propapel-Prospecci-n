@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -45,11 +46,14 @@ import java.awt.Dimension
 
 fun main(){
     initKoin()
+
+    val viewModel: MainDesktopViewModel = getKoin().get()
+
     application {
 
         var showSplashScreen by remember { mutableStateOf(true) }
 
-        if (showSplashScreen) {
+        if (showSplashScreen && !viewModel.state.isCheckingAuth) {
             Window(
                 icon = painterResource(Res.drawable.logo),
                 onCloseRequest = ::exitApplication,
@@ -65,9 +69,6 @@ fun main(){
                 }
             }
         } else {
-
-            //Variable que obtiene el viewmodel
-            val viewModel: MainDesktopViewModel = getKoin().get()
 
             Window(
                 state = rememberWindowState(
@@ -125,12 +126,8 @@ fun SplashScreen(onTimeout: () -> Unit) {
                 contentDescription = null
             )
             Spacer(modifier = Modifier.height(30.dp))
-            LinearProgressIndicator(
-                color = Color.Blue,
-                progress = animatedProgress,
-                modifier = Modifier
-                    .fillMaxWidth(0.5f)
-                    .height(8.dp)
+            CircularProgressIndicator(
+                progress = animatedProgress
             )
             Spacer(
                 modifier = Modifier.weight(1f)
