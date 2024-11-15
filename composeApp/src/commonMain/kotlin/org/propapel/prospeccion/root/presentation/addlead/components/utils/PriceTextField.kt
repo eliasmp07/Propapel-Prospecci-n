@@ -39,6 +39,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import org.propapel.prospeccion.core.presentation.designsystem.SoporteSaiDarkRed
 
@@ -50,6 +51,7 @@ fun ProSalesPriceTextField(
     startIcon: ImageVector? = null,
     endIcon: ImageVector? = null,
     onTextChange: (String) -> Unit,
+    roundedCornerShape: Dp = 30.dp,
     hint: String = "",
     readOnly: Boolean = false,
     title: String? = null,
@@ -87,12 +89,12 @@ fun ProSalesPriceTextField(
             keyboardOptions = keyboardOptions,
             keyboardActions = keyboardActions,
             modifier = Modifier
-                .clip(RoundedCornerShape(30.dp))
+                .clip(RoundedCornerShape(roundedCornerShape))
                 .background(Color.Black.copy(alpha = 0.05f))
                 .border(
                     width = 1.dp,
                     color = colors,
-                    shape = RoundedCornerShape(30.dp)
+                    shape = RoundedCornerShape(roundedCornerShape)
                 )
                 .padding(12.dp)
                 .onFocusChanged { isFocused = it.isFocused },

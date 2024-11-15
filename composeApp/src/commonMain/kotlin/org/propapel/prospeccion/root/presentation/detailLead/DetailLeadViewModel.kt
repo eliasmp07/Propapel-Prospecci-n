@@ -10,7 +10,9 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.propapel.prospeccion.core.domain.ResultExt
+import org.propapel.prospeccion.core.presentation.ui.UiText
 import org.propapel.prospeccion.root.domain.models.Customer
+import org.propapel.prospeccion.root.domain.models.Reminder
 import org.propapel.prospeccion.root.domain.repository.CustomerRepository
 import org.propapel.prospeccion.root.domain.repository.ReminderRepository
 
@@ -22,13 +24,18 @@ class DetailLeadViewModel(
     private var _state = MutableStateFlow(DetailLeadSMState())
     val state: StateFlow<DetailLeadSMState> get() = _state.asStateFlow()
 
-    fun onAction(action: DetailLeadAction){
-        when(action){
+    fun onAction(action: DetailLeadAction) {
+        when (action) {
             DetailLeadAction.OnToggleCreateAppointmentDialog -> {
                 _state.update {
                     it.copy(
                         showCreateDate = !it.showCreateDate
                     )
+                }
+            }
+            DetailLeadAction.HideError -> {
+                _state.update {
+                    it.copy(isError = !it.isError)
                 }
             }
             is DetailLeadAction.OnNoteAppointmentChange -> {
@@ -48,11 +55,137 @@ class DetailLeadViewModel(
             DetailLeadAction.CreateAppointmentClick -> {
                 createAppointment()
             }
+            DetailLeadAction.OnConfirmCancelarReminder -> {
+                viewModelScope.launch(
+                    Dispatchers.IO
+                ) {
+                    val result = reminderRepository.deleteReminder(_state.value.reminderEliminated)
+
+                    when(result){
+                        is ResultExt.Error -> {
+                            _state.update {
+                                it.copy(
+                                    showCancelNotification = !it.showCancelNotification,
+                                    error = UiText.DynamicString("Error al eliminar la cita"),
+                                    isError = true,
+                                )
+                            }
+                        }
+                        is ResultExt.Success -> {
+                            _state.update {
+                                val reminders = it.customer.reminders.toMutableList()
+                                reminders.remove(it.reminderEliminated)
+                                it.copy(
+                                    customer = it.customer.copy(
+                                        reminders = reminders
+                                    ),
+                                    error = UiText.DynamicString("Cita eliminada con éxito"),
+                                    isError = true,
+                                    showCancelNotification = !it.showCancelNotification,
+                                    reminderEliminated = Reminder()
+                                )
+                            }
+                        }
+                    }
+
+                }
+            }
+            DetailLeadAction.OnDimissUpdateReminder -> {
+                _state.update {
+                    it.copy(
+                        showDialogUpdateReminder = !it.showDialogUpdateReminder
+                    )
+                }
+            }
+            is DetailLeadAction.OnUpdateReminder -> {
+                _state.update {
+                    it.copy(
+                        showDialogUpdateReminder = !it.showDialogUpdateReminder,
+                        reminderIdUpdate = action.reminder.reminderId,
+                        notesAppointment = action.reminder.description,
+                        dateNextReminder = action.reminder.reminderDate.toLong(),
+                    )
+                }
+            }
+            DetailLeadAction.UpdateReminderClick -> {
+                updateReminder()
+            }
+            DetailLeadAction.OnToggleDeleteReminderConfirm -> {
+                _state.update {
+                    it.copy(
+                        showCancelNotification = !it.showCancelNotification
+                    )
+                }
+            }
+            is DetailLeadAction.OnCancelReminderClick -> {
+                _state.update {
+                    it.copy(
+                        reminderEliminated = action.reminder,
+                        showCancelNotification = !it.showCancelNotification
+                    )
+                }
+            }
             else -> Unit
         }
     }
 
-    private fun createAppointment(){
+    private fun updateReminder() {
+        viewModelScope.launch(
+            Dispatchers.IO
+        ) {
+            _state.update {
+                it.copy(
+                    isUpdateReminder = true
+                )
+            }
+            val result = reminderRepository.updateReminder(
+                Reminder(
+                    reminderId = _state.value.reminderIdUpdate,
+                    reminderDate = _state.value.dateNextReminder.toString(),
+                    customer = _state.value.customer,
+                    description = _state.value.notesAppointment
+                )
+            )
+
+            when (result) {
+                is ResultExt.Error -> {
+                    _state.update {
+                        it.copy(
+                            isUpdateReminder = false,
+                            showDialogUpdateReminder = !it.showDialogUpdateReminder,
+                            error = UiText.DynamicString("Error al actualizar la cita"),
+                            isError = true
+                        )
+                    }
+                }
+                is ResultExt.Success -> {
+                    _state.update {
+                        val reminders = it.customer.reminders.toMutableList()
+                        val index = reminders.indexOfFirst { reminder -> reminder.reminderId == _state.value.reminderIdUpdate }
+                        reminders[index] = Reminder(
+                            reminderId = _state.value.reminderIdUpdate,
+                            reminderDate = _state.value.dateNextReminder.toString(),
+                            customer = _state.value.customer,
+                            description = _state.value.notesAppointment
+                        )
+                        it.copy(
+                            isUpdateReminder = false,
+                            showDialogUpdateReminder = !it.showDialogUpdateReminder,
+                            dateNextReminder = 0,
+                            notesAppointment = "",
+                            error = UiText.DynamicString("Cita actualizada con éxito"),
+                            isError = true,
+                            customer = it.customer.copy(
+                                reminders = reminders
+                            )
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    private fun createAppointment() {
         viewModelScope.launch(Dispatchers.IO) {
             _state.update {
                 it.copy(
@@ -64,7 +197,7 @@ class DetailLeadViewModel(
                 customerId = _state.value.customer.idCustomer,
                 description = _state.value.notesAppointment
             )
-            when(result) {
+            when (result) {
                 is ResultExt.Error -> {
                     _state.update {
                         it.copy(
@@ -78,6 +211,10 @@ class DetailLeadViewModel(
                         reminders.add(result.data)
                         it.copy(
                             showCreateDate = !it.showCreateDate,
+                            dateNextReminder = 0,
+                            notesAppointment = "",
+                            error = UiText.DynamicString("Cita creada con éxito"),
+                            isError = true,
                             customer = it.customer.copy(
                                 reminders = reminders
                             ),
@@ -88,6 +225,7 @@ class DetailLeadViewModel(
             }
         }
     }
+
     fun getCustomerById(id: Int) {
         viewModelScope.launch(Dispatchers.IO) {
             _state.update {
@@ -96,7 +234,7 @@ class DetailLeadViewModel(
                 )
             }
             val result = customerRepository.getCustomerById(id.toString())
-            when(result){
+            when (result) {
                 is ResultExt.Error -> {
                     _state.update {
                         it.copy(

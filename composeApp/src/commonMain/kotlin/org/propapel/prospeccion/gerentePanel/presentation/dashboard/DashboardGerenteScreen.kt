@@ -1,0 +1,392 @@
+@file:OptIn(ExperimentalMaterialApi::class)
+
+package org.propapel.prospeccion.gerentePanel.presentation.dashboard
+
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CalendarMonth
+import androidx.compose.material.icons.filled.Flag
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.outlined.Groups
+import androidx.compose.material.icons.outlined.Person
+import androidx.compose.material.pullrefresh.PullRefreshIndicator
+import androidx.compose.material.pullrefresh.pullRefresh
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.PointerIcon
+import androidx.compose.ui.input.pointer.pointerHoverIcon
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import coil3.compose.AsyncImage
+import org.jetbrains.compose.resources.DrawableResource
+import org.jetbrains.compose.resources.painterResource
+import org.propapel.prospeccion.core.domain.AuthInfo
+import org.propapel.prospeccion.core.presentation.designsystem.PrimaryYellowLight
+import org.propapel.prospeccion.core.presentation.designsystem.SoporteSaiBlue30
+import org.propapel.prospeccion.core.presentation.designsystem.SuccessGreen
+import org.propapel.prospeccion.core.presentation.designsystem.components.CalendarDatesCard
+import org.propapel.prospeccion.core.presentation.designsystem.components.DashboardCard
+import org.propapel.prospeccion.core.presentation.designsystem.components.LoadingPropapel
+import org.propapel.prospeccion.core.presentation.designsystem.components.PieChartLeadsStatus
+import org.propapel.prospeccion.core.presentation.designsystem.components.ProSalesActionButtonOutline
+import org.propapel.prospeccion.core.presentation.designsystem.components.handleResultView
+import org.propapel.prospeccion.root.presentation.dashboard.DashboardSMAction
+import org.propapel.prospeccion.root.presentation.dashboard.components.mobile.Banner
+import org.propapel.prospeccion.root.presentation.dashboard.components.mobile.BannerPager
+import org.propapel.prospeccion.root.presentation.dashboard.components.mobile.GoalCard
+import org.propapel.prospeccion.root.presentation.detailLead.components.ButtonItemDirectAccess
+import prospeccion.composeapp.generated.resources.Res
+import prospeccion.composeapp.generated.resources.logo
+import prospeccion.composeapp.generated.resources.merida
+import prospeccion.composeapp.generated.resources.mexico
+import prospeccion.composeapp.generated.resources.mid_reference
+import prospeccion.composeapp.generated.resources.monterrey
+import prospeccion.composeapp.generated.resources.no_internet
+
+@Composable
+fun DashboardGerenteScreenRoot(
+    user: AuthInfo,
+    viewModel: DashboardGerenteViewModel
+) {
+    val state by viewModel.state.collectAsState()
+    DashboardGerenteScreen(
+        state = state,
+        onAction = {
+
+        },
+        user = user
+    )
+}
+
+@Composable
+private fun DashboardGerenteScreen(
+    user: AuthInfo,
+    state: DashboardGerenteState,
+    onAction: (DashboardGerenteAction) -> Unit
+) {
+
+    val pullRefreshState =
+        rememberPullRefreshState(
+            state.isRefreshing,
+            { onAction(DashboardGerenteAction.OnRefresh) })
+
+
+    Box(
+        modifier = Modifier.fillMaxSize()
+            .pullRefresh(pullRefreshState).background(
+                Brush.verticalGradient(
+                    0f to PrimaryYellowLight,
+                    0.6f to SoporteSaiBlue30,
+                    1f to MaterialTheme.colorScheme.primary
+                )
+            )
+    ) {
+        val result = handleResultView(
+            isLoading = state.isLoading,
+            error = state.error,
+            errorContent = {
+                Column(
+                    modifier = Modifier.fillMaxSize().padding(16.dp),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Spacer(
+                        modifier = Modifier.weight(1f)
+                    )
+                    Image(
+                        modifier = Modifier.size(300.dp),
+                        painter = painterResource(Res.drawable.no_internet),
+                        contentDescription = null
+                    )
+                    Spacer(
+                        modifier = Modifier.height(8.dp)
+                    )
+                    Text(
+                        modifier = Modifier.padding(16.dp),
+                        textAlign = TextAlign.Center,
+                        text = it.asString(),
+                        color = Color.White,
+                        style = MaterialTheme.typography.titleMedium
+
+                    )
+                    Spacer(
+                        modifier = Modifier.weight(1f)
+                    )
+                    ProSalesActionButtonOutline(
+                        text = "Reintentar",
+                        onClick = {
+                            onAction(DashboardGerenteAction.OnRetryClick)
+                        },
+                        modifier = Modifier.padding(16.dp)
+                    )
+                }
+            },
+            contentLoading = {
+                LoadingPropapel()
+            }
+        )
+        if (result){
+            LazyColumn(
+                modifier = Modifier
+                    .background(Color.Transparent)
+                    .fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                item {
+                    Box(
+                        modifier = Modifier.height(220.dp).fillMaxWidth()
+                    ) {
+                        Box(
+                            modifier = Modifier.fillMaxWidth().height(170.dp).shadow(
+                                2.dp,
+                                RoundedCornerShape(
+                                    bottomEnd = 30.dp,
+                                    bottomStart = 30.dp
+                                )
+                            ).background(
+                                color = PrimaryYellowLight,
+                                shape = RoundedCornerShape(
+                                    bottomEnd = 30.dp,
+                                    bottomStart = 30.dp
+                                )
+                            )
+                        ) {
+                            Image(
+                                modifier = Modifier.fillMaxWidth().height(170.dp),
+                                painter = painterResource(getImageSucursal(user) ?: Res.drawable.mid_reference),
+                                contentDescription = null,
+                                contentScale = ContentScale.FillBounds
+                            )
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(170.dp)
+                                    .background(
+                                        brush = Brush.verticalGradient(
+                                            colors = listOf(
+                                                PrimaryYellowLight,
+                                                Color.Black.copy(alpha = 0.3f)
+                                            ),
+                                            startY = 0f,
+                                            endY = 100f
+                                        ),
+                                        shape = RoundedCornerShape(
+                                            bottomEnd = 30.dp,
+                                            bottomStart = 30.dp
+                                        )
+                                    )
+                            )
+                            Row(
+                                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Image(
+                                    modifier = Modifier.size(100.dp),
+                                    painter = painterResource(Res.drawable.logo),
+                                    contentDescription = null
+                                )
+                                Spacer(
+                                    modifier = Modifier.width(8.dp)
+                                )
+                                Column {
+                                    Text(
+                                        text = "Bienvenido",
+                                        style = MaterialTheme.typography.headlineMedium,
+                                        fontWeight = FontWeight.Bold,
+                                        color = Color.White
+                                    )
+                                    Text(
+                                        text = "${user.name} ${user.lastname}",
+                                        style = MaterialTheme.typography.titleSmall,
+                                        fontWeight = FontWeight.Bold,
+                                        color = Color.White
+                                    )
+
+                                }
+                                Spacer(
+                                    modifier = Modifier.weight(1f)
+                                )
+                                if (user.image.isNotBlank()) {
+                                    AsyncImage(
+                                        model = user.image,
+                                        contentDescription = "Image",
+                                        contentScale = ContentScale.Crop,
+                                        modifier = Modifier
+                                            .size(
+                                                90.dp
+                                            )
+                                            .clip(CircleShape)
+                                            .pointerHoverIcon(PointerIcon.Hand)
+                                            .border(
+                                                border = BorderStroke(
+                                                    2.dp,
+                                                    Color.White
+                                                ),
+                                                shape = CircleShape
+                                            )
+                                    )
+                                } else {
+                                    Box(
+                                        modifier = Modifier.size(90.dp).clip(CircleShape).background(Color.White),
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        Image(
+                                            imageVector = Icons.Outlined.Person,
+                                            contentDescription = "Image",
+                                            contentScale = ContentScale.Crop,
+                                            modifier = Modifier
+                                                .size(
+                                                    70.dp
+                                                )
+                                                .clip(CircleShape)
+                                                .pointerHoverIcon(PointerIcon.Hand)
+                                                .border(
+                                                    border = BorderStroke(
+                                                        2.dp,
+                                                        Color.White
+                                                    ),
+                                                    shape = CircleShape
+                                                )
+                                        )
+                                    }
+                                }
+                            }
+
+                        }
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth().align(Alignment.BottomCenter).padding(horizontal = 32.dp).clickable {
+
+                                }
+                        ) {
+                            ElevatedCard(
+                                shape = RoundedCornerShape(20.dp),
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(100.dp),
+                                elevation = CardDefaults.elevatedCardElevation(15.dp)
+                            ) {
+                                Row(
+                                    modifier = Modifier.fillMaxSize(),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    ButtonItemDirectAccess(
+                                        modifier = Modifier.padding(8.dp).weight(1f),
+                                        text = "Crear Lead",
+                                        icon = Icons.Filled.Person,
+                                        colors = listOf(
+                                            Color(0xFFFF6363),
+                                            Color(0xFFAB47BC)
+                                        ),
+                                        onClick = {
+                                        }
+                                    )
+                                    ButtonItemDirectAccess(
+                                        modifier = Modifier.padding(8.dp).weight(1f),
+                                        text = "Crear cita",
+                                        icon = Icons.Filled.CalendarMonth,
+                                        colors = listOf(
+                                            Color(0xFFFF6363),
+                                            Color(0xFFAB47BC)
+                                        ),
+                                        onClick = {
+                                        }
+                                    )
+                                    ButtonItemDirectAccess(
+                                        modifier = Modifier.padding(8.dp).weight(1f),
+                                        text = "Buscar Lead",
+                                        icon = Icons.Filled.Search,
+                                        colors = listOf(
+                                            Color(0xFFFF6363),
+                                            Color(0xFFAB47BC)
+                                        ),
+                                        onClick = {
+                                        }
+                                    )
+                                }
+                            }
+                        }
+
+                    }
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                }
+                item {
+                    Column(
+                        modifier = Modifier.fillMaxWidth().padding(8.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        BannerPager(
+                            items = listOf(
+                                Pair(
+                                    Banner(
+                                        id = 2,
+                                        description = "Oferta especial",
+                                        imageUrl = "https://firebasestorage.googleapis.com/v0/b/prosales-c49e5.appspot.com/o/SAI%20(2)-1200x400.jpg?alt=media&token=8b021601-63fc-4c9b-872e-0687c2610da0"
+                                    )
+                                ) {},
+                                Pair(
+                                    Banner(
+                                        id = 3,
+                                        description = "Otro descuento especial",
+                                        imageUrl = "https://firebasestorage.googleapis.com/v0/b/prosales-c49e5.appspot.com/o/banner_prueba.jpg?alt=media&token=ebc7287c-5c11-48ca-a354-e89f0864d2ae"
+                                    )
+                                ) {
+                                },
+                            )
+                        )
+                    }
+                }
+            }
+        }
+        PullRefreshIndicator(
+            refreshing = state.isRefreshing,
+            state = pullRefreshState,
+            modifier = Modifier.align(Alignment.TopCenter)
+        )
+    }
+}
+
+
+fun getImageSucursal(user: AuthInfo): DrawableResource?{
+    return when{
+        user.sucursales.contains("Propapel Merida") -> Res.drawable.merida
+        user.sucursales.contains("Propapel Monterrey") -> Res.drawable.monterrey
+        user.sucursales.contains("Propapel Mexico") -> Res.drawable.mexico
+        else -> null
+    }
+}

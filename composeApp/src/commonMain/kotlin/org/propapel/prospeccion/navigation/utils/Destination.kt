@@ -48,4 +48,7 @@ sealed interface Destination {
     @Serializable
     data class CreateInteraction(val customerId: String): Destination
 
+    @Serializable
+    data class CreateProject(val customerId: String): Destination
+
 }

@@ -43,6 +43,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
@@ -95,6 +96,8 @@ private fun LoginScreen(
     var toggleDialogForgotPassword by remember {
         mutableStateOf(false)
     }
+
+    val focusManager = LocalFocusManager.current
     Box(
         modifier = Modifier.fillMaxSize().background(
             Brush.verticalGradient(
@@ -172,6 +175,7 @@ private fun LoginScreen(
                         text = "Iniciar sessión",
                         isLoading = state.isLogging,
                         onClick = {
+                            focusManager.clearFocus()
                             onAction(LoginAction.OnLoginClick)
                         }
                     )

@@ -17,6 +17,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.Timer
+import androidx.compose.material.icons.outlined.CalendarMonth
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
@@ -45,6 +46,7 @@ import org.propapel.prospeccion.root.presentation.detailReminderCustomer.dayOfWe
 fun ItemCustomerReminder(
     modifier: Modifier = Modifier,
     reminder: Reminder,
+    isExpanded: Boolean = false,
     customer: Customer,
     onDetailReminder: (String) -> Unit
 ) {
@@ -52,10 +54,11 @@ fun ItemCustomerReminder(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp)
     ) {
         ElevatedCard(
-            shape = RoundedCornerShape(20.dp),
+            shape = RoundedCornerShape(
+                if(isExpanded) 0.dp else 20.dp
+            ),
             onClick = {
                 onDetailReminder(reminder.reminderId.toString())
             },
@@ -83,12 +86,10 @@ fun ItemCustomerReminder(
                         ),
                     contentAlignment = Alignment.Center
                 ) {
-                    Text(
-                        text = "Cita",
-                        color = Color.White,
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier
-                            .rotate(-90f)
+                    Icon(
+                        imageVector = Icons.Outlined.CalendarMonth,
+                        contentDescription = null,
+                        tint = Color.White,
                     )
                 }
                 // Right side with the date and schedule

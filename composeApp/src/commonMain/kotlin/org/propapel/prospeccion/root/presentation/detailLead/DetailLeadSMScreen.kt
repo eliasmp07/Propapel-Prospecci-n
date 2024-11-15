@@ -1,10 +1,14 @@
 package org.propapel.prospeccion.root.presentation.detailLead
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -18,9 +22,8 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBackIosNew
-import androidx.compose.material.icons.rounded.Business
-import androidx.compose.material.icons.rounded.Person
-import androidx.compose.material.icons.rounded.Phone
+import androidx.compose.material.icons.rounded.Check
+import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
@@ -41,26 +44,30 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.delay
 import org.jetbrains.compose.resources.painterResource
+import org.propapel.prospeccion.auth.presentation.login.LoginAction
 import org.propapel.prospeccion.core.presentation.designsystem.PrimaryYellowLight
 import org.propapel.prospeccion.core.presentation.designsystem.SoporteSaiBlue30
+import org.propapel.prospeccion.core.presentation.designsystem.SuccessGreen
 import org.propapel.prospeccion.core.presentation.designsystem.components.LoadingPropapel
 import org.propapel.prospeccion.core.presentation.designsystem.components.util.animateEnterBottom
-import org.propapel.prospeccion.core.presentation.designsystem.components.util.animateEnterFromLeft
 import org.propapel.prospeccion.root.presentation.detailLead.components.CreateReminderDialog
+import org.propapel.prospeccion.root.presentation.detailLead.components.DialogConfirmOption
 import org.propapel.prospeccion.root.presentation.detailLead.components.InfoLeadPagerScreen
 import org.propapel.prospeccion.root.presentation.detailLead.components.NotificationPager
+import org.propapel.prospeccion.root.presentation.detailLead.components.UpdateReminderDialog
 import prospeccion.composeapp.generated.resources.Res
 import prospeccion.composeapp.generated.resources.calendar_date
 import prospeccion.composeapp.generated.resources.cita_client
 import prospeccion.composeapp.generated.resources.customer_person
-import prospeccion.composeapp.generated.resources.notes_appointment
 import prospeccion.composeapp.generated.resources.products
 
 @Composable
 fun DetailCustomerSMScreenRoot(
     viewModel: DetailLeadViewModel,
     onUpdateCustomer: (String) -> Unit,
+    onCreateProject: (String)-> Unit,
     onAddInteractions: (String) -> Unit,
     onDetailReminderLead: (String) -> Unit,
     onBack: () -> Unit
@@ -70,6 +77,7 @@ fun DetailCustomerSMScreenRoot(
         state = state,
         onAction = { action ->
             when (action) {
+                is DetailLeadAction.OnCreateProject -> onCreateProject(action.customerId)
                 is DetailLeadAction.OnDetailReminderCustomer -> onDetailReminderLead(action.idReminder)
                 is DetailLeadAction.AddInteractionsClick -> onAddInteractions(action.idCustomer)
                 is DetailLeadAction.OnUpdateCustomerClick -> onUpdateCustomer(action.idCustomer)
@@ -88,6 +96,12 @@ fun DetailCustomerSMScreen(
     pages: Array<NotificationPager> = NotificationPager.entries.toTypedArray()
 
 ) {
+    LaunchedEffect(state.isError) {
+        if (state.isError) {
+            delay(2000) // Espera de 2 segundos
+            onAction(DetailLeadAction.HideError)
+        }
+    }
 
     val pagerState = rememberPagerState(pageCount = { pages.size })
     // Estado para la imagen a mostrar
@@ -108,7 +122,7 @@ fun DetailCustomerSMScreen(
             else -> "Productos interesados"
         }
     }
-
+    Box{
     Scaffold(
         topBar = {
             Row(
@@ -199,15 +213,71 @@ fun DetailCustomerSMScreen(
                     }
                 }
             }
+            if(state.showCancelNotification){
+                DialogConfirmOption(
+                    title = "Eliminar recordatorio",
+                    description = "¿Estas seguro de eliminar el recordatorio?",
+                    textButton = "Eliminar",
+                    onAcceptOption = {
+                        onAction(DetailLeadAction.OnConfirmCancelarReminder)
+                    },
+                    onDismissRequest = {
+                        onAction(DetailLeadAction.OnToggleDeleteReminderConfirm)
+                    }
+                )
+            }
+            if(state.showDialogUpdateReminder){
+                UpdateReminderDialog(
+                    state = state,
+                    onAction = onAction,
+                    onDismissRequest = {
+                        onAction(DetailLeadAction.OnDimissUpdateReminder)
+                    }
+                )
+            }
+            if (state.showCreateDate){
+                CreateReminderDialog(
+                    state = state,
+                    onAction = onAction,
+                    onDismissRequest = {
+                        onAction(DetailLeadAction.OnToggleCreateAppointmentDialog)
+                    }
+                )
+            }
         }
     }
-    if (state.showCreateDate){
-        CreateReminderDialog(
-            state = state,
-            onAction = onAction,
-            onDismissRequest = {
-                onAction(DetailLeadAction.OnToggleCreateAppointmentDialog)
+        AnimatedVisibility(
+            modifier = Modifier.align(Alignment.BottomCenter),
+            visible = state.isError,
+            enter = slideInVertically(
+                initialOffsetY = { it } // Aparece de abajo hacia arriba
+            ) + fadeIn(),
+            exit = slideOutVertically(
+                targetOffsetY = { it } // Desaparece de arriba hacia abajo
+            ) + fadeOut(),
+        ) {
+            ElevatedCard(
+                modifier = Modifier.padding(10.dp).align(Alignment.BottomCenter),
+                colors = CardDefaults.elevatedCardColors(
+                    containerColor = SuccessGreen
+                )
+            ){
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(10.dp)
+                ){
+                    Icon(
+                        imageVector = Icons.Rounded.Check,
+                        contentDescription = null,
+                        tint = Color.White
+                    )
+                    Text(
+                        text = state.error.asString(),
+                        color = Color.White,
+                        style = MaterialTheme.typography.bodyMedium,
+                        modifier = Modifier.padding(top = 4.dp)
+                    )
+                }
             }
-        )
+        }
     }
 }

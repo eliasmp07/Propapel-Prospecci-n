@@ -38,7 +38,15 @@ class CreateReminderViewModel(
     ) {
         when (action) {
             CreateReminderAction.CreateAppointmentClick -> {
-                createReminder()
+                if (validAvailableDate(convertLocalDate(_state.value.dateNextReminder))) {
+                    _state.update {
+                        it.copy(
+                            dateNoAvailable = !it.dateNoAvailable
+                        )
+                    }
+                }else{
+                    createReminder()
+                }
             }
             is CreateReminderAction.OnCustomerChange -> {
                 _state.update {
@@ -101,7 +109,7 @@ class CreateReminderViewModel(
 
     fun getAllReminders() {
         viewModelScope.launch(Dispatchers.IO){
-            val result = reminderRepository.getAllReminder()
+            val result = reminderRepository.getAllMyReminders()
             when (result) {
                 is ResultExt.Error -> {
                     _state.update {
@@ -150,7 +158,7 @@ class CreateReminderViewModel(
                     }
                     _state.update {
                         it.copy(
-                            customer = newList[0],
+                            customer = if (newList.isEmpty()) Customer() else newList[0],
                             customers = newList,
                             isLoading = false
                         )

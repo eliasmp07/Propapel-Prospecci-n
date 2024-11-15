@@ -22,6 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -32,6 +33,7 @@ fun ProSalesActionButton(
     isLoading: Boolean = false,
     modifier: Modifier = Modifier,
     textColor: Color = Color.Black,
+    shape: Shape = RoundedCornerShape(100f),
     enabled: Boolean = true,
     colors: ButtonColors =  ButtonDefaults.buttonColors(
         containerColor = MaterialTheme.colorScheme.primary,
@@ -47,7 +49,7 @@ fun ProSalesActionButton(
             .height(IntrinsicSize.Min),
         enabled = enabled,
         border = BorderStroke(2.dp, textColor),
-        shape = RoundedCornerShape(100f),
+        shape = shape,
         colors =colors,
         onClick = onClick,
         ) {
@@ -90,6 +92,7 @@ fun ProSalesActionButtonOutline(
     text: String,
     isLoading: Boolean = false,
     modifier: Modifier = Modifier,
+    shape: Shape = RoundedCornerShape(100f),
     textColor: Color = MaterialTheme.colorScheme.onBackground,
     borderColor: Color = MaterialTheme.colorScheme.onBackground,
     enabled: Boolean = true,
@@ -106,7 +109,7 @@ fun ProSalesActionButtonOutline(
             width = 0.5.dp,
             color = borderColor
         ),
-        shape = RoundedCornerShape(100f),
+        shape = shape,
         modifier = modifier
             .height(IntrinsicSize.Min)
     ) {

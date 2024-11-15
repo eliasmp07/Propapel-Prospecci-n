@@ -2,10 +2,12 @@ package org.propapel.prospeccion.root.presentation.di
 
 import org.koin.compose.viewmodel.dsl.viewModelOf
 import org.koin.dsl.module
+import org.propapel.prospeccion.gerentePanel.presentation.dashboard.DashboardGerenteViewModel
 import org.propapel.prospeccion.root.presentation.account.AccountSMViewModel
 import org.propapel.prospeccion.root.presentation.addlead.AddLeadViewModel
 import org.propapel.prospeccion.root.presentation.completeReminder.CompleteReminderViewModel
 import org.propapel.prospeccion.root.presentation.createInteraction.CreateInteractionViewModel
+import org.propapel.prospeccion.root.presentation.createProject.CreateProjectViewModel
 import org.propapel.prospeccion.root.presentation.createReminder.CreateReminderViewModel
 import org.propapel.prospeccion.root.presentation.dashboard.DashboardSMViewModel
 import org.propapel.prospeccion.root.presentation.dates.DatesSMViewModel
@@ -24,6 +26,7 @@ val proSalesPresentationModule = module {
     viewModelOf(::UpdateLeadViewModel)
     viewModelOf(::CreateReminderViewModel)
     viewModelOf(::CompleteReminderViewModel)
+    viewModelOf(::DashboardSMViewModel)
     viewModelOf(::DetailLeadViewModel)
     viewModelOf(::SearchLeadSMViewModel)
     viewModelOf(::DetailReminderCustomerViewModel)
@@ -33,5 +36,6 @@ val proSalesPresentationModule = module {
     viewModelOf(::DatesSMViewModel)
     viewModelOf(::LeadSMViewModel)
     viewModelOf(::UserSMViewModel)
-    viewModelOf(::DashboardSMViewModel)
+    viewModelOf(::DashboardGerenteViewModel)
+    viewModelOf(::CreateProjectViewModel)
 }

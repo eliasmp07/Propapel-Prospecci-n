@@ -67,6 +67,7 @@ import org.propapel.prospeccion.core.presentation.designsystem.components.Loadin
 import org.propapel.prospeccion.core.presentation.designsystem.components.PieChartLeadsStatus
 import org.propapel.prospeccion.core.presentation.designsystem.components.ProSalesActionButtonOutline
 import org.propapel.prospeccion.core.presentation.designsystem.components.handleResultView
+import org.propapel.prospeccion.gerentePanel.presentation.dashboard.getImageSucursal
 import org.propapel.prospeccion.root.presentation.dashboard.DashboardSMAction
 import org.propapel.prospeccion.root.presentation.dashboard.DashboardSMState
 import org.propapel.prospeccion.root.presentation.dashboard.components.ShimmerEffectDashboard
@@ -77,6 +78,7 @@ import prospeccion.composeapp.generated.resources.customer_person
 import prospeccion.composeapp.generated.resources.empty_info
 import prospeccion.composeapp.generated.resources.login_img
 import prospeccion.composeapp.generated.resources.logo
+import prospeccion.composeapp.generated.resources.mid_reference
 import prospeccion.composeapp.generated.resources.no_internet
 import prospeccion.composeapp.generated.resources.person_with_phone
 
@@ -174,6 +176,28 @@ fun DashboardScreenMobile(
                                 )
                             )
                         ) {
+                            Image(
+                                modifier = Modifier.fillMaxWidth().height(170.dp),
+                                painter = painterResource(getImageSucursal(user)?:Res.drawable.mid_reference),
+                                contentDescription = null,
+                                contentScale = ContentScale.FillBounds
+                            )
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(170.dp)
+                                    .background(
+                                        brush = Brush.verticalGradient(
+                                            colors = listOf(PrimaryYellowLight, Color.Black.copy(alpha = 0.3f)),
+                                            startY = 0f,
+                                            endY = 100f
+                                        ),
+                                        shape = RoundedCornerShape(
+                                            bottomEnd = 30.dp,
+                                            bottomStart = 30.dp
+                                        )
+                                    )
+                            )
                             Row(
                                 modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
                                 verticalAlignment = Alignment.CenterVertically
@@ -191,13 +215,19 @@ fun DashboardScreenMobile(
                                         text = "Bienvenido",
                                         style = MaterialTheme.typography.headlineMedium,
                                         fontWeight = FontWeight.Bold,
-                                        color = Color.Black
+                                        color = Color.White
                                     )
                                     Text(
                                         text = "${user.name} ${user.lastname}",
                                         style = MaterialTheme.typography.titleSmall,
                                         fontWeight = FontWeight.Bold,
-                                        color = Color.Black
+                                        color = Color.White
+                                    )
+                                    Text(
+                                        text = user.sucursales.first(),
+                                        style = MaterialTheme.typography.titleSmall,
+                                        fontWeight = FontWeight.Bold,
+                                        color = Color.White
                                     )
                                 }
                                 Spacer(

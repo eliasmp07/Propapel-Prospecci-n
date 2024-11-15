@@ -67,6 +67,7 @@ class DashboardSMViewModel(
         getAllMyReminders()
         getMyInteractions()
         getAllCustomers()
+        getMyCustomer()
     }
 
     private fun getAllCustomers() {

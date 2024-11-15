@@ -23,3 +23,4 @@ object TimeUtils {
     val dayOfWeekNow = Clock.System.now().toLocalDateTime(TimeZone.UTC).dayOfWeek
     val dayOfYearNow = Clock.System.now().toLocalDateTime(TimeZone.UTC).dayOfYear
 }
+

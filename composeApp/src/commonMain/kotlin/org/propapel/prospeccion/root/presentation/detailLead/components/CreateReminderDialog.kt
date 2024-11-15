@@ -68,7 +68,7 @@ fun CreateReminderDialog(
         mutableStateOf(false)
     }
 
-    val date = Clock.System.now().toLocalDateTime(TimeZone.UTC)
+    val date = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
     var selectedDate by remember { mutableStateOf("${date.dayOfMonth}-${date.monthNumber}-${date.year} ${date.hour}:${date.minute} ${typeHour(date.hour)}") }
 
     val focusManager = LocalFocusManager.current
@@ -150,6 +150,7 @@ fun CreateReminderDialog(
                         text = "Crear cita",
                         isLoading = state.isCreatingAppointment,
                         onClick = {
+                            focusManager.clearFocus()
                             onAction(DetailLeadAction.CreateAppointmentClick)
                         }
                     )
@@ -167,6 +168,7 @@ fun CreateReminderDialog(
                 fontWeight = FontWeight.Bold,
                 color = Color(0xFF333333),
             ),
+            timeFormat = TimeFormat.AM_PM,
             doneLabelStyle = TextStyle(
                 fontSize = 16.sp,
                 fontWeight = FontWeight(600),
@@ -175,7 +177,6 @@ fun CreateReminderDialog(
             selectorProperties = WheelPickerDefaults.selectorProperties(
                 borderColor = Color.LightGray,
             ),
-            timeFormat = TimeFormat.AM_PM,
             dateTextColor = Color(0xff007AFF),
             rowCount = 5,
             height = 170.dp,

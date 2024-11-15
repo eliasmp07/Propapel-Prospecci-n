@@ -1,6 +1,5 @@
 package org.propapel.prospeccion.root.presentation.homeRoot
 
-import androidx.compose.runtime.Stable
 import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
