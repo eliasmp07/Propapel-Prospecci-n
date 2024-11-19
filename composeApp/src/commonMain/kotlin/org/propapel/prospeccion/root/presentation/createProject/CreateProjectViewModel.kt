@@ -9,15 +9,18 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.datetime.Clock
 import org.propapel.prospeccion.core.domain.ResultExt
 import org.propapel.prospeccion.root.domain.models.Customer
 import org.propapel.prospeccion.root.domain.models.Purchase
 import org.propapel.prospeccion.root.domain.models.PurchaseRequest
 import org.propapel.prospeccion.root.domain.repository.CustomerRepository
+import org.propapel.prospeccion.root.domain.repository.ProductRepository
 import org.propapel.prospeccion.root.domain.repository.ProjectRepository
 
 class CreateProjectViewModel(
     private val projectRepository: ProjectRepository,
+    private val productRepository: ProductRepository,
     private val customerRepository: CustomerRepository
 ) : ViewModel() {
 
@@ -54,6 +57,7 @@ class CreateProjectViewModel(
                     )
                     _state.update {
                         it.copy(
+
                             purchases = purchases,
                             productsProject = products
                         )
@@ -97,29 +101,48 @@ class CreateProjectViewModel(
                 }
             }
             is CreateProjectAction.OnUpdateAmountProduct -> {
-                val products = _state.value.productsProject
-                val index = products.indexOf(action.product)
+                // Buscar el índice del producto en la lista actual
+                val products = _state.value.productsProject.toMutableList()
+                val index = products.indexOfFirst { it.purcheseId == action.product.purcheseId }
 
                 if (index != -1) {
-                    // Crear una copia del producto con el valor actualizado
+                    // Crear una copia del producto con el nuevo valor de `amount`
                     val updatedProduct = products[index].copy(
-                        amount = action.product.amount // Supongamos que `newAmount` es el valor actualizado
+                        amount = action.product.amount// Aquí asegúrate de pasar el valor actualizado
                     )
 
-                    // Crear una nueva lista con el producto actualizado
-                    val updatedProducts = products.toMutableList().apply {
-                        this[index] = updatedProduct
-                    }
+                    // Reemplazar el producto en la lista
+                    products[index] = updatedProduct
 
-                    // Actualizar el estado con la nueva lista
+                    // Actualizar el estado con la lista modificada
                     _state.update {
                         it.copy(
-                            productsProject = updatedProducts
+                            productsProject = products
                         )
                     }
-
                 }
             }
+            is CreateProjectAction.OnPriceProductChange ->{
+                _state.update {
+                    it.copy(
+                        amoutProduct = action.price
+                    )
+                }
+            }
+            is CreateProjectAction.OnProductNameChange -> {
+                _state.update {
+                    it.copy(
+                        productServiceName = action.product
+                    )
+                }
+            }
+            CreateProjectAction.OnCreateProductClick -> {
+                createProduct()
+            }
+            is CreateProjectAction.OnCreateProject -> {
+                createProject(action.totalProyect)
+            }
+            else -> Unit
         }
     }
 
@@ -138,8 +161,11 @@ class CreateProjectViewModel(
                 }
                 is ResultExt.Success -> {
                     _state.update {
+                        val purchasesFilter = result.data.purchase.filter {purchase ->
+                            !purchase.isIntoProduct
+                        }
                         it.copy(
-                            purchases = result.data.purchase,
+                            purchases = purchasesFilter,
                             customer = result.data
                         )
                     }
@@ -148,4 +174,95 @@ class CreateProjectViewModel(
         }
 
     }
+
+    private fun createProduct(){
+        viewModelScope.launch(
+            Dispatchers.IO
+        ) {
+            _state.update {
+                it.copy(
+                    isCreatingProduct = true
+                )
+            }
+            val result = productRepository.create(
+                customerId = _state.value.customer.idCustomer,
+                amount = _state.value.amoutProduct.toDouble(),
+                productServiceName = _state.value.productServiceName,
+                purchaseDate = Clock.System.now().toEpochMilliseconds()
+            )
+
+            when(result){
+                is ResultExt.Error -> {
+                    _state.update {
+                        it.copy(
+                            isCreatingProduct = false
+                        )
+                    }
+                }
+                is ResultExt.Success -> {
+                    val products = _state.value.productsProject.toMutableList()
+                    products.add(
+                        Purchase(
+                            purcheseId = result.data.purcheseId,
+                            productServiceName = result.data.productServiceName,
+                            isIntoProduct = true,
+                            amount = result.data.amount,
+                            purchaseDate = result.data.purchaseDate
+                        )
+                    )
+                    _state.update {
+                        it.copy(
+                            successCreateProduct = !it.successCreateProduct,
+                            isCreatingProduct = false,
+                            productServiceName = "Selecciona una opción",
+                            amoutProduct = "",
+                            productsProject = products
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    private fun createProject(
+        totalProject: Double
+    ){
+        viewModelScope.launch(Dispatchers.IO) {
+            _state.update {
+                it.copy(
+                    isCreatingProduct = true
+                )
+            }
+            val result = projectRepository.createProject(
+                customerId = _state.value.customer.idCustomer.toString(),
+                nameProject = _state.value.nameProject,
+                totalProject = totalProject,
+                stateProeject = _state.value.stateProject,
+                priority = _state.value.priorityProject,
+                progressProject = 90,
+                products = _state.value.productsProject
+            )
+
+            when(result){
+                is ResultExt.Error -> {
+                    _state.update {
+                        it.copy(
+                            isCreatingProduct = false,
+                            stateScreen = CreateProjectScreenState.ERROR_CREATE
+                        )
+                    }
+                }
+                is ResultExt.Success -> {
+                    _state.update {
+                        it.copy(
+                            isCreatingProduct = false,
+                            stateScreen = CreateProjectScreenState.SUCCESS_CREATE
+                        )
+                    }
+                }
+            }
+        }
+    }
 }
+
+expect fun formatString(value:Double): String

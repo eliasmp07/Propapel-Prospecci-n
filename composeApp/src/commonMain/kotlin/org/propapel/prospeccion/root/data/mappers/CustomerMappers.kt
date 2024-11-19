@@ -4,6 +4,7 @@ import org.propapel.prospeccion.root.data.dto.customer.CreatePurchaseRequest
 import org.propapel.prospeccion.root.data.dto.customer.InteractionDto
 import org.propapel.prospeccion.root.data.dto.customer.OpportunityDto
 import org.propapel.prospeccion.root.data.dto.reminder.CustomerDto
+import org.propapel.prospeccion.root.data.dto.reminder.PurchaseResponseCreateDto
 import org.propapel.prospeccion.root.data.dto.reminder.PurchaseResponseDto
 import org.propapel.prospeccion.root.data.dto.reminder.ReminderDto2
 import org.propapel.prospeccion.root.domain.models.Customer
@@ -44,6 +45,16 @@ fun PurchaseResponseDto.toPurchase(): Purchase{
         purcheseId = purcheseId,
         isIntoProduct = isIntoProduct,
         amount = amount
+    )
+}
+
+fun PurchaseResponseCreateDto.toPurchase(): Purchase{
+    return Purchase(
+        purchaseDate = purchaseDate,
+        productServiceName = productServiceName,
+        purcheseId = purcheseId,
+        isIntoProduct = isIntoProduct,
+        amount = amount.toString()
     )
 }
 

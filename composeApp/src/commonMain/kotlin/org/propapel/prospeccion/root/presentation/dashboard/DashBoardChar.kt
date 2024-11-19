@@ -56,7 +56,10 @@ fun DashboardChart(
         .mapValues { (it.value / orders.sumOf { order -> order.amount.toDouble() }) * 100 }
 
 
-    val xAxisData = listOf("Rollitos", "", "28", "55", "75", "100")
+    val xAxisData:MutableList<String> = mutableListOf()
+    products.forEach {
+        xAxisData.add(it.name.take(4))
+    }
     val xAxisDataPoints = xAxisData.size
 
     val testLineParameters: List<LineParameters> =
@@ -115,7 +118,7 @@ fun DashboardChart(
                     color = Color.Gray,
                 ),
                 xAxisStyle = TextStyle(
-                    fontSize = 14.sp,
+                    fontSize = 12.sp,
                     color = Color.Gray,
                     fontWeight = FontWeight.W400
                 ),

@@ -37,6 +37,7 @@ import androidx.compose.ui.window.rememberWindowState
 import kotlinx.coroutines.delay
 import org.jetbrains.compose.resources.painterResource
 import org.koin.mp.KoinPlatform.getKoin
+import org.propapel.prospeccion.core.presentation.designsystem.components.ProvideDesktopPlatformConfiguration
 import org.propapel.prospeccion.di.initKoin
 import org.propapel.prospeccion.navigation.RootGraph
 import prospeccion.composeapp.generated.resources.Res
@@ -84,13 +85,16 @@ fun main(){
                     350,
                     600
                 )
-                App(
-                    content = {
-                        RootGraph(
-                            isLogging = viewModel.state.isLoggedIn
-                        )
-                    }
-                )
+                ProvideDesktopPlatformConfiguration {
+                    App(
+                        content = {
+                            RootGraph(
+                                isLogging = viewModel.state.isLoggedIn
+                            )
+                        }
+                    )
+                }
+
             }
         }
 

@@ -12,5 +12,9 @@ data class CreateProjectState(
     val priorityProject: String = "Seleccione una opcion",
     val nameProject: String ="",
     val progressProyect: String = "",
-    val productsProject: List<Purchase> = listOf()
+    val productsProject: List<Purchase> = listOf(),
+    val productServiceName: String = "Seleciona una opcion",
+    val successCreateProduct: Boolean = false,
+    val amoutProduct: String = "",
+    val isCreatingProduct: Boolean = false
 )

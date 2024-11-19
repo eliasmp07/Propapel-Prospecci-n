@@ -27,6 +27,15 @@ data class PurchaseResponseDto(
     @SerialName("purchase_id") val purcheseId: Int,
     @SerialName("isIntoProduct") val isIntoProduct: Boolean,
     @SerialName("product_service_name")val productServiceName: String,
-    @SerialName("purchase_date")val purchaseDate: Int,
+    @SerialName("purchase_date")val purchaseDate: Long,
     val amount: String
+)
+
+@Serializable
+data class PurchaseResponseCreateDto(
+    @SerialName("purchase_id") val purcheseId: Int,
+    @SerialName("isIntoProduct") val isIntoProduct: Boolean,
+    @SerialName("product_service_name")val productServiceName: String,
+    @SerialName("purchase_date")val purchaseDate: Long,
+    val amount: Int
 )

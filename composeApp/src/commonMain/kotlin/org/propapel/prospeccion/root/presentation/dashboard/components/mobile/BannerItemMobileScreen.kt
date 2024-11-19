@@ -26,7 +26,7 @@ fun BannerItemMobileScreen(
     banner: Banner,
 ) {
     ElevatedCard(
-        modifier = modifier.padding(horizontal = 8.dp),
+        modifier = modifier,
         shape = RoundedCornerShape(20.dp),
         onClick = {
         }

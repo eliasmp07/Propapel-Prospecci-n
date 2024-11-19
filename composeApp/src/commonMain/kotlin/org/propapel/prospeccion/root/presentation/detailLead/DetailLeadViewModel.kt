@@ -2,6 +2,7 @@ package org.propapel.prospeccion.root.presentation.detailLead
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,11 +15,13 @@ import org.propapel.prospeccion.core.presentation.ui.UiText
 import org.propapel.prospeccion.root.domain.models.Customer
 import org.propapel.prospeccion.root.domain.models.Reminder
 import org.propapel.prospeccion.root.domain.repository.CustomerRepository
+import org.propapel.prospeccion.root.domain.repository.ProjectRepository
 import org.propapel.prospeccion.root.domain.repository.ReminderRepository
 
 class DetailLeadViewModel(
     private val customerRepository: CustomerRepository,
-    private val reminderRepository: ReminderRepository
+    private val reminderRepository: ReminderRepository,
+    private val projectRepository: ProjectRepository
 ) : ViewModel() {
 
     private var _state = MutableStateFlow(DetailLeadSMState())
@@ -90,10 +93,34 @@ class DetailLeadViewModel(
 
                 }
             }
+            is DetailLeadAction.OnDeleteProject -> {
+                _state.update {
+                    it.copy(
+                        projectDelete = action.project
+                    )
+                }
+            }
+            DetailLeadAction.OnConfirmProject ->{
+                deleteProject()
+            }
             DetailLeadAction.OnDimissUpdateReminder -> {
                 _state.update {
                     it.copy(
                         showDialogUpdateReminder = !it.showDialogUpdateReminder
+                    )
+                }
+            }
+            is DetailLeadAction.OnMotivosChange -> {
+                _state.update {
+                    it.copy(
+                        motivos = action.motivos
+                    )
+                }
+            }
+            is DetailLeadAction.OnCompetenciaChange -> {
+                _state.update {
+                    it.copy(
+                        competencia = action.competencia
                     )
                 }
             }
@@ -226,6 +253,71 @@ class DetailLeadViewModel(
         }
     }
 
+    private fun deleteProject(){
+        viewModelScope.launch(Dispatchers.IO) {
+            _state.update {
+                it.copy(
+                    isDeletingProject = true
+                )
+            }
+            val result = projectRepository.deleteProject(
+                projectId = _state.value.projectDelete.id,
+                motivos = _state.value.motivos,
+                comments = _state.value.comments,
+                competencia = _state.value.competencia
+            )
+            _state.update {
+                it.copy(
+                    isDeletingProject = false
+                )
+            }
+            when(result){
+                is ResultExt.Error -> {
+                    _state.update {
+                        it.copy(
+                            successDelete = false
+                        )
+                    }
+                }
+                is ResultExt.Success -> {
+                    _state.update{
+                        val projects = it.project.filter { it != _state.value.projectDelete }
+                        it.copy(
+                            project = projects,
+                            error = UiText.DynamicString("Proyecto eliminado con éxito"),
+                            isError = true,
+                            successDelete = true
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    fun getProjectByCustomerId(id: Int){
+        viewModelScope.launch(Dispatchers.IO) {
+            val result = projectRepository.getProjectByCustomerId(id.toString())
+            when(result){
+                is ResultExt.Error -> {
+                    _state.update {
+                        it.copy(
+                            project = emptyList()
+                        )
+                    }
+                }
+                is ResultExt.Success -> {
+                    _state.update {
+                        val projectsFilter = result.data.filter {
+                            !it.isCancel
+                        }
+                        it.copy(
+                            project = projectsFilter
+                        )
+                    }
+                }
+            }
+        }
+    }
     fun getCustomerById(id: Int) {
         viewModelScope.launch(Dispatchers.IO) {
             _state.update {
@@ -233,6 +325,7 @@ class DetailLeadViewModel(
                     isLoading = true
                 )
             }
+            getProjectByCustomerId(id)
             val result = customerRepository.getCustomerById(id.toString())
             when (result) {
                 is ResultExt.Error -> {

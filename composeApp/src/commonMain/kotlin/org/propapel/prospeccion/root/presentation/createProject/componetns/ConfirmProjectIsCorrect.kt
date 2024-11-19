@@ -50,6 +50,7 @@ import org.propapel.prospeccion.core.presentation.designsystem.components.ProSal
 import org.propapel.prospeccion.root.presentation.createProject.CreateProjectAction
 import org.propapel.prospeccion.root.presentation.createProject.CreateProjectScreenState
 import org.propapel.prospeccion.root.presentation.createProject.CreateProjectState
+import org.propapel.prospeccion.root.presentation.createProject.formatString
 import prospeccion.composeapp.generated.resources.Res
 import prospeccion.composeapp.generated.resources.ic_product_otline
 import prospeccion.composeapp.generated.resources.project_confirm
@@ -59,6 +60,9 @@ fun ConfirmProjectIsCorrect(
     state: CreateProjectState,
     onAction: (CreateProjectAction) -> Unit
 ) {
+    val value = state.productsProject.sumOf {
+        it.amount.toDouble()
+    }
     val heightSize = 320.dp
     Column(
         modifier = Modifier.fillMaxSize()
@@ -81,6 +85,8 @@ fun ConfirmProjectIsCorrect(
                     )
                 )
                 {
+
+                    val resultSumString = formatString(value)
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -108,7 +114,7 @@ fun ConfirmProjectIsCorrect(
                         Spacer(modifier = Modifier.height(16.dp))
                         Row(
                             modifier = Modifier.fillMaxWidth()
-                        ){
+                        ) {
                             Column {
                                 Text(
                                     text = "Nombre del proyecto:",
@@ -148,7 +154,7 @@ fun ConfirmProjectIsCorrect(
                                     style = MaterialTheme.typography.bodyMedium,
                                 )
                                 Text(
-                                    text = "$100.00",
+                                    text = "$$resultSumString",
                                     style = MaterialTheme.typography.bodyMedium
                                 )
                             }
@@ -195,9 +201,10 @@ fun ConfirmProjectIsCorrect(
         ) {
             ProSalesActionButton(
                 text = "Confirmar",
+                isLoading = state.isCreatingProduct,
                 textColor = Color.White,
                 onClick = {
-
+                    onAction(CreateProjectAction.OnCreateProject(value))
                 }
             )
             Spacer(

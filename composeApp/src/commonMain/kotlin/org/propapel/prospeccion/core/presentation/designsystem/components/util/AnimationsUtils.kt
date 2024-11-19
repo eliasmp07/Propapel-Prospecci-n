@@ -14,6 +14,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CardElevation
@@ -35,6 +36,32 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.util.lerp
+import kotlin.math.absoluteValue
+
+
+fun Modifier.carouselTransition(
+    page: Int,
+    pagerState: PagerState,
+): Modifier {
+    val pageOffset = ((pagerState.currentPage - page) + pagerState.currentPageOffsetFraction).absoluteValue
+    val scale = if (pageOffset < 0.5f) 1f else lerp(
+        start = 0.85f, // Escala mínima para páginas alejadas.
+        stop = 1f,     // Escala máxima para la página central.
+        fraction = 1f - pageOffset.coerceIn(0f, 1f)
+    )
+    val alpha = lerp(
+        start = 0.5f,  // Opacidad mínima.
+        stop = 1f,     // Opacidad máxima.
+        fraction = 1f - pageOffset.coerceIn(0f, 1f)
+    )
+    return this.graphicsLayer {
+        scaleX = scale
+        scaleY = scale
+        this.alpha = alpha
+    }
+}
+
 
 
 /**

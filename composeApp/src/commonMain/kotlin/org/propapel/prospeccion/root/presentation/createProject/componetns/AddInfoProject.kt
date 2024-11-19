@@ -10,7 +10,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Bookmark
+import androidx.compose.material.icons.filled.LowPriority
+import androidx.compose.material.icons.filled.PriorityHigh
+import androidx.compose.material.icons.filled.Start
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -48,32 +54,13 @@ fun AddInfoProject(
                 imeAction = ImeAction.Next
             )
         )
-        var expanded by remember {
-            mutableStateOf(false)
-        }
         Spacer(
             modifier = Modifier.height(16.dp)
         )
-        ExposedDropdownMenuGereric(
-            title = "Estado",
-            state = expanded,
-            colors = Color.Black,
-            onDimiss = {
-                expanded = !expanded
-            },
-            optionSelectable = state.stateProject,
-            listOptions = listOf("En curso", "Finalizado", "Cancelado"),
-            content = {
-                DropdownMenuItem(
-                    text = { Text(text = it) },
-                    onClick = {
-                        expanded = !expanded
-                        onAction(CreateProjectAction.OnStateProject(it))
-                    }
-                )
-            }
-        )
         var expandedPrioridad by remember {
+            mutableStateOf(false)
+        }
+        var expandedStus by remember {
             mutableStateOf(false)
         }
         Spacer(
@@ -91,6 +78,16 @@ fun AddInfoProject(
             content = {
                 DropdownMenuItem(
                     text = { Text(text = it) },
+                    leadingIcon = {
+                        Icon(
+                            imageVector =  when(it){
+                                "Alta" -> Icons.Filled.PriorityHigh
+                                "Media" -> Icons.Filled.Start
+                                else -> Icons.Filled.Bookmark
+                            },
+                            contentDescription = null
+                        )
+                    },
                     onClick = {
                         expandedPrioridad = !expandedPrioridad
                         onAction(CreateProjectAction.OnChangePriotityProject(it))
@@ -98,6 +95,29 @@ fun AddInfoProject(
                 )
             }
         )
+        Spacer(
+            modifier = Modifier.height(16.dp)
+        )
+        ExposedDropdownMenuGereric(
+            title = "Estado del proyecto",
+            state = expandedStus,
+            colors = Color.Black,
+            onDimiss = {
+                expandedStus = !expandedStus
+            },
+            optionSelectable = state.stateProject,
+            listOptions = listOf("Negociación", "Cerrado", "Venta perdida"),
+            content = {
+                DropdownMenuItem(
+                    text = { Text(text = it) },
+                    onClick = {
+                        expandedStus = !expandedStus
+                        onAction(CreateProjectAction.OnStateProject(it))
+                    }
+                )
+            }
+        )
+
         Spacer(
             modifier = Modifier.weight(1f)
         )
@@ -130,7 +150,7 @@ fun ButtonsContinueCreateProjectScreen(
                 onPreview()
             }
         )
-        Spacer(modifier = Modifier.weight(1f))
+        Spacer(modifier = Modifier.weight(0.2f))
         ProSalesActionButton(
             shape = RoundedCornerShape(10.dp),
             modifier = Modifier.weight(1f),

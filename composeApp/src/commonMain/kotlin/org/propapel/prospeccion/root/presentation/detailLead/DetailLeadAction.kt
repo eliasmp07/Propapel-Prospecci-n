@@ -1,9 +1,17 @@
 package org.propapel.prospeccion.root.presentation.detailLead
 
+import org.propapel.prospeccion.root.domain.models.Project
 import org.propapel.prospeccion.root.domain.models.Reminder
 
 sealed interface DetailLeadAction {
 
+    data class OnCommentsChange(val comments: String): DetailLeadAction
+    data class OnMotivosChange(val motivos: String): DetailLeadAction
+    data class OnCompetenciaChange(val competencia: String): DetailLeadAction
+
+    data class OnDeleteProject(val project: Project): DetailLeadAction
+
+    data object OnConfirmProject: DetailLeadAction
 
     data class OnUpdateReminder(val reminder: Reminder): DetailLeadAction
 

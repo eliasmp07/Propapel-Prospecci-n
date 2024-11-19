@@ -13,19 +13,27 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import org.propapel.prospeccion.root.presentation.createProject.CreateProjectScreenState.*
 import org.propapel.prospeccion.root.presentation.createProject.componetns.AddInfoProject
 import org.propapel.prospeccion.root.presentation.createProject.componetns.AddProductsProject
 import org.propapel.prospeccion.root.presentation.createProject.componetns.ConfirmProjectIsCorrect
+import org.propapel.prospeccion.root.presentation.createProject.componetns.ErrorCreateProject
+import org.propapel.prospeccion.root.presentation.createProject.componetns.SuccessCreateProject
 import org.propapel.prospeccion.root.presentation.createProject.componetns.WelcomeScreenProject
 
 @Composable
 fun CreateProjectScreenRoot(
-    viewModel: CreateProjectViewModel
+    viewModel: CreateProjectViewModel,
+    onBack: () -> Unit
 ) {
     val state by viewModel.state.collectAsState()
     CreateProjectScreen(
         state = state,
         onAction = { action ->
+            when(action){
+                CreateProjectAction.OnBackClick -> onBack()
+                else -> Unit
+            }
             viewModel.onAction(action)
         }
     )
@@ -46,26 +54,38 @@ private fun CreateProjectScreen(
             }
         ){ tarjetState ->
             when(tarjetState){
-                CreateProjectScreenState.WELCOME -> {
+                WELCOME -> {
                     WelcomeScreenProject(
                         state = state,
                         onAction = onAction
                     )
                 }
-                CreateProjectScreenState.ADD_INFO_PROJECT -> {
+                ADD_INFO_PROJECT -> {
                     AddInfoProject(
                         state = state,
                         onAction = onAction
                     )
                 }
-                CreateProjectScreenState.PRODUCTS_CHANGE -> {
+                PRODUCTS_CHANGE -> {
                     AddProductsProject(
                         state = state,
                         onAction = onAction
                     )
                 }
-                CreateProjectScreenState.CONFIRM_PROJECT -> {
+                CONFIRM_PROJECT -> {
                     ConfirmProjectIsCorrect(
+                        state = state,
+                        onAction = onAction
+                    )
+                }
+                SUCCESS_CREATE -> {
+                    SuccessCreateProject(
+                        state = state,
+                        onAction = onAction
+                    )
+                }
+                ERROR_CREATE -> {
+                    ErrorCreateProject(
                         state = state,
                         onAction = onAction
                     )
@@ -80,5 +100,7 @@ enum class CreateProjectScreenState {
     WELCOME,
     ADD_INFO_PROJECT,
     PRODUCTS_CHANGE,
-    CONFIRM_PROJECT
+    CONFIRM_PROJECT,
+    SUCCESS_CREATE,
+    ERROR_CREATE
 }

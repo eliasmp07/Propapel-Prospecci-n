@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package org.propapel.prospeccion.root.presentation.detailLead
 
 import androidx.compose.animation.AnimatedVisibility
@@ -24,20 +26,25 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material.icons.rounded.Close
+import androidx.compose.material3.Button
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -45,6 +52,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
 import org.propapel.prospeccion.auth.presentation.login.LoginAction
 import org.propapel.prospeccion.core.presentation.designsystem.PrimaryYellowLight
@@ -52,9 +60,12 @@ import org.propapel.prospeccion.core.presentation.designsystem.SoporteSaiBlue30
 import org.propapel.prospeccion.core.presentation.designsystem.SuccessGreen
 import org.propapel.prospeccion.core.presentation.designsystem.components.LoadingPropapel
 import org.propapel.prospeccion.core.presentation.designsystem.components.util.animateEnterBottom
+import org.propapel.prospeccion.core.presentation.ui.extensions.isTrue
+import org.propapel.prospeccion.root.domain.models.Project
 import org.propapel.prospeccion.root.presentation.detailLead.components.CreateReminderDialog
 import org.propapel.prospeccion.root.presentation.detailLead.components.DialogConfirmOption
 import org.propapel.prospeccion.root.presentation.detailLead.components.InfoLeadPagerScreen
+import org.propapel.prospeccion.root.presentation.detailLead.components.ModalBottomSheetDeleteProject
 import org.propapel.prospeccion.root.presentation.detailLead.components.NotificationPager
 import org.propapel.prospeccion.root.presentation.detailLead.components.UpdateReminderDialog
 import prospeccion.composeapp.generated.resources.Res
@@ -62,6 +73,7 @@ import prospeccion.composeapp.generated.resources.calendar_date
 import prospeccion.composeapp.generated.resources.cita_client
 import prospeccion.composeapp.generated.resources.customer_person
 import prospeccion.composeapp.generated.resources.products
+import prospeccion.composeapp.generated.resources.project_confirm
 
 @Composable
 fun DetailCustomerSMScreenRoot(
@@ -103,6 +115,10 @@ fun DetailCustomerSMScreen(
         }
     }
 
+    val sheetState = rememberModalBottomSheetState()
+    val scope = rememberCoroutineScope()
+    var showBottomSheet by remember { mutableStateOf(false) }
+
     val pagerState = rememberPagerState(pageCount = { pages.size })
     // Estado para la imagen a mostrar
     var currentImageResource by remember { mutableStateOf(Res.drawable.customer_person) }
@@ -113,13 +129,27 @@ fun DetailCustomerSMScreen(
             0 -> Res.drawable.customer_person // Cambia según la página
             1 -> Res.drawable.cita_client // Imagen para la página 1
             2 -> Res.drawable.calendar_date// Imagen para la página 2
-            else -> Res.drawable.products // Por defecto
+            3 -> Res.drawable.products
+            else -> Res.drawable.project_confirm // Por defecto
         }
         currentText  = when(pagerState.currentPage){
             0 -> "Informacion del cliente"
             1 -> "Interacciones"
             2 -> "Proximas citas"
-            else -> "Productos interesados"
+            3 -> "Productos interesados"
+            else -> "Proyectos"
+        }
+    }
+
+    LaunchedEffect(state.successDelete
+    ){
+        if (state.successDelete.isTrue()){
+            scope.launch { sheetState.hide() }.invokeOnCompletion {
+                if (!sheetState.isVisible) {
+                    showBottomSheet = false
+                }
+            }
+
         }
     }
     Box{
@@ -179,7 +209,7 @@ fun DetailCustomerSMScreen(
                         ) { text ->
                             Text(
                                 text = text,
-                                style = MaterialTheme.typography.headlineMedium,
+                                style = MaterialTheme.typography.titleMedium,
                             )
                         }
                         Crossfade(
@@ -208,7 +238,26 @@ fun DetailCustomerSMScreen(
                             customer = state.customer,
                             pagerState = pagerState,
                             pages = pages,
+                            onDeleteProject = {
+                                onAction(DetailLeadAction.OnDeleteProject(it))
+                                showBottomSheet = true
+                            },
+                            projects = state.project,
                             onAction = onAction
+                        )
+                    }
+                    if (showBottomSheet) {
+                        ModalBottomSheetDeleteProject(
+                            sheetState = sheetState,
+                            state = state,
+                            onDismissRequest = {
+                                showBottomSheet = false
+                                onAction(DetailLeadAction.OnDeleteProject(Project()))
+                            },
+                            onAction = onAction,
+                            onDeleteProject = {
+                                onAction(DetailLeadAction.OnConfirmProject)
+                            }
                         )
                     }
                 }

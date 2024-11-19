@@ -195,7 +195,10 @@ fun NavGraphBuilder.proSales(
                 viewModel.getCustomerById(customerId)
             }
             CreateProjectScreenRoot(
-                viewModel = viewModel
+                viewModel = viewModel,
+                onBack = {
+                    navController.navigateUp()
+                }
             )
         }
         composable<Destination.CompleteReminder> {

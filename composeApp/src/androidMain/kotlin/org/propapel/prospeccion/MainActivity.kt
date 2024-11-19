@@ -5,6 +5,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.pm.ActivityInfo
+import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
 import android.util.DisplayMetrics
@@ -47,6 +48,7 @@ import androidx.core.view.WindowCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.propapel.prospeccion.core.presentation.designsystem.SoporteSaiBlue30
+import org.propapel.prospeccion.core.presentation.designsystem.components.ProvideAndroidPlatformConfiguration
 import org.propapel.prospeccion.navigation.RootGraph
 import org.propapel.prospeccion.notifications.utils.HomeAskPermission
 import java.io.File
@@ -65,23 +67,27 @@ class MainActivity : ComponentActivity() {
         }
         setContent {
             if(!viewModel.state.isCheckingAuth) {
-                App(
-                    content = {
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                            HomeAskPermission(permission = Manifest.permission.POST_NOTIFICATIONS)
-                        }
-                        val  view = LocalView.current
-                        if (!view.isInEditMode){
-                            SideEffect {
-                                val windows = (view.context as Activity).window
-                                WindowCompat.getInsetsController(windows, view).isAppearanceLightStatusBars = true
+                ProvideAndroidPlatformConfiguration {
+                    App(
+                        content = {
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                                HomeAskPermission(permission = Manifest.permission.POST_NOTIFICATIONS)
                             }
+
+                            val  view = LocalView.current
+                            if (!view.isInEditMode){
+                                SideEffect {
+                                    val windows = (view.context as Activity).window
+                                    WindowCompat.getInsetsController(windows, view).isAppearanceLightStatusBars = true
+                                }
+                            }
+                            RootGraph(
+                                isLogging = viewModel.state.isLoggedIn
+                            )
                         }
-                        RootGraph(
-                            isLogging = viewModel.state.isLoggedIn
-                        )
-                    }
-                )
+                    )
+                }
+
             }
 
         }

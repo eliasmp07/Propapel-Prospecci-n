@@ -1,9 +1,11 @@
-@file:OptIn(ExperimentalMaterial3WindowSizeClassApi::class,
-            ExperimentalMaterial3Api::class
+@file:OptIn(
+    ExperimentalMaterial3WindowSizeClassApi::class,
+    ExperimentalMaterial3Api::class
 )
 
 package org.propapel.prospeccion.gerentePanel.presentation.root
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
@@ -25,6 +27,7 @@ import androidx.compose.material.icons.outlined.Groups
 import androidx.compose.material.icons.outlined.MyLocation
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -212,41 +215,44 @@ fun GerentePanelScreen(
         },
         bottomBar = {
             if (!showNavigationRail) {
-                NavigationBar(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .windowInsetsPadding(WindowInsets.ime),
-                    containerColor = Color(0xFF007BFF),
-                    tonalElevation = 8.dp
-                ) {
-                    items.forEachIndexed { index, item ->
-                        NavigationBarItem(
-                            colors = NavigationBarItemDefaults.colors(
-                                selectedIconColor = SoporteSaiWhite,
-                                selectedTextColor = SoporteSaiWhite,
-                                indicatorColor = Color.Transparent,
-                                unselectedTextColor = SoporteSaiBlack,
-                                unselectedIconColor = SoporteSaiBlack
-                            ),
-                            selected = selectedItemIndex == index,
-                            onClick = {
-                                selectedItemIndex = index
-                                corrutine.launch {
-                                    pagerState.animateScrollToPage(index)
+                Column(modifier = Modifier.fillMaxWidth()) {
+                    HorizontalDivider()
+                    NavigationBar(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .windowInsetsPadding(WindowInsets.ime),
+                        containerColor = Color(0xFF007BFF),
+                        tonalElevation = 8.dp
+                    ) {
+                        items.forEachIndexed { index, item ->
+                            NavigationBarItem(
+                                colors = NavigationBarItemDefaults.colors(
+                                    selectedIconColor = SoporteSaiWhite,
+                                    selectedTextColor = SoporteSaiWhite,
+                                    indicatorColor = Color.Transparent,
+                                    unselectedTextColor = SoporteSaiBlack,
+                                    unselectedIconColor = SoporteSaiBlack
+                                ),
+                                selected = selectedItemIndex == index,
+                                onClick = {
+                                    selectedItemIndex = index
+                                    corrutine.launch {
+                                        pagerState.animateScrollToPage(index)
+                                    }
+                                },
+                                icon = {
+                                    Icon(
+                                        imageVector = if (selectedItemIndex == index) item.selectedIcon else item.unselectedIcon,
+                                        contentDescription = item.title
+                                    )
+                                },
+                                label = {
+                                    if (selectedItemIndex == index) {
+                                        Text(item.title)
+                                    }
                                 }
-                            },
-                            icon = {
-                                Icon(
-                                    imageVector = if (selectedItemIndex == index) item.selectedIcon else item.unselectedIcon,
-                                    contentDescription = item.title
-                                )
-                            },
-                            label = {
-                                if (selectedItemIndex == index) {
-                                    Text(item.title)
-                                }
-                            }
-                        )
+                            )
+                        }
                     }
                 }
             }
@@ -280,7 +286,7 @@ fun GerentePanelScreen(
                     when (page) {
                         0 -> {
                             DashboardGerenteScreenRoot(
-                                user =state.user,
+                                user = state.user,
                                 viewModel = dashboardGerenteViewModel
                             )
                         }
@@ -327,7 +333,7 @@ fun GerentePanelScreen(
                     when (page) {
                         0 -> {
                             DashboardGerenteScreenRoot(
-                                user =state.user,
+                                user = state.user,
                                 viewModel = dashboardGerenteViewModel
                             )
                         }

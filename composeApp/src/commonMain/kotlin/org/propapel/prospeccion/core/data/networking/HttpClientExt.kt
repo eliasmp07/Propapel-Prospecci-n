@@ -74,6 +74,18 @@ suspend inline fun <reified Response: Any> HttpClient.delete(
     }
 }
 
+suspend inline fun <reified Request, reified Response: Any> HttpClient.delete(
+    route: String,
+    body: Request
+): ResultExt<Response, DataError.Network> {
+    return safeCall {
+        delete {
+            url(constructRoute(route))
+            setBody(body)
+        }
+    }
+}
+
 suspend inline fun <reified T> safeCall(execute: () -> HttpResponse): ResultExt<T, DataError.Network> {
     val response = try {
         execute()

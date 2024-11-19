@@ -4,12 +4,20 @@ import androidx.compose.runtime.Stable
 import kotlinx.datetime.Clock
 import org.propapel.prospeccion.core.presentation.ui.UiText
 import org.propapel.prospeccion.root.domain.models.Customer
+import org.propapel.prospeccion.root.domain.models.Project
 import org.propapel.prospeccion.root.domain.models.Reminder
 
 @Stable
 data class DetailLeadSMState(
     val isLoading: Boolean = false,
+    val isDeletingProject: Boolean = false,
+    val competencia: String = "",
+    val motivos: String = "",
+    val comments: String = "",
+    val projectDelete: Project = Project(),
+    val successDelete: Boolean = false,
     val customer: Customer = Customer(),
+    val project: List<Project> = listOf(),
     val isError: Boolean = false,
     val error: UiText = UiText.DynamicString("Error"),
     val showCreateDate: Boolean = false,

@@ -43,7 +43,7 @@ import prospeccion.composeapp.generated.resources.ic_product_otline
 fun ItemProductInteresed(
     purchase: Purchase
 ) {
-    val date = Instant.fromEpochMilliseconds(purchase.purchaseDate.toLong()).toLocalDateTime(TimeZone.UTC)
+
     Box(
         modifier = Modifier
             .fillMaxWidth().padding(16.dp)

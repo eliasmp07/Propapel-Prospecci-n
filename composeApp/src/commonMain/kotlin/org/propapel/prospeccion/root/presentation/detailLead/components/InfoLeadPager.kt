@@ -74,11 +74,13 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.propapel.prospeccion.core.presentation.designsystem.components.ProSalesActionButtonOutline
 import org.propapel.prospeccion.root.domain.models.Customer
 import org.propapel.prospeccion.root.domain.models.Interaction
+import org.propapel.prospeccion.root.domain.models.Project
 import org.propapel.prospeccion.root.presentation.dashboard.components.monthGet
 import org.propapel.prospeccion.root.presentation.detailLead.DetailLeadAction
 import org.propapel.prospeccion.root.presentation.detailReminderCustomer.dayOfWeekSpanish
 import org.propapel.prospeccion.root.presentation.leads.components.ActionIcon
 import org.propapel.prospeccion.root.presentation.leads.components.SwipeableItemCalendarWithActions
+import org.propapel.prospeccion.root.presentation.leads.components.SwipeableItemProjectWithActions
 import org.propapel.prospeccion.root.presentation.leads.components.mobile.isScrolled
 import prospeccion.composeapp.generated.resources.Res
 import prospeccion.composeapp.generated.resources.appointment_customer
@@ -90,6 +92,8 @@ import prospeccion.composeapp.generated.resources.ic_info
 import prospeccion.composeapp.generated.resources.ic_info_outline
 import prospeccion.composeapp.generated.resources.ic_product
 import prospeccion.composeapp.generated.resources.ic_product_otline
+import prospeccion.composeapp.generated.resources.ic_project
+import prospeccion.composeapp.generated.resources.ic_project_outline
 import prospeccion.composeapp.generated.resources.ic_reminder
 import prospeccion.composeapp.generated.resources.ic_reminder_outline
 import prospeccion.composeapp.generated.resources.interactions_customer
@@ -121,6 +125,11 @@ enum class NotificationPager(
         Res.drawable.ic_product,
         Res.drawable.ic_product_otline
 
+    ),
+    PROJECT_CUSTOMER(
+        Res.string.appointment_customer,
+        Res.drawable.ic_project,
+        Res.drawable.ic_project_outline
     )
 }
 
@@ -128,8 +137,10 @@ enum class NotificationPager(
 @Composable
 fun InfoLeadPagerScreen(
     pagerState: PagerState,
+    projects: List<Project>,
     customer: Customer,
     onAction: (DetailLeadAction) -> Unit,
+    onDeleteProject: (Project) -> Unit,
     pages: Array<NotificationPager>,
     modifier: Modifier = Modifier,
 ) {
@@ -387,9 +398,11 @@ fun InfoLeadPagerScreen(
                             modifier = Modifier.fillMaxSize().padding(16.dp)
                         ) {
                             if (customer.reminders.isNotEmpty()) {
-                                items(customer.reminders, key = {
-                                    it.reminderId
-                                }) {
+                                items(
+                                    customer.reminders,
+                                    key = {
+                                        it.reminderId
+                                    }) {
                                     var expanded by remember {
                                         mutableStateOf(false)
                                     }
@@ -490,8 +503,15 @@ fun InfoLeadPagerScreen(
                             modifier = Modifier.fillMaxSize().padding(16.dp),
                             state = lazyColumState,
                         ) {
-                            if (customer.purchase.isNotEmpty()) {
-                                items(customer.purchase) {
+                            val filterPurchase = customer.purchase.filter {
+                                !it.isIntoProduct
+                            }
+                            if (filterPurchase.isNotEmpty()) {
+                                items(
+                                    customer.purchase,
+                                    key = {
+                                        it.purcheseId
+                                    }) {
                                     ItemProductInteresed(it)
                                 }
                             } else {
@@ -544,6 +564,56 @@ fun InfoLeadPagerScreen(
                                 )
                             }
                         )
+                    }
+                }
+                NotificationPager.PROJECT_CUSTOMER -> {
+                    Box(
+                        modifier = Modifier.fillMaxSize()
+                    ) {
+                        val lazyColumState = rememberLazyListState()
+                        LazyColumn(
+                            modifier = Modifier.fillMaxSize().padding(16.dp),
+                            state = lazyColumState,
+                            verticalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            if (projects.isNotEmpty()) {
+                                items(
+                                    projects,
+                                    key = { it.id }) {
+                                    ItemProjectCustomer(
+                                        it,
+                                        onDelete = {
+                                            onDeleteProject(it)
+                                        })
+                                }
+                            } else {
+                                item {
+                                    Column(
+                                        modifier = Modifier.fillMaxSize().padding(16.dp),
+                                        verticalArrangement = Arrangement.Center,
+                                        horizontalAlignment = Alignment.CenterHorizontally
+                                    ) {
+                                        Spacer(
+                                            modifier = Modifier.height(32.dp)
+                                        )
+                                        Image(
+                                            modifier = Modifier.size(150.dp).align(Alignment.CenterHorizontally),
+                                            painter = painterResource(Res.drawable.empty_info),
+                                            contentDescription = null
+                                        )
+                                        Spacer(
+                                            modifier = Modifier.height(8.dp)
+                                        )
+                                        Text(
+                                            text = "No tienes ningun proyecto con el cliente",
+                                            style = MaterialTheme.typography.titleMedium,
+                                            textAlign = TextAlign.Center
+                                        )
+                                    }
+                                }
+
+                            }
+                        }
                     }
                 }
             }

@@ -3,6 +3,7 @@ package org.propapel.prospeccion.root.presentation.leads.components
 import androidx.compose.animation.core.Animatable
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
+import androidx.compose.foundation.gestures.detectVerticalDragGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
@@ -156,6 +157,83 @@ fun SwipeableItemCalendarWithActions(
         Surface(
             modifier = Modifier
                 .fillMaxSize()
+                .offset { IntOffset(offset.value.roundToInt(), 0) }
+                .pointerInput(contextMenuWidth) {
+                    detectHorizontalDragGestures(
+                        onHorizontalDrag = { _, dragAmount ->
+                            scope.launch {
+                                val newOffset = (offset.value + dragAmount)
+                                    .coerceIn(0f, contextMenuWidth)
+                                offset.snapTo(newOffset)
+                            }
+                        },
+                        onDragEnd = {
+                            when {
+                                offset.value >= contextMenuWidth / 2f -> {
+                                    scope.launch {
+                                        offset.animateTo(contextMenuWidth)
+                                        onExpanded()
+                                    }
+                                }
+
+                                else -> {
+                                    scope.launch {
+                                        offset.animateTo(0f)
+                                        onCollapsed()
+                                    }
+                                }
+                            }
+                        }
+                    )
+                }
+        ) {
+            content()
+        }
+    }
+}
+
+@Composable
+fun SwipeableItemProjectWithActions(
+    isRevealed: Boolean,
+    actions: @Composable RowScope.() -> Unit,
+    modifier: Modifier = Modifier,
+    onExpanded: () -> Unit = {},
+    onCollapsed: () -> Unit = {},
+    content: @Composable () -> Unit
+) {
+    var contextMenuWidth by remember {
+        mutableFloatStateOf(0f)
+    }
+    val offset = remember {
+        Animatable(initialValue = 0f)
+    }
+    val scope = rememberCoroutineScope()
+
+    LaunchedEffect(key1 = isRevealed, contextMenuWidth) {
+        if(isRevealed) {
+            offset.animateTo(contextMenuWidth)
+        } else {
+            offset.animateTo(0f)
+        }
+    }
+
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .height(IntrinsicSize.Min).clip(RoundedCornerShape(30.dp))
+    ) {
+        Row(
+            modifier = Modifier
+                .onSizeChanged {
+                    contextMenuWidth = it.width.toFloat()
+                },
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            actions()
+        }
+        Surface(
+            modifier = Modifier
+                .fillMaxWidth()
                 .offset { IntOffset(offset.value.roundToInt(), 0) }
                 .pointerInput(contextMenuWidth) {
                     detectHorizontalDragGestures(

@@ -34,6 +34,7 @@ import androidx.compose.ui.input.pointer.pointerHoverIcon
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import org.propapel.prospeccion.core.presentation.designsystem.components.CarouselBanners
 
 data class Banner(
     val description: String = "",
@@ -195,4 +196,5 @@ fun BannerPager(
             }
         }
     }
+
 }

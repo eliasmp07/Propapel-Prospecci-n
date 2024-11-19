@@ -11,9 +11,7 @@ data class Purchase(
     val purcheseId: Int,
     val productServiceName: String,
     val isIntoProduct: Boolean,
-    val purchaseDate: Int,
+    val purchaseDate: Long,
     val amount: String
 )
-enum class ProductSales {
-    PAPELERIA, SAI, TOTAL_OFFICE
-}
+

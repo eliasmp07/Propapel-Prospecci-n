@@ -361,6 +361,13 @@ private fun DashboardGerenteScreen(
                                 ) {},
                                 Pair(
                                     Banner(
+                                        id = 2,
+                                        description = "Oferta especial",
+                                        imageUrl = "https://firebasestorage.googleapis.com/v0/b/prosales-c49e5.appspot.com/o/SAI%20(2)-1200x400.jpg?alt=media&token=8b021601-63fc-4c9b-872e-0687c2610da0"
+                                    )
+                                ) {},
+                                Pair(
+                                    Banner(
                                         id = 3,
                                         description = "Otro descuento especial",
                                         imageUrl = "https://firebasestorage.googleapis.com/v0/b/prosales-c49e5.appspot.com/o/banner_prueba.jpg?alt=media&token=ebc7287c-5c11-48ca-a354-e89f0864d2ae"
