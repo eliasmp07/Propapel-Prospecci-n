@@ -25,6 +25,7 @@ fun CustomerDto.toCustomer():Customer{
         interactions = interactions?.map {
             it.toInteraction()
         }?: listOf(),
+        progressLead = progressLead,
         purchase = purchases?.map {
             it.toPurchase()
         }?: listOf(),
@@ -54,7 +55,7 @@ fun PurchaseResponseCreateDto.toPurchase(): Purchase{
         productServiceName = productServiceName,
         purcheseId = purcheseId,
         isIntoProduct = isIntoProduct,
-        amount = amount.toString()
+        amount = amount
     )
 }
 
@@ -71,6 +72,8 @@ fun ReminderDto2.toReminder(): Reminder{
     return Reminder(
         reminderDate = reminderDate,
         reminderId = reminderId,
+        createdAt = stringToLocalDateTime(this.createdAt?:""),
+        typeAppointment = typeAppointment,
         description = description,
         isCompleted = isComplete
     )

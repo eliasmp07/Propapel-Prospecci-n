@@ -19,7 +19,6 @@ import org.propapel.prospeccion.core.domain.ResultExt
 import org.propapel.prospeccion.root.domain.models.PurchaseRequest
 import org.propapel.prospeccion.root.domain.repository.CustomerRepository
 import org.propapel.prospeccion.root.domain.repository.ReminderRepository
-import org.propapel.prospeccion.root.presentation.addlead.components.utils.ProductsPropapel
 import org.propapel.prospeccion.root.presentation.createReminder.convertLocalDate
 
 class AddLeadViewModel(
@@ -32,18 +31,7 @@ class AddLeadViewModel(
 
 
     init {
-        getAllReminders()
-        viewModelScope.launch(Dispatchers.IO) {
-            val result = reminderRepository.getAllReminder()
-            when (result) {
-                is ResultExt.Error -> {
-                    _state.update { it.copy(reminders = listOf()) }
-                }
-                is ResultExt.Success -> {
-                    _state.update { it.copy(reminders = result.data) }
-                }
-            }
-        }
+        getAllMyReminders()
     }
 
     fun onAction(
@@ -138,17 +126,26 @@ class AddLeadViewModel(
                 if (validAvailableDate(convertLocalDate(action.date))) {
                     _state.update {
                         it.copy(
+                            isDateAvailable = false,
                             showAvailableDayDialog = !it.showAvailableDayDialog
                         )
                     }
                 } else {
                     _state.update {
                         it.copy(
+                            isDateAvailable = true,
                             dateNextReminder = action.date
                         )
                     }
                 }
 
+            }
+            is AddLeadAction.OnTypeAppointmentChange -> {
+                _state.update {
+                    it.copy(
+                        typeAppointment = action.typeAppointment
+                    )
+                }
             }
             is AddLeadAction.OnRemoveProductInterestClick -> {
                 _state.update {
@@ -171,7 +168,7 @@ class AddLeadViewModel(
                     val products = it.productsInterest.toMutableList()
                     products.add(
                         PurchaseRequest(
-                            productServiceName = it.productInterest.name,
+                            productServiceName = it.productInterest,
                             purchaseDate = Clock.System.now().toEpochMilliseconds(),
                             amount = if (it.price.isEmpty()) 0.0 else it.price.replace(
                                 "$",
@@ -182,7 +179,7 @@ class AddLeadViewModel(
                     it.copy(
                         price = "",
                         productsInterest = products,
-                        productInterest = ProductsPropapel.PAPELERIA,
+                        productInterest = "Selecione una opcion",
                     )
                 }
             }
@@ -229,26 +226,25 @@ class AddLeadViewModel(
     }
 
 
-    private fun validAvailableDate(date: LocalDateTime): Boolean {
-        // Define el margen mínimo en horas entre recordatorios (por ejemplo, 1 hora)
-        val unaHoraEnMilisegundos = 3600 * 1000
 
-        return _state.value.reminderNoAvailable.any { reminder ->
-            // Compara solo si es el mismo día
-            if (reminder.toInstant(TimeZone.UTC).toEpochMilliseconds() == date.toInstant(TimeZone.UTC)
-                    .toEpochMilliseconds() && reminder.toInstant(TimeZone.UTC)
-                    .toEpochMilliseconds() - date.toInstant(TimeZone.UTC).toEpochMilliseconds() > unaHoraEnMilisegundos
-            ) {
-                true
-            } else {
-                false
-            }
+
+    private fun validAvailableDate(date: LocalDateTime): Boolean {
+        val margenMinimoMillis = 3_600_000 // 1 hora en milisegundos
+
+        return _state.value.reminders.any { reminder ->
+            // Calcula la diferencia en milisegundos entre el recordatorio y la fecha dada
+            val diferenciaMillis = kotlin.math.abs(
+                reminder.toInstant(TimeZone.UTC).toEpochMilliseconds() - date.toInstant(TimeZone.UTC).toEpochMilliseconds()
+            )
+
+            // Valida si la diferencia es menor que el margen mínimo en milisegundos
+            diferenciaMillis < margenMinimoMillis
         }
     }
 
-    private fun getAllReminders() {
+    private fun getAllMyReminders() {
         viewModelScope.launch(Dispatchers.IO) {
-            val result = reminderRepository.getAllReminder()
+            val result = reminderRepository.getAllMyReminders()
             when (result) {
                 is ResultExt.Error -> {
                     _state.update { it.copy(reminders = listOf()) }
@@ -259,7 +255,7 @@ class AddLeadViewModel(
                     }
                     _state.update {
                         it.copy(
-                            reminderNoAvailable = reminderDateForm
+                            reminders = reminderDateForm
                         )
                     }
                 }
@@ -286,6 +282,7 @@ class AddLeadViewModel(
                 reminderDate = _state.value.dateNextReminder,
                 isCompleted = false,
                 potentialSale = 0.0,
+                typeAppointment = _state.value.typeAppointment,
                 interactionDate = _state.value.dateInteration,
                 status = "Nuevo"
             )
@@ -329,20 +326,6 @@ class AddLeadViewModel(
     private fun validNameCompany(nameCompany: String): String? {
         return when {
             nameCompany.isEmpty() -> "El campo esta vacio"
-            else -> null
-        }
-    }
-
-    private fun validContactName(contactName: String): String? {
-        return when {
-            contactName.isEmpty() -> "El campo esta vacio"
-            else -> null
-        }
-    }
-
-    private fun validPhoneNumber(phoneNumber: String): String? {
-        return when {
-            phoneNumber.isEmpty() -> "El campo esta vacio"
             else -> null
         }
     }

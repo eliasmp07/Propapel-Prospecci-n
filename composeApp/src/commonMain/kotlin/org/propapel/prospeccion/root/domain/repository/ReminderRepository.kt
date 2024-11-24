@@ -11,8 +11,10 @@ interface ReminderRepository {
     suspend fun createReminder(
         reminderDate: Long,
         description: String,
-        customerId: Int
+        customerId: Int,
+        typeAppointment: String,
     ): ResultExt<Reminder, DataError.Network>
     suspend fun deleteReminder(reminder: Reminder): EmptyResult<DataError.Network>
     suspend fun updateReminder(reminder: Reminder): EmptyResult<DataError.Network>
+    suspend fun completeReminder(reminderId: Int): EmptyResult<DataError.Network>
 }

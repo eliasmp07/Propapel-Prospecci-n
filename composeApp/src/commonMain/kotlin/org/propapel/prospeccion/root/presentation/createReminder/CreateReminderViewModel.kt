@@ -48,6 +48,13 @@ class CreateReminderViewModel(
                     createReminder()
                 }
             }
+            is CreateReminderAction.OnTypeAppointmentChange -> {
+                _state.update {
+                    it.copy(
+                        typeAppointment = action.type
+                    )
+                }
+            }
             is CreateReminderAction.OnCustomerChange -> {
                 _state.update {
                     it.copy(
@@ -179,7 +186,8 @@ class CreateReminderViewModel(
             val result = reminderRepository.createReminder(
                 reminderDate = _state.value.dateNextReminder,
                 customerId = _state.value.customer.idCustomer,
-                description = _state.value.notesAppointment
+                description = _state.value.notesAppointment,
+                typeAppointment = _state.value.typeAppointment
             )
             when (result) {
                 is ResultExt.Error -> {

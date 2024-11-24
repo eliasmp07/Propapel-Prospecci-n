@@ -14,6 +14,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Notes
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -50,6 +51,8 @@ import org.propapel.prospeccion.core.presentation.designsystem.components.ProSal
 import org.propapel.prospeccion.core.presentation.designsystem.components.ProSalesTextField
 import org.propapel.prospeccion.core.presentation.ui.typeHour
 import org.propapel.prospeccion.root.presentation.addlead.components.localDateTimeToLong
+import org.propapel.prospeccion.root.presentation.createProject.componetns.ExposedDropdownMenuGereric
+import org.propapel.prospeccion.root.presentation.createReminder.components.utils.provideTypeOfAppointment
 import org.propapel.prospeccion.root.presentation.detailLead.DetailLeadAction
 import org.propapel.prospeccion.root.presentation.detailLead.DetailLeadSMState
 import org.propapel.prospeccion.root.presentation.leads.LeadAction
@@ -77,13 +80,7 @@ fun CreateReminderLeadDialog(
                 modifier = modifier
             ) {
                 Column(
-                    modifier = Modifier.background(
-                        brush = Brush.verticalGradient(
-                            0f to PrimaryYellowLight,
-                            0.6f to SoporteSaiBlue30,
-                            1f to MaterialTheme.colorScheme.primary
-                        )
-                    ).padding(16.dp)
+                    modifier = Modifier.padding(16.dp)
                 ) {
                     IconButton(
                         modifier = Modifier.align(Alignment.End),
@@ -126,6 +123,31 @@ fun CreateReminderLeadDialog(
                         },
                         startIcon = Icons.Filled.DateRange,
                         maxLines = 104
+                    )
+                    Spacer(
+                        modifier = Modifier.height(8.dp)
+                    )
+                    var expandedProducts by remember {
+                        mutableStateOf(false)
+                    }
+                    ExposedDropdownMenuGereric(
+                        title = "Tipo de cita",
+                        state = expandedProducts,
+                        optionSelectable = state.typeAppointment,
+                        colors = Color.Black,
+                        listOptions = provideTypeOfAppointment(),
+                        onDimiss = {
+                            expandedProducts = !expandedProducts
+                        },
+                        content = {
+                            DropdownMenuItem(
+                                text = { androidx.compose.material.Text(text = it.toString()) },
+                                onClick = {
+                                    expandedProducts = !expandedProducts
+                                    onAction(LeadAction.OnTypeAppointmentChange(it.name))
+                                }
+                            )
+                        }
                     )
                     Spacer(
                         modifier = Modifier.height(8.dp)

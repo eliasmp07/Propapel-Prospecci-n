@@ -6,13 +6,13 @@ import kotlinx.serialization.Serializable
 import org.propapel.prospeccion.core.data.networking.delete
 import org.propapel.prospeccion.core.data.networking.get
 import org.propapel.prospeccion.core.data.networking.post
+import org.propapel.prospeccion.core.data.networking.put
 import org.propapel.prospeccion.core.domain.EmptyResult
 import org.propapel.prospeccion.core.domain.ResultExt
 import org.propapel.prospeccion.core.domain.SessionStorage
 import org.propapel.prospeccion.core.domain.asEmptyDataResult
 import org.propapel.prospeccion.core.domain.repository.AlarmHandler
 import org.propapel.prospeccion.core.domain.utils.DataError
-import org.propapel.prospeccion.root.data.dto.reminder.ReminderDto2
 import org.propapel.prospeccion.root.data.dto.reminder.ReminderResponse
 import org.propapel.prospeccion.root.data.dto.reminder.ReminderResponseDto
 import org.propapel.prospeccion.root.data.mappers.toReminder
@@ -66,14 +66,16 @@ class ReminderRepositoryImpl(
     override suspend fun createReminder(
         reminderDate: Long,
         description: String,
-        customerId: Int
+        customerId: Int,
+        typeAppointment: String,
     ): ResultExt<Reminder, DataError.Network> {
         val result = httpClient.post<CreateReminderRequest, ReminderResponseDto>(
             route = "/remider/create",
             body = CreateReminderRequest(
                 reminderDate = reminderDate.toString(),
                 description = description,
-                customerId = customerId
+                customerId = customerId,
+                typeAppointment = typeAppointment
             )
         )
         return when(result){
@@ -109,7 +111,8 @@ class ReminderRepositoryImpl(
             body = UpdateReminderRequest(
                 reminderDate = reminder.reminderDate,
                 description = reminder.description,
-                isComplete = reminder.isCompleted
+                isComplete = reminder.isCompleted,
+                typeAppointment = reminder.typeAppointment
             )
         )
         if (result is ResultExt.Success){
@@ -120,16 +123,27 @@ class ReminderRepositoryImpl(
         return result.asEmptyDataResult()
     }
 
+    override suspend fun completeReminder(reminderId: Int): EmptyResult<DataError.Network> {
+        val result = httpClient.put<Unit, Unit>(
+            route = "/remider/completeReminder/$reminderId",
+            Unit
+        )
+
+        return result.asEmptyDataResult()
+    }
+
 }
 @Serializable
 data class UpdateReminderRequest(
     @SerialName("reminder_date")val reminderDate: String,
     val description: String,
+    val typeAppointment: String,
     @SerialName("is_completed") val isComplete: Boolean?,
 )
 @Serializable
 data class CreateReminderRequest(
     @SerialName("reminder_date")val reminderDate: String,
     val description: String,
+    val typeAppointment: String,
     val customerId: Int
 )

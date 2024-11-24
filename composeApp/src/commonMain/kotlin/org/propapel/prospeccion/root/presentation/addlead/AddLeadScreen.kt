@@ -32,9 +32,9 @@ import org.propapel.prospeccion.root.presentation.addlead.components.ErrorCreate
 import org.propapel.prospeccion.root.presentation.addlead.components.HadDateWithClientScreen
 import org.propapel.prospeccion.root.presentation.addlead.components.HeIsInterestedInAProduct
 import org.propapel.prospeccion.root.presentation.addlead.components.AddMoreInfoLead
-import org.propapel.prospeccion.root.presentation.addlead.components.OportunityAddScreen
 import org.propapel.prospeccion.root.presentation.addlead.components.WantBookAAppointScreen
 import org.propapel.prospeccion.root.presentation.addlead.components.utils.SuccessCreateScreen
+import org.propapel.prospeccion.root.presentation.createReminder.components.DialogDayNoAvailable
 
 @Composable
 fun AddLeadScreenRoot(
@@ -175,6 +175,11 @@ private fun AddLeadScreen(
                     )
                 }
             }
+        }
+    }
+    if (state.showAvailableDayDialog) {
+        DialogDayNoAvailable {
+            onAction(AddLeadAction.OnToggleDateNoAvailable)
         }
     }
 

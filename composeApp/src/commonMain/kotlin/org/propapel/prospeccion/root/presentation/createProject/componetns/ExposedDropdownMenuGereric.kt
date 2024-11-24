@@ -22,6 +22,17 @@ import org.propapel.prospeccion.core.presentation.designsystem.components.ProSal
 import org.propapel.prospeccion.root.data.dto.customer.InteractionType
 import org.propapel.prospeccion.root.presentation.createProject.CreateProjectAction
 
+/**
+ * DropDownMenu generico para oppciones, este recibe una lista de valores
+ *
+ * @param modifier Modificador para cambiar el composable
+ * @param state Estado del drownmenu para ocultarlo
+ * @param title Titulo de Drowpmenu
+ * @param onDimiss Lambda que oculta el drowmmenu
+ * @param optionSelectable Opcion que esta selecionado
+ * @param content composable que se mostrara las opciones
+ * @param listOptions opciones por selecionar
+ */
 @Composable
 fun <T>ExposedDropdownMenuGereric(
     modifier: Modifier = Modifier,
@@ -36,7 +47,7 @@ fun <T>ExposedDropdownMenuGereric(
     ExposedDropdownMenuBox(
         expanded = state,
         onExpandedChange = {
-            //state = !state
+
         },
         modifier = modifier
     ) {
@@ -47,7 +58,7 @@ fun <T>ExposedDropdownMenuGereric(
             },
             colors = colors,
             readOnly = true,
-            state = optionSelectable,
+            state = if (optionSelectable.isEmpty()) "Selecione una opcion" else optionSelectable,
             startIcon = null,
             endIcon = if (state) Icons.Filled.ArrowDropUp else Icons.Filled.ArrowDropDown,
             hint = "",

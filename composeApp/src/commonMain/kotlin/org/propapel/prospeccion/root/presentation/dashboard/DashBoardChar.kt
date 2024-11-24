@@ -24,11 +24,11 @@ import com.aay.compose.lineChart.LineChart
 import com.aay.compose.lineChart.model.LineParameters
 import com.aay.compose.lineChart.model.LineType
 import org.propapel.prospeccion.root.domain.models.Purchase
-import org.propapel.prospeccion.root.presentation.addlead.components.utils.ProductsPropapel
+import org.propapel.prospeccion.root.presentation.createProject.componetns.ProductPropapel
 
 fun aggregateSalesDataByCategory(
     purchases: List<Purchase>,
-    products: List<ProductsPropapel>,
+    products: List<ProductPropapel>,
 ): Map<String, Double> {
     val categoryMap = products.associate { it.name to it.name }
 
@@ -49,7 +49,7 @@ fun aggregateSalesDataByCategory(
 @Composable
 fun DashboardChart(
     title: String, orders: List<Purchase>,
-    products: List<ProductsPropapel>,
+    products: List<ProductPropapel>,
     modifier: Modifier = Modifier
 ) {
     val categorySalesPercentage = aggregateSalesDataByCategory(orders, products)

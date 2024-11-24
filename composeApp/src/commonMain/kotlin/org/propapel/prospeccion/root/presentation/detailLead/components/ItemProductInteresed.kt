@@ -19,24 +19,15 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import kotlinx.datetime.Instant
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toLocalDateTime
 import org.jetbrains.compose.resources.vectorResource
 import org.propapel.prospeccion.core.presentation.designsystem.PrimaryPink
 import org.propapel.prospeccion.core.presentation.designsystem.PrimaryYellowLight
-import org.propapel.prospeccion.root.domain.models.Interaction
 import org.propapel.prospeccion.root.domain.models.Purchase
-import org.propapel.prospeccion.root.presentation.dashboard.components.monthGet
-import org.propapel.prospeccion.root.presentation.detailReminderCustomer.dayOfWeekSpanish
 import prospeccion.composeapp.generated.resources.Res
-import prospeccion.composeapp.generated.resources.ic_product
 import prospeccion.composeapp.generated.resources.ic_product_otline
 
 @Composable

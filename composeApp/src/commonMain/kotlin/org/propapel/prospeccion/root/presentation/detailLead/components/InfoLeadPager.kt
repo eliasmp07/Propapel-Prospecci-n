@@ -6,7 +6,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -24,10 +23,9 @@ import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarToday
-import androidx.compose.material.icons.filled.Cancel
+import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.NotificationAdd
-import androidx.compose.material.icons.filled.NotificationsOff
 import androidx.compose.material.icons.filled.Update
 import androidx.compose.material.icons.rounded.Business
 import androidx.compose.material.icons.rounded.LocationCity
@@ -37,10 +35,10 @@ import androidx.compose.material.icons.rounded.TypeSpecimen
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExtendedFloatingActionButton
-import androidx.compose.material3.TabRow
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRow
 import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
@@ -71,16 +69,18 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import org.propapel.prospeccion.core.presentation.designsystem.SuccessGreen
 import org.propapel.prospeccion.core.presentation.designsystem.components.ProSalesActionButtonOutline
 import org.propapel.prospeccion.root.domain.models.Customer
 import org.propapel.prospeccion.root.domain.models.Interaction
 import org.propapel.prospeccion.root.domain.models.Project
+import org.propapel.prospeccion.root.domain.models.Reminder
 import org.propapel.prospeccion.root.presentation.dashboard.components.monthGet
 import org.propapel.prospeccion.root.presentation.detailLead.DetailLeadAction
+import org.propapel.prospeccion.root.presentation.detailLead.DetailLeadSMState
 import org.propapel.prospeccion.root.presentation.detailReminderCustomer.dayOfWeekSpanish
 import org.propapel.prospeccion.root.presentation.leads.components.ActionIcon
 import org.propapel.prospeccion.root.presentation.leads.components.SwipeableItemCalendarWithActions
-import org.propapel.prospeccion.root.presentation.leads.components.SwipeableItemProjectWithActions
 import org.propapel.prospeccion.root.presentation.leads.components.mobile.isScrolled
 import prospeccion.composeapp.generated.resources.Res
 import prospeccion.composeapp.generated.resources.appointment_customer
@@ -136,7 +136,9 @@ enum class NotificationPager(
 @Preview
 @Composable
 fun InfoLeadPagerScreen(
+    state: DetailLeadSMState,
     pagerState: PagerState,
+    onCloseAppointment: (Reminder) -> Unit,
     projects: List<Project>,
     customer: Customer,
     onAction: (DetailLeadAction) -> Unit,
@@ -334,6 +336,12 @@ fun InfoLeadPagerScreen(
                                 items(customer.interactions) {
                                     ItemInterationCustomer(it)
                                 }
+                                items(state.reminders){
+                                    if (it.isCompleted == true){
+                                        ItemReminders(it)
+                                    }
+
+                                }
                             } else {
                                 item {
                                     Column(
@@ -380,7 +388,7 @@ fun InfoLeadPagerScreen(
                             },
                             text = {
                                 Text(
-                                    text = "Capturar interación",
+                                    text = "Capturar actividad",
                                     color = Color.White
                                 )
                             }
@@ -397,9 +405,12 @@ fun InfoLeadPagerScreen(
                             verticalArrangement = Arrangement.spacedBy(8.dp),
                             modifier = Modifier.fillMaxSize().padding(16.dp)
                         ) {
-                            if (customer.reminders.isNotEmpty()) {
+                            val reminders = state.reminders.filter {
+                                it.isCompleted == false
+                            }
+                            if (reminders.isNotEmpty()) {
                                 items(
-                                    customer.reminders,
+                                    reminders,
                                     key = {
                                         it.reminderId
                                     }) {
@@ -432,6 +443,14 @@ fun InfoLeadPagerScreen(
                                                 icon = Icons.Default.Update,
                                                 modifier = Modifier
                                                     .fillMaxHeight()
+                                            )
+                                            ActionIcon(
+                                                modifier = Modifier.fillMaxHeight(),
+                                                onClick = {
+                                                    onCloseAppointment(it)
+                                                },
+                                                backgroundColor = SuccessGreen,
+                                                icon = Icons.Default.CheckCircle,
                                             )
                                         },
                                     ) {
@@ -620,6 +639,83 @@ fun InfoLeadPagerScreen(
         }
 
 
+    }
+}
+
+@Composable
+fun ItemReminders(
+    interaction: Reminder
+) {
+    val date = Instant.fromEpochMilliseconds(interaction.reminderDate.toLong()).toLocalDateTime(TimeZone.UTC)
+    Box(
+        modifier = Modifier
+            .fillMaxWidth().padding(16.dp)
+    ) {
+        ElevatedCard(
+            shape = RoundedCornerShape(20.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(100.dp),
+            elevation = CardDefaults.elevatedCardElevation(15.dp)
+        ) {
+            Row(
+                modifier = Modifier.fillMaxSize()
+            ) {
+                // Left side with the gradient and month
+                Box(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .width(50.dp)
+                        .background(
+                            brush = Brush.verticalGradient(
+                                colors = listOf(
+                                    Color(0xFFFF6363),
+                                    Color(0xFFAB47BC)
+                                )
+                            )
+                        ),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = monthGet(date.monthNumber).take(3),
+                        color = Color.White,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier
+                            .rotate(-90f)
+                    )
+                }
+                // Right side with the date and schedule
+                Column(
+                    modifier = Modifier
+                        .padding(16.dp)
+                        .fillMaxHeight(),
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Text(
+                        text = date.date.dayOfWeekSpanish(),
+                        fontWeight = FontWeight.Medium,
+                        fontSize = 18.sp
+                    )
+                    Text(
+                        text = date.dayOfMonth.toString(),
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 40.sp
+                    )
+                }
+                Column(
+                    modifier = Modifier
+                        .padding(16.dp)
+                        .fillMaxHeight(),
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Text(
+                        text = "Tipo de interacion: ${interaction.typeAppointment}",
+                        fontWeight = FontWeight.Normal,
+                        fontSize = 12.sp
+                    )
+                }
+            }
+        }
     }
 }
 

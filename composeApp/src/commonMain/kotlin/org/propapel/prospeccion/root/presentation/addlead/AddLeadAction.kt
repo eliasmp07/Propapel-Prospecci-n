@@ -3,7 +3,6 @@ package org.propapel.prospeccion.root.presentation.addlead
 import org.propapel.prospeccion.root.data.dto.customer.InteractionType
 import org.propapel.prospeccion.root.data.dto.customer.TypeOfClient
 import org.propapel.prospeccion.root.domain.models.PurchaseRequest
-import org.propapel.prospeccion.root.presentation.addlead.components.utils.ProductsPropapel
 
 sealed interface AddLeadAction {
 
@@ -20,6 +19,7 @@ sealed interface AddLeadAction {
     data class OnDateNextReminder(val date: Long): AddLeadAction
     data class OnDescriptionNextReminderChange(val description: String): AddLeadAction
     data object OnToggleDateNoAvailable: AddLeadAction
+    data class OnTypeAppointmentChange(val typeAppointment: String): AddLeadAction
 
     data class OnNoteChange(val note: String): AddLeadAction
 
@@ -33,7 +33,7 @@ sealed interface AddLeadAction {
 
     data class OnTypeClientChange(val typeClient: TypeOfClient): AddLeadAction
     data class OnTypeDateChange(val typeInteraction: InteractionType): AddLeadAction
-    data class OnProductInterestChange(val product: ProductsPropapel): AddLeadAction
+    data class OnProductInterestChange(val product: String): AddLeadAction
 
     data object OnAddProductClick : AddLeadAction
 

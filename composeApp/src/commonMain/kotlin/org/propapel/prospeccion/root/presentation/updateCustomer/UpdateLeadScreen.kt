@@ -67,10 +67,6 @@ import org.propapel.prospeccion.root.presentation.addlead.AddLeadAction
 import org.propapel.prospeccion.root.presentation.addlead.ContainerState
 import org.propapel.prospeccion.root.presentation.addlead.components.utils.ExpisedDropdownMenuTypeClient
 import org.propapel.prospeccion.root.presentation.addlead.components.utils.KottieAnimationUtil
-import org.propapel.prospeccion.root.presentation.addlead.components.utils.ProductsPropapel
-import org.propapel.prospeccion.root.presentation.dashboard.DashboardSMAction
-import org.propapel.prospeccion.root.presentation.detailLead.DetailLeadAction
-import org.propapel.prospeccion.root.presentation.updateProfile.UpdateProfileSMAction
 import prospeccion.composeapp.generated.resources.Res
 import prospeccion.composeapp.generated.resources.no_internet
 

@@ -70,8 +70,7 @@ import org.propapel.prospeccion.core.presentation.designsystem.SoporteSaiBlue
 import org.propapel.prospeccion.core.presentation.designsystem.SoporteSaiBlue30
 import org.propapel.prospeccion.core.presentation.designsystem.SuccessGreen
 import org.propapel.prospeccion.core.presentation.designsystem.components.PieChartLeadsStatus
-import org.propapel.prospeccion.core.presentation.designsystem.components.util.animateEnterFromLeft
-import org.propapel.prospeccion.root.presentation.addlead.components.utils.ProductsPropapel
+import org.propapel.prospeccion.root.presentation.createProject.componetns.provideProductsPropapel
 import org.propapel.prospeccion.root.presentation.dashboard.DashboardChart
 import org.propapel.prospeccion.root.presentation.dashboard.components.DonutChartInteractions
 import org.propapel.prospeccion.root.presentation.detailLead.components.CreateReminderDialog
@@ -105,6 +104,7 @@ fun LeadScreenDesktop(
         LazyColumn(
             modifier = Modifier.fillMaxSize()
         ) {
+           /*
             item {
                 Row(
                     modifier = Modifier
@@ -122,15 +122,7 @@ fun LeadScreenDesktop(
                             DashboardChart(
                                 title = "Producto con más interés",
                                 orders = orders,
-                                products = listOf(
-                                    ProductsPropapel.ROLLITOS,
-                                    ProductsPropapel.INSTALACION_RACKS,
-                                    ProductsPropapel.INSTALACION_CAMARA,
-                                    ProductsPropapel.RENTA_IMPRESORA,
-                                    ProductsPropapel.RENTA_EQUIPO_DE_COMPUTO,
-                                    ProductsPropapel.PAPELERIA,
-                                    ProductsPropapel.TOTAL_OFFICE
-                                )
+                                products = provideProductsPropapel()
                             )
                         }
 
@@ -259,6 +251,7 @@ fun LeadScreenDesktop(
                     }
                 }
             }
+            */
         }
         // Botón flotante para agregar cliente
         ExtendedFloatingActionButton(

@@ -278,6 +278,7 @@ fun ItemProduct(
                 .padding(16.dp)
                 .animateContentSize()
         ) {
+            val focusManager = LocalFocusManager.current
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
@@ -314,6 +315,14 @@ fun ItemProduct(
                     modifier = Modifier.weight(0.8f),
                     state = valueUpdate, // Usamos el valor actualizado en lugar de `purchase.amount`
                     roundedCornerShape = 8.dp,
+                    keyboardOptions = KeyboardOptions(
+                        imeAction = ImeAction.Done
+                    ),
+                    keyboardActions = KeyboardActions(
+                        onDone = {
+                            focusManager.clearFocus()
+                        }
+                    ),
                     enabled = showEditValue,
                     onTextChange = { newValue ->
                         valueUpdate = newValue // Actualizamos el valor temporal
@@ -337,6 +346,7 @@ fun ItemProduct(
                                   )
                               ) // Enviamos el valor actualizado
                               showEditValue = false // Cerramos el modo edición
+                              focusManager.clearFocus()
                           }
                         }
                     ) {
@@ -367,7 +377,7 @@ fun provideProductsPropapel(): List<ProductPropapel>{
             emoji = ""
         ),
         ProductPropapel(
-            name = "Mabilario",
+            name = "Mobilario",
             emoji = ""
         ),
         ProductPropapel(

@@ -4,8 +4,10 @@ import io.ktor.client.HttpClient
 import org.propapel.prospeccion.core.data.networking.delete
 import org.propapel.prospeccion.core.data.networking.get
 import org.propapel.prospeccion.core.data.networking.post
+import org.propapel.prospeccion.core.data.networking.put
 import org.propapel.prospeccion.core.domain.EmptyResult
 import org.propapel.prospeccion.core.domain.ResultExt
+import org.propapel.prospeccion.core.domain.SessionStorage
 import org.propapel.prospeccion.core.domain.asEmptyDataResult
 import org.propapel.prospeccion.core.domain.utils.DataError
 import org.propapel.prospeccion.root.data.dto.project.CreateProjectRequest
@@ -17,7 +19,7 @@ import org.propapel.prospeccion.root.domain.models.Project
 import org.propapel.prospeccion.root.domain.models.Purchase
 import org.propapel.prospeccion.root.domain.repository.ProjectRepository
 
-class ProjectRepositoryImpl(private val httpClient: HttpClient) : ProjectRepository {
+class ProjectRepositoryImpl(private val httpClient: HttpClient, private val sessionStorage: SessionStorage) : ProjectRepository {
     override suspend fun createProject(
         nameProject: String,
         customerId: String,
@@ -44,6 +46,39 @@ class ProjectRepositoryImpl(private val httpClient: HttpClient) : ProjectReposit
 
 
         return result.asEmptyDataResult()
+    }
+
+    override suspend fun getProjectByUserId(): ResultExt<List<Project>, DataError.Network> {
+        val result = httpClient.get<List<ProjectResponse>>(
+            route = "/projects/findProjectByUserId/${sessionStorage.get()?.userId?:""}"
+        )
+
+        return when(result){
+            is ResultExt.Error -> {
+                ResultExt.Error(result.error)
+            }
+            is ResultExt.Success -> {
+                ResultExt.Success(result.data.map {
+                    it.toProject()
+                })
+            }
+        }
+    }
+
+    override suspend fun closeProject(projectId: Int): ResultExt<Project, DataError.Network> {
+        val result = httpClient.post<Unit, ProjectResponse>(
+            route = "/projects/closeProject/$projectId",
+            body = Unit
+        )
+
+        return when(result){
+            is ResultExt.Error -> {
+                ResultExt.Error(result.error)
+            }
+            is ResultExt.Success -> {
+                ResultExt.Success(result.data.toProject())
+            }
+        }
     }
 
     override suspend fun getProjectByCustomerId(customerId: String): ResultExt<List<Project>, DataError.Network> {

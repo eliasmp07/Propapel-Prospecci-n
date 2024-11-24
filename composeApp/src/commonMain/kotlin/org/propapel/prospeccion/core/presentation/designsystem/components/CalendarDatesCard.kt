@@ -84,7 +84,7 @@ fun CalendarDatesCard(
                 // Comparar solo el día, mes y año
                 reminderDate.year == state.date.year &&
                         reminderDate.monthNumber == state.date.monthNumber &&
-                        reminderDate.dayOfMonth == state.date.dayOfMonth
+                        reminderDate.dayOfMonth == state.date.dayOfMonth && reminder.isCompleted == false
             }
         }
 
