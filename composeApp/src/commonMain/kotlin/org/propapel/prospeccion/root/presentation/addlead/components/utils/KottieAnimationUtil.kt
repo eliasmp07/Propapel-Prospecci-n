@@ -34,7 +34,8 @@ fun KottieAnimationUtil(
     val animationState by animateKottieCompositionAsState(
         composition = composition,
         reverseOnRepeat = true,
-        iterations = interations
+        iterations = interations,
+
     )
     KottieAnimation(
         composition = composition,
