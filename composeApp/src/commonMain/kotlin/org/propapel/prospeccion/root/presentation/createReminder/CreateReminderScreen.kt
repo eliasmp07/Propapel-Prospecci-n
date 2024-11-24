@@ -19,6 +19,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Notes
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -60,8 +61,10 @@ import org.propapel.prospeccion.root.presentation.addlead.AddLeadAction
 import org.propapel.prospeccion.root.presentation.addlead.ContainerState
 import org.propapel.prospeccion.root.presentation.addlead.components.localDateTimeToLong
 import org.propapel.prospeccion.root.presentation.addlead.components.utils.KottieAnimationUtil
+import org.propapel.prospeccion.root.presentation.createProject.componetns.ExposedDropdownMenuGereric
 import org.propapel.prospeccion.root.presentation.createReminder.components.DialogCreateSuccess
 import org.propapel.prospeccion.root.presentation.createReminder.components.DialogDayNoAvailable
+import org.propapel.prospeccion.root.presentation.createReminder.components.utils.provideTypeOfAppointment
 import prospeccion.composeapp.generated.resources.Res
 import prospeccion.composeapp.generated.resources.empty_info
 import prospeccion.composeapp.generated.resources.no_internet
@@ -276,6 +279,31 @@ private fun CreateReminderScreen(
                 },
                 startIcon = Icons.Filled.DateRange,
                 maxLines = 104
+            )
+            Spacer(
+                modifier = Modifier.height(8.dp)
+            )
+            var expandedProducts by remember {
+                mutableStateOf(false)
+            }
+            ExposedDropdownMenuGereric(
+                title = "Tipo de cita",
+                state = expandedProducts,
+                optionSelectable = state.typeAppointment,
+                colors = Color.White,
+                listOptions = provideTypeOfAppointment(),
+                onDimiss = {
+                    expandedProducts = !expandedProducts
+                },
+                content = {
+                    DropdownMenuItem(
+                        text = { androidx.compose.material.Text(text = it.toString()) },
+                        onClick = {
+                            expandedProducts = !expandedProducts
+                            onAction(CreateReminderAction.OnTypeAppointmentChange(it.name))
+                        }
+                    )
+                }
             )
             Spacer(
                 modifier = Modifier.height(8.dp)

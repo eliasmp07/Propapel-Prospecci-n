@@ -1,8 +1,8 @@
 package org.propapel.prospeccion.root.presentation.detailLead
 
+import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -10,9 +10,12 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.datetime.Clock
 import org.propapel.prospeccion.core.domain.ResultExt
+import org.propapel.prospeccion.core.presentation.designsystem.SuccessGreen
 import org.propapel.prospeccion.core.presentation.ui.UiText
 import org.propapel.prospeccion.root.domain.models.Customer
+import org.propapel.prospeccion.root.domain.models.PurchaseRequest
 import org.propapel.prospeccion.root.domain.models.Reminder
 import org.propapel.prospeccion.root.domain.repository.CustomerRepository
 import org.propapel.prospeccion.root.domain.repository.ProjectRepository
@@ -38,7 +41,7 @@ class DetailLeadViewModel(
             }
             DetailLeadAction.HideError -> {
                 _state.update {
-                    it.copy(isError = !it.isError)
+                    it.copy(isError = !it.isError, congratulationsCloseProject = false)
                 }
             }
             is DetailLeadAction.OnNoteAppointmentChange -> {
@@ -79,9 +82,7 @@ class DetailLeadViewModel(
                                 val reminders = it.customer.reminders.toMutableList()
                                 reminders.remove(it.reminderEliminated)
                                 it.copy(
-                                    customer = it.customer.copy(
-                                        reminders = reminders
-                                    ),
+                                    reminders = reminders,
                                     error = UiText.DynamicString("Cita eliminada con éxito"),
                                     isError = true,
                                     showCancelNotification = !it.showCancelNotification,
@@ -91,6 +92,61 @@ class DetailLeadViewModel(
                         }
                     }
 
+                }
+            }
+            is DetailLeadAction.OnCloseReminder -> {
+                _state.update {
+                    it.copy(
+                        reminderClose = action.reminder
+                    )
+                }
+            }
+            DetailLeadAction.OnCloseProject -> {
+                onCloseProject()
+            }
+            DetailLeadAction.OnCloseAppointment -> {
+                completeDate()
+            }
+            is DetailLeadAction.OnPriceChange -> {
+                _state.update {
+                    it.copy(
+                        price = action.price
+                    )
+                }
+            }
+            is DetailLeadAction.OnRemoveProductInterestClick -> {
+                _state.update {
+                    val products = it.productsInterest.toMutableList()
+                    products.remove(action.product)
+                    it.copy(
+                        productsInterest = products
+                    )
+                }
+            }
+            is DetailLeadAction.OnProductInterestChange -> {
+                _state.update {
+                    it.copy(productInterest = action.product)
+                }
+            }
+
+            DetailLeadAction.OnAddProductClick ->{
+                _state.update {
+                    val products = it.productsInterest.toMutableList()
+                    products.add(
+                        PurchaseRequest(
+                            productServiceName = it.productInterest,
+                            purchaseDate = Clock.System.now().toEpochMilliseconds(),
+                            amount = if (it.price.isEmpty()) 0.0 else it.price.replace(
+                                "$",
+                                ""
+                            ).toDouble()
+                        )
+                    )
+                    it.copy(
+                        price = "",
+                        productsInterest = products,
+                        productInterest = "Selecione una opcion",
+                    )
                 }
             }
             is DetailLeadAction.OnDeleteProject -> {
@@ -114,6 +170,20 @@ class DetailLeadViewModel(
                 _state.update {
                     it.copy(
                         motivos = action.motivos
+                    )
+                }
+            }
+            is DetailLeadAction.OnTypeAppointmentChange ->{
+                _state.update {
+                    it.copy(
+                        typeAppointment = action.type
+                    )
+                }
+            }
+            is DetailLeadAction.OnCommentsChange -> {
+                _state.update {
+                    it.copy(
+                        comments = action.comments
                     )
                 }
             }
@@ -156,6 +226,46 @@ class DetailLeadViewModel(
         }
     }
 
+    private fun onCloseProject() {
+        viewModelScope.launch(Dispatchers.IO){
+            val result = projectRepository.closeProject(_state.value.projectDelete.id)
+
+            when(result){
+                is ResultExt.Error -> {
+                    _state.update {
+                        it.copy(
+                            isError = false,
+                            errorColor = Color.Red,
+                            error = UiText.DynamicString("Error al cerrar proyecto"),
+                            congratulationsCloseProject = false
+                        )
+                    }
+                }
+                is ResultExt.Success -> {
+                    _state.update {
+                        val updatedProjects = it.project.map { project ->
+                            if (project.id == _state.value.projectDelete.id) {
+                                project.copy(
+                                    status = result.data.status,
+                                    progress = result.data.progress
+                                )
+                            } else {
+                                project
+                            }
+                        }
+                        it.copy(
+                            project = updatedProjects,
+                            isError = true,
+                            errorColor = SuccessGreen,
+                            congratulationsCloseProject = true,
+                            error = UiText.DynamicString("Proyecto cerrado con exito, felicidades"),
+                        )
+                    }
+                }
+            }
+        }
+    }
+
     private fun updateReminder() {
         viewModelScope.launch(
             Dispatchers.IO
@@ -170,6 +280,7 @@ class DetailLeadViewModel(
                     reminderId = _state.value.reminderIdUpdate,
                     reminderDate = _state.value.dateNextReminder.toString(),
                     customer = _state.value.customer,
+                    typeAppointment = _state.value.typeAppointment,
                     description = _state.value.notesAppointment
                 )
             )
@@ -178,6 +289,7 @@ class DetailLeadViewModel(
                 is ResultExt.Error -> {
                     _state.update {
                         it.copy(
+                            errorColor = Color.Red,
                             isUpdateReminder = false,
                             showDialogUpdateReminder = !it.showDialogUpdateReminder,
                             error = UiText.DynamicString("Error al actualizar la cita"),
@@ -196,15 +308,14 @@ class DetailLeadViewModel(
                             description = _state.value.notesAppointment
                         )
                         it.copy(
+                            errorColor = SuccessGreen,
                             isUpdateReminder = false,
                             showDialogUpdateReminder = !it.showDialogUpdateReminder,
                             dateNextReminder = 0,
                             notesAppointment = "",
                             error = UiText.DynamicString("Cita actualizada con éxito"),
                             isError = true,
-                            customer = it.customer.copy(
-                                reminders = reminders
-                            )
+                            reminders = reminders
                         )
                     }
                 }
@@ -222,12 +333,14 @@ class DetailLeadViewModel(
             val result = reminderRepository.createReminder(
                 reminderDate = _state.value.dateNextReminder,
                 customerId = _state.value.customer.idCustomer,
-                description = _state.value.notesAppointment
+                description = _state.value.notesAppointment,
+                typeAppointment = _state.value.typeAppointment
             )
             when (result) {
                 is ResultExt.Error -> {
                     _state.update {
                         it.copy(
+                            errorColor = Color.Red,
                             isCreatingAppointment = false
                         )
                     }
@@ -237,14 +350,13 @@ class DetailLeadViewModel(
                         val reminders = it.customer.reminders.toMutableList()
                         reminders.add(result.data)
                         it.copy(
+                            errorColor = SuccessGreen,
                             showCreateDate = !it.showCreateDate,
                             dateNextReminder = 0,
                             notesAppointment = "",
                             error = UiText.DynamicString("Cita creada con éxito"),
                             isError = true,
-                            customer = it.customer.copy(
-                                reminders = reminders
-                            ),
+                            reminders = reminders,
                             isCreatingAppointment = false
                         )
                     }
@@ -275,7 +387,10 @@ class DetailLeadViewModel(
                 is ResultExt.Error -> {
                     _state.update {
                         it.copy(
-                            successDelete = false
+                            isError = false,
+                            error = UiText.DynamicString("Hubo un error la eliminar le proyecto"),
+                            successDelete = false,
+                            errorColor = Color.Red,
                         )
                     }
                 }
@@ -283,6 +398,7 @@ class DetailLeadViewModel(
                     _state.update{
                         val projects = it.project.filter { it != _state.value.projectDelete }
                         it.copy(
+                            errorColor = SuccessGreen,
                             project = projects,
                             error = UiText.DynamicString("Proyecto eliminado con éxito"),
                             isError = true,
@@ -339,8 +455,52 @@ class DetailLeadViewModel(
                 is ResultExt.Success -> {
                     _state.update {
                         it.copy(
+                            reminders = result.data.reminders,
                             isLoading = false,
                             customer = result.data
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    fun completeDate(){
+        viewModelScope.launch(
+            Dispatchers.IO
+        ) {
+            val result = reminderRepository.completeReminder(
+                _state.value.reminderClose.reminderId
+            )
+
+            when(result){
+                is ResultExt.Error -> {
+                    _state.update {
+                        it.copy(
+                            isError = false,
+                            errorColor = Color.Red,
+                            error = UiText.DynamicString("Error al cerrar la cita"),
+                            congratulationsCloseProject = false
+                        )
+                    }
+                }
+                is ResultExt.Success -> {
+                    _state.update {
+                        val reminders = it.customer.reminders.map {reminderList: Reminder ->
+                            if (_state.value.reminderClose.reminderId == reminderList.reminderId){
+                                reminderList.copy(
+                                    isCompleted = true
+                                )
+                            }else{
+                                reminderList
+                            }
+                        }
+                        it.copy(
+                            reminders = reminders,
+                            isError = true,
+                            errorColor = SuccessGreen,
+                            congratulationsCloseProject = true,
+                            error = UiText.DynamicString("Cita cerrada con exito, felicidades por cumplir :3"),
                         )
                     }
                 }

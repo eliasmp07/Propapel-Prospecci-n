@@ -16,14 +16,9 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Done
-import androidx.compose.material.icons.filled.LowPriority
-import androidx.compose.material.icons.filled.PriorityHigh
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
-import androidx.compose.material.icons.outlined.Delete
-import androidx.compose.material3.Card
+import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.FilterChip
@@ -100,11 +95,12 @@ fun ItemProjectCustomer(
                     },
                     content = {
                         Icon(
-                            imageVector = Icons.Outlined.Delete,
+                            imageVector = Icons.Outlined.Info,
                             contentDescription = null
                         )
                     }
                 )
+
             }
             Spacer(
                 modifier = Modifier.height(8.dp)
@@ -120,7 +116,7 @@ fun ItemProjectCustomer(
                     onPositionChange = {
 
                     },
-                    primaryColor = progressColor(project.progress),
+                    primaryColor = progressColor(project.progress, project.status),
                     secondaryColor = Color.White
                 )
                 Spacer(
@@ -128,7 +124,7 @@ fun ItemProjectCustomer(
                 )
                 Column {
                     Text(
-                        text = project.status,
+                        text = if (project.status.contains("Cierre")) "Proyecto cerrado" else "",
                         style = MaterialTheme.typography.titleSmall,
                         color = Color.Gray
                     )
@@ -203,9 +199,9 @@ fun priorityStatus(status:String): ImageVector{
 }
 
 
-fun progressColor(valor: Int): Color {
+fun progressColor(valor: Int,status: String): Color {
     return when {
-        valor == 100 -> SuccessGreen
+        valor == 100 || status.contains("Cierre") -> SuccessGreen
         valor in 50..99 -> SoporteSaiBlue
         valor in 25..49 -> Color(0xFFFFA500)
         else -> Color.Red

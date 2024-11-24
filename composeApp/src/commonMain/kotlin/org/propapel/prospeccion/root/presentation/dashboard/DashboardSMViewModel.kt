@@ -14,11 +14,13 @@ import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import org.propapel.prospeccion.core.domain.ResultExt
+import org.propapel.prospeccion.core.presentation.ui.TimeUtils
 import org.propapel.prospeccion.core.presentation.ui.asUiText
 import org.propapel.prospeccion.root.data.dto.customer.InteractionType
 import org.propapel.prospeccion.root.domain.repository.CustomerRepository
 import org.propapel.prospeccion.root.domain.repository.InteractionRepository
 import org.propapel.prospeccion.root.domain.repository.ReminderRepository
+import org.propapel.prospeccion.root.presentation.leads.State
 
 class DashboardSMViewModel(
     private val reminderRepository: ReminderRepository,
@@ -49,13 +51,21 @@ class DashboardSMViewModel(
                 is ResultExt.Error -> {
                     _state.update {
                         it.copy(
-                            myCustomer = emptyList(),
-                            error = result.error.asUiText()
+                            myCustomer = State.Error(result.error.asUiText()),
                         )
                     }
                 }
                 is ResultExt.Success -> {
-                    _state.update { it.copy(myCustomer = result.data) }
+                    if(result.data.isEmpty()){
+                        _state.update {
+                            it.copy(
+                                myCustomer = State.Empty()
+                            )
+                        }
+                    }else{
+                        _state.update { it.copy(myCustomer = State.Success(result.data)) }
+                    }
+
                 }
             }
         }
@@ -63,7 +73,7 @@ class DashboardSMViewModel(
 
     // Método de refresco (separa el loading del refreshing)
     private fun onRefresh() {
-        _state.update { it.copy(isRefreshing = true, error = null) }
+        _state.update { it.copy(isRefreshing = true) }
         getAllMyReminders()
         getMyInteractions()
         getAllCustomers()
@@ -78,7 +88,6 @@ class DashboardSMViewModel(
                     _state.update {
                         it.copy(
                             customers = emptyList(),
-                            error = result.error.asUiText()
                         )
                     }
                 }
@@ -103,20 +112,20 @@ class DashboardSMViewModel(
                     _state.update { it.copy(reminders = listOf()) }
                 }
                 is ResultExt.Success -> {
-                    val currentMoment = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
+                    val currentMoment = TimeUtils.DateNow
                     val currentMonth = currentMoment.month
                     val currentYear = currentMoment.year
 
                     val remindersThisMonth = result.data.flatMap {
-                        it.interactions
+                        it.reminders
                     }
 
                     val interactions = remindersThisMonth.filter {interaction ->
                         val reminderDate =
-                            Instant.fromEpochMilliseconds(interaction.interactionDate).toLocalDateTime(
+                            Instant.fromEpochMilliseconds(interaction.reminderDate.toLong()).toLocalDateTime(
                                 TimeZone.currentSystemDefault()
                             )
-                        reminderDate.month == currentMonth && reminderDate.year == currentYear && interaction.interactionType == InteractionType.PRESENCIAL.name
+                        reminderDate.month == currentMonth && reminderDate.year == currentYear && interaction.isCompleted == true
                     }
 
                     _state.update {

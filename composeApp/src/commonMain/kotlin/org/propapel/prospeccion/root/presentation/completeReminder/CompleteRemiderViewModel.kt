@@ -7,7 +7,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.datetime.Clock
 import org.propapel.prospeccion.root.domain.models.PurchaseRequest
-import org.propapel.prospeccion.root.presentation.addlead.components.utils.ProductsPropapel
 
 class CompleteReminderViewModel: ViewModel() {
     private var _state = MutableStateFlow(CompleteReminderState())
@@ -22,7 +21,7 @@ class CompleteReminderViewModel: ViewModel() {
                     val products = it.productsInterest.toMutableList()
                     products.add(
                         PurchaseRequest(
-                            productServiceName = it.productInterest.name,
+                            productServiceName = it.productInterest,
                             purchaseDate = Clock.System.now().toEpochMilliseconds(),
                             amount = if (it.price.isEmpty()) 0.0 else it.price.replace("$", "").toDouble()
                         )
@@ -30,7 +29,7 @@ class CompleteReminderViewModel: ViewModel() {
                     it.copy(
                         price = "",
                         productsInterest = products,
-                        productInterest = ProductsPropapel.PAPELERIA,
+                        productInterest = "Selecciona una opción",
                     )
                 }
             }

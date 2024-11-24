@@ -170,7 +170,7 @@ private fun ProjectCard(
             CustomCircularProgressIndicator(
                 initialValue = project.progress,
                 circleRadius = 200f,
-                primaryColor = progressColor(project.progress),
+                primaryColor = progressColor(project.progress, project.status),
                 onPositionChange = {
 
                 },

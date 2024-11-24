@@ -61,43 +61,6 @@ fun PieChartLeadsStatus(
     var showMoreInfoDesarrollo by remember { mutableStateOf(false) }
     var showMoreInfoRecuperacion by remember { mutableStateOf(false) }
 
-    if (listCustomer.isEmpty()) {
-        // Mostrar un mensaje o gráfico vacío si no hay clientes
-        ElevatedCard(
-            shape = RoundedCornerShape(20.dp),
-            modifier = Modifier
-                .fillMaxWidth().padding(horizontal = 16.dp),
-        ) {
-            Column(
-                modifier = Modifier.fillMaxWidth().padding(8.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(
-                    text = "No hay informacion",
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color(0xFF007BFF)
-                )
-                Spacer(
-                    modifier = Modifier.height(8.dp)
-                )
-                Image(
-                    painter = painterResource(Res.drawable.img_no_data),
-                    contentDescription = null,
-                    modifier = Modifier.size(150.dp).align(Alignment.CenterHorizontally)
-                )
-                Spacer(
-                    modifier = Modifier.height(8.dp)
-                )
-                Text("No tienes clientes", )
-                Spacer(
-                    modifier = Modifier.height(8.dp)
-                )
-            }
-        }
-        return
-    }
-
 
     val customerNew = listCustomer.filter { it.typeClient == TypeOfClient.NUEVO.name }
     val customerDesarrollo = listCustomer.filter { it.typeClient == TypeOfClient.DESARROLLO.name }
@@ -106,7 +69,7 @@ fun PieChartLeadsStatus(
     ElevatedCard(
         shape = RoundedCornerShape(20.dp),
         modifier = Modifier
-            .fillMaxWidth().padding(horizontal = 16.dp),
+            .fillMaxWidth().padding(16.dp),
         elevation = CardDefaults.elevatedCardElevation(15.dp)
     ) {
         val testPieChartData: List<PieChartData> = listOf(
@@ -141,7 +104,7 @@ fun PieChartLeadsStatus(
                 modifier = Modifier.height(8.dp)
             )
             PieChart(
-                modifier = modifier.size(size).padding(top = 8.dp).align(Alignment.CenterHorizontally),
+                modifier = modifier.fillMaxWidth().height(size).padding(top = 8.dp).align(Alignment.CenterHorizontally),
                 legendPosition = LegendPosition.DISAPPEAR,
                 pieChartData = testPieChartData,
                 descriptionStyle = TextStyle(fontSize = 12.sp),

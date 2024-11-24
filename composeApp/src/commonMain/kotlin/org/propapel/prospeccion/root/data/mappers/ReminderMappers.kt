@@ -10,7 +10,9 @@ fun ReminderResponseDto.toReminder(): Reminder {
         reminderDate = reminderDate,
         reminderId = reminderId,
         description = description,
+        createdAt = stringToLocalDateTime(this.createdAt?:""),
         customer = customer?.toCustomer()?:Customer(),
+        typeAppointment = typeAppointment?:"",
         isCompleted = isComplete
     )
 }

@@ -62,6 +62,7 @@ import org.propapel.prospeccion.root.presentation.dashboard.components.mobile.Ba
 import org.propapel.prospeccion.root.presentation.dashboard.components.mobile.BannerPager
 import org.propapel.prospeccion.root.presentation.dashboard.components.mobile.BannerPaggerWindows
 import org.propapel.prospeccion.root.presentation.dashboard.components.mobile.GoalCard
+import org.propapel.prospeccion.root.presentation.leads.State
 import prospeccion.composeapp.generated.resources.Res
 import prospeccion.composeapp.generated.resources.calendar_date
 import prospeccion.composeapp.generated.resources.customer_person
@@ -76,11 +77,11 @@ private fun providesItemsScreen(
 ): List<ItemScreen>{
     return listOf(
         ItemScreen {
-            if (state.myCustomer.isNotEmpty()){
+            if (state.myCustomer is State.Success){
 
-                val customerNew = state.myCustomer.filter { it.typeClient == TypeOfClient.NUEVO.name }
-                val customerDesarrollo = state.myCustomer.filter { it.typeClient == TypeOfClient.DESARROLLO.name }
-                val customerRecuperacion = state.myCustomer.filter { it.typeClient == TypeOfClient.RECUPERACIÓN.name }
+                val customerNew = state.myCustomer.value.filter { it.typeClient == TypeOfClient.NUEVO.name }
+                val customerDesarrollo = state.myCustomer.value.filter { it.typeClient == TypeOfClient.DESARROLLO.name }
+                val customerRecuperacion = state.myCustomer.value.filter { it.typeClient == TypeOfClient.RECUPERACIÓN.name }
 
                 ElevatedCard(
                     shape = RoundedCornerShape(20.dp),
@@ -273,17 +274,17 @@ fun DashboardScreenWindows(
                         .padding(vertical = 8.dp, horizontal = 8.dp).animateContentSize(),
                     horizontalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    if (state.myCustomer.isNotEmpty()){
+                    if (state.myCustomer is State.Success){
 
                         val listCustomer = state.myCustomer
-                        val customerNew = listCustomer.filter { it.typeClient == TypeOfClient.NUEVO.name }
-                        val customerDesarrollo = listCustomer.filter { it.typeClient == TypeOfClient.DESARROLLO.name }
-                        val customerRecuperacion = listCustomer.filter { it.typeClient == TypeOfClient.RECUPERACIÓN.name }
+                        val customerNew = listCustomer.value.filter { it.typeClient == TypeOfClient.NUEVO.name }
+                        val customerDesarrollo = listCustomer.value.filter { it.typeClient == TypeOfClient.DESARROLLO.name }
+                        val customerRecuperacion = listCustomer.value.filter { it.typeClient == TypeOfClient.RECUPERACIÓN.name }
 
                         DashboardCard(
                             title = "Clientes Totales",
-                            value = state.myCustomer.size.toString(),
-                            percentage ="${ ((state.myCustomer.size* 100) / listCustomer.size)} %",
+                            value = state.myCustomer.value.size.toString(),
+                            percentage ="${ ((state.myCustomer.value.size* 100) / listCustomer.value.size)} %",
                             modifier = Modifier.weight(1f),
                             icon = Icons.Outlined.Groups,
                             background = Color(0XFF723bde)
@@ -291,7 +292,7 @@ fun DashboardScreenWindows(
                         DashboardCard(
                             title = "Clientes Nuevos",
                             value = customerNew.size.toString(),
-                            percentage = "${((customerNew.size * 100) / listCustomer.size)} %",
+                            percentage = "${((customerNew.size * 100) / listCustomer.value.size)} %",
                             modifier = Modifier.weight(1f),
                             icon = Icons.Outlined.Person,
                             customers = customerNew,
@@ -300,7 +301,7 @@ fun DashboardScreenWindows(
                         DashboardCard(
                             title = "Clientes en Desarrollo",
                             value = customerDesarrollo.size.toString(),
-                            percentage = "${((customerDesarrollo.size * 100) / listCustomer.size)} %",
+                            percentage = "${((customerDesarrollo.size * 100) / listCustomer.value.size)} %",
                             modifier = Modifier.weight(1f),
                             icon = Icons.Outlined.Person,
                             customers = customerDesarrollo,
@@ -309,7 +310,7 @@ fun DashboardScreenWindows(
                         DashboardCard(
                             title = "Clientes en Recuperación",
                             value = customerRecuperacion.size.toString(),
-                            percentage = "${((customerRecuperacion.size * 100) / listCustomer.size)} %",
+                            percentage = "${((customerRecuperacion.size * 100) / listCustomer.value.size)} %",
                             modifier = Modifier.weight(1f),
                             customers = customerRecuperacion,
                             icon = Icons.Outlined.Person,

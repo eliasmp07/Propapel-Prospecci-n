@@ -2,11 +2,13 @@ package org.propapel.prospeccion.root.presentation.addlead
 
 import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toInstant
+import kotlinx.datetime.toLocalDateTime
 import org.propapel.prospeccion.root.data.dto.customer.InteractionType
 import org.propapel.prospeccion.root.data.dto.customer.TypeOfClient
 import org.propapel.prospeccion.root.domain.models.PurchaseRequest
 import org.propapel.prospeccion.root.domain.models.Reminder
-import org.propapel.prospeccion.root.presentation.addlead.components.utils.ProductsPropapel
 
 data class AddLeadState(
     val nameCompany: String = "",
@@ -23,10 +25,11 @@ data class AddLeadState(
     val fiscalAddress: String = "",
     val interestProduct: Boolean = false,
     val productsInterest: List<PurchaseRequest> = listOf(),
-    val productInterest: ProductsPropapel = ProductsPropapel.PAPELERIA,
+    val productInterest: String = "Seleccione una opción",
     //Reminder
-    val dateNextReminder: Long = Clock.System.now().toEpochMilliseconds(),
+    val dateNextReminder: Long = Clock.System.now().toLocalDateTime(TimeZone.UTC).toInstant(TimeZone.UTC).toEpochMilliseconds(),
     val descriptionNextAppointment: String = "",
+    val typeAppointment: String = "",
     //Oportunity
     val isOportunity: Boolean = false,
     //Interation Info
@@ -36,8 +39,8 @@ data class AddLeadState(
     val interactionType: InteractionType = InteractionType.LLAMADA,
     val dateInteration: Long = Clock.System.now().toEpochMilliseconds(),
     val notes: String = "",
-
-    val reminders: List<Reminder> = listOf(),
+    val isDateAvailable: Boolean = false,
+    val reminders: List<LocalDateTime> = listOf(),
     val reminderNoAvailable: List<LocalDateTime> = listOf(),
     val showAvailableDayDialog: Boolean = false,
     //Error textFieds
@@ -46,4 +49,4 @@ data class AddLeadState(
     val errorEmailLead: String? = null,
     val errorPhoneNumber: String? = null,
 
-)
+    )

@@ -122,8 +122,8 @@ suspend inline fun <reified T> responseToResult(response: HttpResponse): ResultE
 
 fun constructRoute(route: String): String {
     return when {
-        route.contains("http://3.144.8.170:3002") -> route
-        route.startsWith("/") -> "http://3.144.8.170:3002" + route
-        else -> "http://3.144.8.170:3002" + "/$route"
+        route.contains(URLBackend.detectMode(true)) -> route
+        route.startsWith("/") -> URLBackend.detectMode(true) + route
+        else -> URLBackend.detectMode(true) + "/$route"
     }
 }

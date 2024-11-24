@@ -54,12 +54,12 @@ fun AddClientDataScreen(
     onAction: (AddLeadAction) -> Unit
 ) {
     Column(
-        modifier = Modifier.verticalScroll(rememberScrollState()).fillMaxSize().background(
+        modifier = Modifier.background(
             Brush.verticalGradient(
                 0f to PrimaryViolet,
                 1f to PrimaryGreen
             )
-        ).padding(16.dp)
+        ).padding(16.dp).fillMaxSize().verticalScroll(rememberScrollState())
     ) {
         IconButton(
             modifier = Modifier.align(Alignment.End).padding(16.dp),

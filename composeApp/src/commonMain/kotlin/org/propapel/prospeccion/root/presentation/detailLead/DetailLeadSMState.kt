@@ -1,22 +1,33 @@
 package org.propapel.prospeccion.root.presentation.detailLead
 
 import androidx.compose.runtime.Stable
+import androidx.compose.ui.graphics.Color
 import kotlinx.datetime.Clock
+import org.propapel.prospeccion.core.presentation.designsystem.SuccessGreen
 import org.propapel.prospeccion.core.presentation.ui.UiText
 import org.propapel.prospeccion.root.domain.models.Customer
 import org.propapel.prospeccion.root.domain.models.Project
+import org.propapel.prospeccion.root.domain.models.PurchaseRequest
 import org.propapel.prospeccion.root.domain.models.Reminder
 
 @Stable
 data class DetailLeadSMState(
+    val price: String = "",
+    val reminderClose: Reminder = Reminder(),
+    val productsInterest: List<PurchaseRequest> = listOf(),
+    val productInterest: String = "Seleccione una opción",
+    val congratulationsCloseProject: Boolean = false,
+    val errorColor: Color = SuccessGreen,
     val isLoading: Boolean = false,
     val isDeletingProject: Boolean = false,
+    val typeAppointment: String = "",
     val competencia: String = "",
     val motivos: String = "",
     val comments: String = "",
     val projectDelete: Project = Project(),
     val successDelete: Boolean = false,
     val customer: Customer = Customer(),
+    val reminders: List<Reminder> = emptyList(),
     val project: List<Project> = listOf(),
     val isError: Boolean = false,
     val error: UiText = UiText.DynamicString("Error"),

@@ -53,7 +53,8 @@ private fun LeadScreen(
             state = state,
             onAction = onAction
         )
-    }else{
+    }
+    else{
         LeadScreenDesktop(
             state = state,
             onAction = onAction

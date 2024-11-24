@@ -17,10 +17,15 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Sell
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusManager
@@ -37,12 +42,13 @@ import org.propapel.prospeccion.core.presentation.designsystem.components.ProSal
 import org.propapel.prospeccion.root.presentation.addlead.AddLeadAction
 import org.propapel.prospeccion.root.presentation.addlead.ContainerState
 import org.propapel.prospeccion.root.presentation.addlead.components.ProductsInterestedItem
-import org.propapel.prospeccion.root.presentation.addlead.components.utils.ExposedDropdownMenuProductsInterested
 import org.propapel.prospeccion.root.presentation.addlead.components.utils.ProSalesPriceTextField
-import org.propapel.prospeccion.root.presentation.addlead.components.utils.ProductsPropapel
+import org.propapel.prospeccion.root.presentation.completeReminder.CompleteReminderAction
 import org.propapel.prospeccion.root.presentation.createInteraction.CreateInteractionAction
 import org.propapel.prospeccion.root.presentation.createInteraction.CreateInteractionLeadState
 import org.propapel.prospeccion.root.presentation.createInteraction.CreateInteractionScreenState
+import org.propapel.prospeccion.root.presentation.createProject.componetns.ExposedDropdownMenuGereric
+import org.propapel.prospeccion.root.presentation.createProject.componetns.provideProductsPropapel
 
 @Composable
 fun AddInfoProductsInteresedClient(
@@ -93,19 +99,26 @@ fun AddInfoProductsInteresedClient(
                 Spacer(
                     modifier = Modifier.height(8.dp)
                 )
-                ExposedDropdownMenuProductsInterested(
+                var expandedProducts by remember {
+                    mutableStateOf(false)
+                }
+                ExposedDropdownMenuGereric(
+                    title = "Productos Propapel",
+                    state = expandedProducts,
+                    listOptions = provideProductsPropapel(),
+                    onDimiss = {
+                        expandedProducts = !expandedProducts
+                    },
+                    colors = Color.White,
                     optionSelectable = state.productInterested,
-                    listOptions = listOf(
-                        ProductsPropapel.ROLLITOS,
-                        ProductsPropapel.INSTALACION_RACKS,
-                        ProductsPropapel.INSTALACION_CAMARA,
-                        ProductsPropapel.RENTA_IMPRESORA,
-                        ProductsPropapel.RENTA_EQUIPO_DE_COMPUTO,
-                        ProductsPropapel.PAPELERIA,
-                        ProductsPropapel.TOTAL_OFFICE
-                    ),
-                    optionSelectableClick = {
-                        onAction(CreateInteractionAction.OnProductInterestedChange(it))
+                    content = {
+                        DropdownMenuItem(
+                            text = { androidx.compose.material.Text(text = it.name) },
+                            onClick = {
+                                expandedProducts = !expandedProducts
+                                onAction(CreateInteractionAction.OnProductInterestedChange(it.name))
+                            }
+                        )
                     }
                 )
                 Text("*Puede agregar mas de un producto", color = Color.White)

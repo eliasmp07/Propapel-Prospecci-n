@@ -21,6 +21,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
@@ -79,6 +80,9 @@ fun SwipeableItemWithActions(
         }
         Surface(
             modifier = Modifier
+                .clip(
+                    RoundedCornerShape(20.dp)
+                )
                 .fillMaxSize()
                 .offset { IntOffset(offset.value.roundToInt(), 0) }
                 .pointerInput(contextMenuWidth) {
@@ -96,6 +100,7 @@ fun SwipeableItemWithActions(
                                     scope.launch {
                                         offset.animateTo(contextMenuWidth)
                                         onExpanded()
+
                                     }
                                 }
 

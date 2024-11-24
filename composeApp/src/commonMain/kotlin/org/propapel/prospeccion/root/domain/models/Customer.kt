@@ -6,6 +6,7 @@ data class Customer(
     val companyName: String = "",
     val contactName: String = "",
     val email: String = "",
+    val progressLead: Double = 0.0,
     val typeClient: String = "",
     val phoneNumber: String = "",
     val address: String? = null,

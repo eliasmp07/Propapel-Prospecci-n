@@ -11,6 +11,7 @@ data class CustomerDto(
     @SerialName("company_name") val companyName: String,
     @SerialName("contact_name") val contactName: String, val email: String,
     @SerialName("phone_number") val phoneNumber: String, val address: String? = null,
+    val progressLead: Double = 0.0,
     @SerialName("created_at")
     val createdAt: String,
     @SerialName("updated_at")
@@ -37,5 +38,5 @@ data class PurchaseResponseCreateDto(
     @SerialName("isIntoProduct") val isIntoProduct: Boolean,
     @SerialName("product_service_name")val productServiceName: String,
     @SerialName("purchase_date")val purchaseDate: Long,
-    val amount: Int
+    val amount: String
 )

@@ -19,6 +19,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Notes
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -63,7 +64,11 @@ import org.propapel.prospeccion.root.presentation.addlead.AddLeadAction
 import org.propapel.prospeccion.root.presentation.addlead.AddLeadState
 import org.propapel.prospeccion.root.presentation.addlead.ContainerState
 import org.propapel.prospeccion.root.presentation.addlead.components.utils.KottieAnimationUtil
+import org.propapel.prospeccion.root.presentation.createProject.componetns.ExposedDropdownMenuGereric
+import org.propapel.prospeccion.root.presentation.createProject.componetns.provideProductsPropapel
 import org.propapel.prospeccion.root.presentation.createReminder.components.DialogDayNoAvailable
+import org.propapel.prospeccion.root.presentation.createReminder.components.utils.TypeOfAppointment
+import org.propapel.prospeccion.root.presentation.createReminder.components.utils.provideTypeOfAppointment
 
 @Composable
 fun AddInfoRemiderAppointmentScreen(
@@ -81,7 +86,7 @@ fun AddInfoRemiderAppointmentScreen(
 
 
     Column(
-        modifier = modifier.fillMaxSize().verticalScroll(rememberScrollState()).background(
+        modifier = modifier.background(
             Brush.verticalGradient(
                 colors = listOf(
                     Color(0xFF00BCD4), // Cian claro
@@ -89,7 +94,7 @@ fun AddInfoRemiderAppointmentScreen(
                     Color(0xFF00796B)  // Verde intenso
                 )
             )
-        ).padding(16.dp)
+        ).padding(16.dp).fillMaxSize().verticalScroll(rememberScrollState())
     ) {
         IconButton(
             modifier = Modifier.align(Alignment.End).padding(16.dp),
@@ -133,6 +138,31 @@ fun AddInfoRemiderAppointmentScreen(
         Spacer(
             modifier = Modifier.height(8.dp)
         )
+        var expandedProducts by remember {
+            mutableStateOf(false)
+        }
+        ExposedDropdownMenuGereric(
+            title = "Tipo de cita",
+            state = expandedProducts,
+            optionSelectable = state.typeAppointment,
+            colors = Color.White,
+            listOptions = provideTypeOfAppointment(),
+            onDimiss = {
+               expandedProducts = !expandedProducts
+            },
+            content = {
+                DropdownMenuItem(
+                    text = { androidx.compose.material.Text(text = it.toString()) },
+                    onClick = {
+                        expandedProducts = !expandedProducts
+                        onAction(AddLeadAction.OnTypeAppointmentChange(it.name))
+                    }
+                )
+            }
+        )
+        Spacer(
+            modifier = Modifier.height(8.dp)
+        )
         ProSalesTextField(
             title = "Notas para la proxima cita",
             state = state.descriptionNextAppointment,
@@ -157,6 +187,7 @@ fun AddInfoRemiderAppointmentScreen(
         )
         ProSalesActionButton(
             text = "Guardar",
+            textColor = Color.White,
             isLoading = false,
             onClick = {
                 onAction(AddLeadAction.OnNextScreenClick(ContainerState.FINISH))
@@ -169,13 +200,17 @@ fun AddInfoRemiderAppointmentScreen(
     if (showDatePicker) {
         WheelDateTimePickerView(
             title = "Fecha y hora de la cita",
-            modifier = Modifier.padding(top = 18.dp, bottom = 10.dp).fillMaxWidth(),
+            modifier = Modifier.padding(
+                top = 18.dp,
+                bottom = 10.dp
+            ).fillMaxWidth(),
             showDatePicker = showDatePicker,
             titleStyle = TextStyle(
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color(0xFF333333),
             ),
+            doneLabel = "Seleccionar",
             doneLabelStyle = TextStyle(
                 fontSize = 16.sp,
                 fontWeight = FontWeight(600),
@@ -193,23 +228,30 @@ fun AddInfoRemiderAppointmentScreen(
             ),
             onDoneClick = {
                 onAction(AddLeadAction.OnDateNextReminder(localDateTimeToLong(it)))
-                selectedDate = dateTimeToString(it, "dd-MM-yyyy hh:mm a")
-                showDatePicker = false
+                if (state.isDateAvailable) {
+                    selectedDate = dateTimeToString(
+                        it,
+                        "dd-MM-yyyy hh:mm a"
+                    )
+                    showDatePicker = false
+                }
             },
-            dateTimePickerView = DateTimePickerView.BOTTOM_SHEET_VIEW,
+            dateTimePickerView = DateTimePickerView.DIALOG_VIEW,
             onDismiss = {
                 showDatePicker = false
             }
         )
     }
-    if (state.showAvailableDayDialog) {
-        DialogDayNoAvailable {
-            onAction(AddLeadAction.OnToggleDateNoAvailable)
-        }
-    }
 
 }
 
+
+/**
+ * Funcion que convierte el locaslDateTime a Long
+ *
+ * @param localDateTime local date time que se va a convertir
+ * @return localdatetime ya convertido en formato long para validaciones
+ */
 fun localDateTimeToLong(localDateTime: LocalDateTime): Long {
     // Convierte LocalDateTime a Instant en la zona horaria UTC o la que prefieras
     val instant = localDateTime.toInstant(TimeZone.UTC)

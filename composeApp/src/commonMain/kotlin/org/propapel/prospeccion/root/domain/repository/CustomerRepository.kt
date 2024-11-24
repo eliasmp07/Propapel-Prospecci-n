@@ -26,6 +26,7 @@ interface CustomerRepository {
         notes: String,
         reminderDate: Long,
         description: String,
+        typeAppointment: String,
         isCompleted: Boolean?
     ): EmptyResult<DataError.Network>
 
