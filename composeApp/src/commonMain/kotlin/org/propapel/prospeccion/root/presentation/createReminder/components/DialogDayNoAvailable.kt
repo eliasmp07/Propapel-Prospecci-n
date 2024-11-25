@@ -36,60 +36,7 @@ import org.propapel.prospeccion.root.presentation.createReminder.CreateReminderA
 import org.propapel.prospeccion.root.presentation.detailLead.DetailLeadAction
 
 @Composable
-fun DialogDayNoAvailable(
+expect fun DialogDayNoAvailable(
     modifier: Modifier = Modifier,
     onDismissRequest: () -> Unit,
-) {
-    Dialog(
-        onDismissRequest = onDismissRequest,
-        content = {
-            ElevatedCard(
-                modifier = modifier
-            ) {
-                Column(
-                    modifier = Modifier.background(
-                        Color.White
-                    ).padding(16.dp)
-                ) {
-                    IconButton(
-                        modifier = Modifier.align(Alignment.End),
-                        onClick = {
-                            onDismissRequest()
-                        },
-                        content = {
-                            Icon(
-                                imageVector = Icons.Default.Close,
-                                contentDescription = null
-                            )
-                        }
-                    )
-                    Text(
-                        modifier = Modifier.align(Alignment.CenterHorizontally),
-                        text = "Momento no disponible",
-                        style = MaterialTheme.typography.headlineMedium,
-                        color = Color.Black,
-                        fontWeight = FontWeight.Bold
-                    )
-                    Spacer(
-                        modifier = Modifier.height(8.dp)
-                    )
-                    Text(
-                        modifier = Modifier.align(Alignment.CenterHorizontally),
-                        text = "Ups! Parece que el momento seleccionado no está disponible, por favor selecciona otro momento.",
-                        style = MaterialTheme.typography.bodyMedium,
-                        textAlign = TextAlign.Center,
-                        color = Color.Black,
-                        fontWeight = FontWeight.Bold
-                    )
-                    Spacer(Modifier.height(16.dp))
-                    ProSalesActionButtonOutline(
-                        text = "Aceptar",
-                        onClick = {
-                            onDismissRequest()
-                        }
-                    )
-                }
-            }
-        }
-    )
-}
+)

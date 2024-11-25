@@ -20,7 +20,9 @@ fun MainViewController() = ComposeUIViewController(
     ProvideIOSPlatformConfiguration {
         // En tu UI
         if(!viewModel.state.isCheckingAuth) {
-            RootGraph(isLogging = viewModel.state.isLoggedIn)
+            App {
+                RootGraph(isLogging = viewModel.state.isLoggedIn)
+            }
         }
     }
 }

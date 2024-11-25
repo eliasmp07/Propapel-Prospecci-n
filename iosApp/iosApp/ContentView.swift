@@ -12,9 +12,12 @@ struct ComposeView: UIViewControllerRepresentable {
 }
 
 struct ContentView: View {
+    @EnvironmentObject var lnManager: LocalNotificationManager
     var body: some View {
         ComposeView()
-                .ignoresSafeArea(.keyboard) // Compose has own keyboard handler
+            .ignoresSafeArea(.keyboard).task {
+                try? await lnManager.requestAuthorization()
+            } // Compose has own keyboard handler
     }
 }
 

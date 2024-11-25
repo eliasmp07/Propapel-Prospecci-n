@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlinx.datetime.Clock
 import org.propapel.prospeccion.core.domain.ResultExt
 import org.propapel.prospeccion.core.presentation.designsystem.SuccessGreen
@@ -78,17 +79,18 @@ class DetailLeadViewModel(
                             }
                         }
                         is ResultExt.Success -> {
-                            _state.update {
-                                val reminders = it.customer.reminders.toMutableList()
-                                reminders.remove(it.reminderEliminated)
-                                it.copy(
-                                    reminders = reminders,
-                                    error = UiText.DynamicString("Cita eliminada con éxito"),
-                                    isError = true,
-                                    showCancelNotification = !it.showCancelNotification,
-                                    reminderEliminated = Reminder()
-                                )
-                            }
+                                _state.update {
+                                    val reminders = it.customer.reminders.toMutableList()
+                                    reminders.remove(it.reminderEliminated)
+                                    it.copy(
+                                        reminders = reminders,
+                                        error = UiText.DynamicString("Cita eliminada con éxito"),
+                                        isError = true,
+                                        showCancelNotification = !it.showCancelNotification,
+                                        reminderEliminated = Reminder()
+                                    )
+                                }
+
                         }
                     }
 

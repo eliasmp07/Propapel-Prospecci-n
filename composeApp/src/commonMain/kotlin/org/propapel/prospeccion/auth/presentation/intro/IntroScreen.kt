@@ -198,18 +198,19 @@ private fun IntroScreen(
                 )
             }
         }
-    }
-    if (showAboutInfo) {
-        DialogCreateSuccess(
-            image = Res.drawable.logo,
-            title = "Acerca de ProSales",
-            message = "ProSales es una aplicación de prospección inteligente, diseñada para facilitar la búsqueda de clientes potenciales de manera rápida y efectiva. Con ProSales, puedes organizar tus contactos y oportunidades en un solo lugar y realizar un seguimiento detallado de tus avances. \n \n Esta herramienta está administrada por Propapel Mérida, comprometidos en impulsar tu éxito en ventas.",
-            textButton = "Cerrar",
-            onDismissRequest = {
-                showAboutInfo = false
-            }
-        )
-    }
+        if (showAboutInfo) {
+            DialogCreateSuccess(
+                image = Res.drawable.logo,
+                title = "Acerca de ProSales",
+                message = "ProSales es una aplicación de prospección inteligente, diseñada para facilitar la búsqueda de clientes potenciales de manera rápida y efectiva. Con ProSales, puedes organizar tus contactos y oportunidades en un solo lugar y realizar un seguimiento detallado de tus avances. \n \n Esta herramienta está administrada por Propapel Mérida, comprometidos en impulsar tu éxito en ventas.",
+                textButton = "Cerrar",
+                onDismissRequest = {
+                    showAboutInfo = false
+                }
+            )
+        }
 
+    }
 
 }
+

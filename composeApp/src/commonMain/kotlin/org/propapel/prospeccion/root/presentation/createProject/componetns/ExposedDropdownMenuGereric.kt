@@ -4,9 +4,13 @@ package org.propapel.prospeccion.root.presentation.createProject.componetns
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.Icon
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material.Text
+import androidx.compose.material.TextButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.ArrowDropUp
@@ -44,7 +48,7 @@ fun <T>ExposedDropdownMenuGereric(
     optionSelectable: String = "Selecione una opcion",
     content: @Composable() (ColumnScope.(T) -> Unit),
     listOptions: List<T> = listOf()
-) {
+){
     ExposedDropdownMenuBox(
         expanded = state,
         onExpandedChange = {

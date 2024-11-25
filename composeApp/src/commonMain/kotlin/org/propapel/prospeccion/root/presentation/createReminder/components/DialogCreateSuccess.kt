@@ -18,8 +18,11 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
@@ -32,7 +35,7 @@ import org.jetbrains.compose.resources.painterResource
 import org.propapel.prospeccion.core.presentation.designsystem.components.ProSalesActionButtonOutline
 
 @Composable
-fun DialogCreateSuccess(
+expect fun DialogCreateSuccess(
     title: String,
     message: String,
     icon: ImageVector? = null,
@@ -40,81 +43,4 @@ fun DialogCreateSuccess(
     modifier: Modifier = Modifier,
     textButton: String = "Aceptar",
     onDismissRequest: () -> Unit,
-) {
-    BasicAlertDialog(
-        properties = DialogProperties(
-            dismissOnBackPress = false,
-            dismissOnClickOutside = false
-        ),
-        onDismissRequest = onDismissRequest,
-        content = {
-            ElevatedCard(
-                modifier = modifier
-            ) {
-                Column(
-                    modifier = Modifier.background(
-                        Color.White
-                    ).padding(16.dp)
-                ) {
-                    IconButton(
-                        modifier = Modifier.align(Alignment.End),
-                        onClick = {
-                            onDismissRequest()
-                        },
-                        content = {
-                            Icon(
-                                imageVector = Icons.Default.Close,
-                                contentDescription = null
-                            )
-                        }
-                    )
-                    if(icon != null){
-                        Icon(
-                            imageVector = icon,
-                            contentDescription = null,
-                            modifier = Modifier.align(Alignment.CenterHorizontally)
-                        )
-                        Spacer(
-                            modifier = Modifier.height(16.dp)
-                        )
-                    }
-                    if (image != null) {
-                        Image(
-                            painter = painterResource(image),
-                            contentDescription = null,
-                            modifier = Modifier.align(Alignment.CenterHorizontally)
-                        )
-                        Spacer(
-                            modifier = Modifier.height(16.dp)
-                        )
-                    }
-                    Text(
-                        modifier = Modifier.align(Alignment.CenterHorizontally),
-                        text = title,
-                        style = MaterialTheme.typography.headlineMedium,
-                        color = Color.Black,
-                        fontWeight = FontWeight.Bold
-                    )
-                    Spacer(
-                        modifier = Modifier.height(16.dp)
-                    )
-                    Text(
-                        modifier = Modifier.align(Alignment.CenterHorizontally),
-                        text = message,
-                        style = MaterialTheme.typography.bodyMedium,
-                        textAlign = TextAlign.Center,
-                        color = Color.Black,
-                        fontWeight = FontWeight.Bold
-                    )
-                    Spacer(Modifier.height(16.dp))
-                    ProSalesActionButtonOutline(
-                        text = textButton,
-                        onClick = {
-                            onDismissRequest()
-                        }
-                    )
-                }
-            }
-        },
-    )
-}
+)

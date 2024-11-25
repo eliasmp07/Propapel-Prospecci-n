@@ -1,4 +1,4 @@
-@file:OptIn(ExperimentalMaterialApi::class)
+@file:OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class)
 
 package org.propapel.prospeccion.root.presentation.leads.components.mobile
 
@@ -42,11 +42,13 @@ import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -97,6 +99,8 @@ fun LeadScreenMobile(
         state.isRefreshing,
         { onRefresh() })
 
+
+    val sheetStateCreateAppointment = rememberModalBottomSheetState()
 
     var page by remember { mutableStateOf(1) } // Usar mutableStateOf para recomposición
 
@@ -386,6 +390,17 @@ fun LeadScreenMobile(
 
             }
         }
+
+        if (state.showCreateDate) {
+            CreateReminderLeadDialog(
+                sheetState = sheetStateCreateAppointment,
+                state = state,
+                onAction = onAction,
+                onDismissRequest = {
+                    onAction(LeadAction.OnToggleCreateAppointmentDialog(0))
+                }
+            )
+        }
         ExtendedFloatingActionButton(
             modifier = Modifier.align(Alignment.BottomEnd).padding(16.dp),
             containerColor = MaterialTheme.colorScheme.primary,
@@ -407,12 +422,6 @@ fun LeadScreenMobile(
                 )
             }
         )
-        PullRefreshIndicator(
-            refreshing = state.isRefreshing,
-            state = pullRefreshState,
-            modifier = Modifier.align(Alignment.TopCenter)
-        )
-    }
 
     if (state.dateNoAvailable){
         DialogDayNoAvailable {
@@ -420,13 +429,11 @@ fun LeadScreenMobile(
         }
     }
 
-    if (state.showCreateDate) {
-        CreateReminderLeadDialog(
-            state = state,
-            onAction = onAction,
-            onDismissRequest = {
-                onAction(LeadAction.OnToggleCreateAppointmentDialog(0))
-            }
+
+        PullRefreshIndicator(
+            refreshing = state.isRefreshing,
+            state = pullRefreshState,
+            modifier = Modifier.align(Alignment.TopCenter)
         )
     }
 

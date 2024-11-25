@@ -25,74 +25,11 @@ import androidx.compose.ui.window.Dialog
 import org.propapel.prospeccion.core.presentation.designsystem.components.ProSalesActionButtonOutline
 
 @Composable
-fun DialogConfirmOption(
+expect fun DialogConfirmOption(
     modifier: Modifier = Modifier,
     textButton: String,
     onAcceptOption: () -> Unit,
     title: String,
     description: String,
     onDismissRequest: () -> Unit
-) {
-
-    Dialog(
-        onDismissRequest = onDismissRequest,
-        content = {
-            ElevatedCard(
-                modifier = modifier
-            ) {
-                Column(
-                    modifier = Modifier.padding(16.dp)
-                ) {
-                    IconButton(
-                        modifier = Modifier.align(Alignment.End),
-                        onClick = {
-                            onDismissRequest()
-                        },
-                        content = {
-                            Icon(
-                                imageVector = Icons.Default.Close,
-                                contentDescription = null
-                            )
-                        }
-                    )
-                    Text(
-                        modifier = Modifier.align(Alignment.CenterHorizontally),
-                        text = title,
-                        style = MaterialTheme.typography.headlineMedium,
-                        color = Color.Black,
-                        fontWeight = FontWeight.Bold
-                    )
-                    Spacer(Modifier.height(16.dp))
-                    Text(
-                        modifier = Modifier.align(Alignment.CenterHorizontally),
-                        text = description,
-                        textAlign = TextAlign.Center,
-                        fontWeight = FontWeight.Bold,
-                        color = Color.Black,
-                        style = MaterialTheme.typography.headlineSmall,
-                    )
-                    Spacer(Modifier.height(8.dp))
-                    Row(
-                        modifier = Modifier.fillMaxWidth().padding(8.dp)
-                    ){
-                        ProSalesActionButtonOutline(
-                            modifier = Modifier.weight(1f),
-                            text = textButton,
-                            onClick = {
-                                onAcceptOption()
-                            }
-                        )
-                        Spacer(Modifier.width(8.dp))
-                        ProSalesActionButtonOutline(
-                            modifier = Modifier.weight(1f),
-                            text = "Cancelar",
-                            onClick = {
-                                onDismissRequest()
-                            }
-                        )
-                    }
-                }
-            }
-        }
-    )
-}
+)

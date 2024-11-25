@@ -112,6 +112,7 @@ fun DetailCustomerSMScreen(
     val sheetState = rememberModalBottomSheetState()
     val sheetStateProject = rememberModalBottomSheetState()
     val sheetStateCloseAppointment = rememberModalBottomSheetState()
+    val sheetStateCreateAppointment = rememberModalBottomSheetState()
 
     val scope = rememberCoroutineScope()
 
@@ -122,6 +123,7 @@ fun DetailCustomerSMScreen(
     var showBottomSheetCloseAppointment by remember {
         mutableStateOf(false)
     }
+
 
     val pagerState = rememberPagerState(pageCount = { pages.size })
     // Estado para la imagen a mostrar
@@ -302,6 +304,7 @@ fun DetailCustomerSMScreen(
 
                     }
                 }
+
                 if (state.showCancelNotification) {
                     DialogConfirmOption(
                         title = "Eliminar recordatorio",
@@ -328,6 +331,7 @@ fun DetailCustomerSMScreen(
                     CreateReminderDialog(
                         state = state,
                         onAction = onAction,
+                        sheetState = sheetStateCreateAppointment,
                         onDismissRequest = {
                             onAction(DetailLeadAction.OnToggleCreateAppointmentDialog)
                         }
