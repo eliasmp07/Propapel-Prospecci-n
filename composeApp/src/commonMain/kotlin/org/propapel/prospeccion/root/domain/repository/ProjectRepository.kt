@@ -17,6 +17,12 @@ interface ProjectRepository {
         products: List<Purchase>
     ): EmptyResult<DataError.Network>
 
+    suspend fun getProjectByUserId(): ResultExt<List<Project>, DataError.Network>
+
+    suspend fun closeProject(
+        projectId: Int
+    ): ResultExt<Project, DataError.Network>
+
     suspend fun getProjectByCustomerId(customerId: String): ResultExt<List<Project>, DataError.Network>
 
     suspend fun deleteProject(projectId: Int, motivos: String, competencia: String, comments: String): EmptyResult<DataError.Network>

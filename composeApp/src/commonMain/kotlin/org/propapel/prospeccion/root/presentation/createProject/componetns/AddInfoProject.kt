@@ -12,7 +12,6 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Bookmark
-import androidx.compose.material.icons.filled.LowPriority
 import androidx.compose.material.icons.filled.PriorityHigh
 import androidx.compose.material.icons.filled.Start
 import androidx.compose.material3.DropdownMenuItem
@@ -60,9 +59,6 @@ fun AddInfoProject(
         var expandedPrioridad by remember {
             mutableStateOf(false)
         }
-        var expandedStus by remember {
-            mutableStateOf(false)
-        }
         Spacer(
             modifier = Modifier.height(16.dp)
         )
@@ -97,25 +93,6 @@ fun AddInfoProject(
         )
         Spacer(
             modifier = Modifier.height(16.dp)
-        )
-        ExposedDropdownMenuGereric(
-            title = "Estado del proyecto",
-            state = expandedStus,
-            colors = Color.Black,
-            onDimiss = {
-                expandedStus = !expandedStus
-            },
-            optionSelectable = state.stateProject,
-            listOptions = listOf("Negociación", "Cerrado", "Venta perdida"),
-            content = {
-                DropdownMenuItem(
-                    text = { Text(text = it) },
-                    onClick = {
-                        expandedStus = !expandedStus
-                        onAction(CreateProjectAction.OnStateProject(it))
-                    }
-                )
-            }
         )
 
         Spacer(

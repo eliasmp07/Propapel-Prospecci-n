@@ -24,11 +24,12 @@ import com.aay.compose.lineChart.LineChart
 import com.aay.compose.lineChart.model.LineParameters
 import com.aay.compose.lineChart.model.LineType
 import org.propapel.prospeccion.root.domain.models.Purchase
-import org.propapel.prospeccion.root.presentation.addlead.components.utils.ProductsPropapel
+import org.propapel.prospeccion.root.presentation.createProject.componetns.ProductPropapel
+import org.propapel.prospeccion.root.presentation.leads.components.mobile.sumTotalSaleForProducts
 
 fun aggregateSalesDataByCategory(
     purchases: List<Purchase>,
-    products: List<ProductsPropapel>,
+    products: List<ProductPropapel>,
 ): Map<String, Double> {
     val categoryMap = products.associate { it.name to it.name }
 
@@ -48,11 +49,23 @@ fun aggregateSalesDataByCategory(
 
 @Composable
 fun DashboardChart(
-    title: String, orders: List<Purchase>,
-    products: List<ProductsPropapel>,
+    title: String, products: List<Purchase>,
     modifier: Modifier = Modifier
 ) {
-    val categorySalesPercentage = aggregateSalesDataByCategory(orders, products)
+    val barParameters: MutableList<LineParameters> = mutableListOf()
+    val productsWithAmout = sumTotalSaleForProducts(products)
+    val xAxisData:MutableList<String> = mutableListOf()
+    productsWithAmout.forEach {
+        LineParameters(
+            label = it.key,
+            data = listOf(it.value),
+            lineColor = Color(0xFFF24C9D),
+            lineType = LineType.CURVED_LINE,
+            lineShadow = false
+        )
+        xAxisData.add(it.key.take(3))
+    }
+    /*  val categorySalesPercentage = aggregateSalesDataByCategory(orders, products)
         .mapValues { (it.value / orders.sumOf { order -> order.amount.toDouble() }) * 100 }
 
 
@@ -79,6 +92,9 @@ fun DashboardChart(
                 lineShadow = true,
             )
         }
+
+     */
+
 
     Card(
         shape = RoundedCornerShape(8.dp),
@@ -107,7 +123,7 @@ fun DashboardChart(
                     color = Color.Gray,
                     fontWeight = FontWeight.W400
                 ),
-                linesParameters = testLineParameters,
+                linesParameters = barParameters,
                 isGrid = true,
                 gridColor = Color.Blue,
                 xAxisData = xAxisData,

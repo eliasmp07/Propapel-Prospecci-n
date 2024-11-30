@@ -12,22 +12,25 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Sell
 import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material.icons.rounded.TaskAlt
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusManager
@@ -40,14 +43,13 @@ import androidx.compose.ui.unit.dp
 import org.propapel.prospeccion.core.presentation.designsystem.PrimaryPink
 import org.propapel.prospeccion.core.presentation.designsystem.PrimaryPinkBlended
 import org.propapel.prospeccion.core.presentation.designsystem.components.ProSalesActionButton
-import org.propapel.prospeccion.core.presentation.designsystem.components.ProSalesTextField
 import org.propapel.prospeccion.root.domain.models.PurchaseRequest
 import org.propapel.prospeccion.root.presentation.addlead.AddLeadAction
 import org.propapel.prospeccion.root.presentation.addlead.AddLeadState
 import org.propapel.prospeccion.root.presentation.addlead.ContainerState
-import org.propapel.prospeccion.root.presentation.addlead.components.utils.ExposedDropdownMenuProductsInterested
 import org.propapel.prospeccion.root.presentation.addlead.components.utils.ProSalesPriceTextField
-import org.propapel.prospeccion.root.presentation.addlead.components.utils.ProductsPropapel
+import org.propapel.prospeccion.root.presentation.createProject.componetns.ExposedDropdownMenuGereric
+import org.propapel.prospeccion.root.presentation.createProject.componetns.provideProductsPropapel
 
 @Composable
 fun AddInfoInteresedProductsScreen(
@@ -98,19 +100,26 @@ fun AddInfoInteresedProductsScreen(
                 Spacer(
                     modifier = Modifier.height(8.dp)
                 )
-                ExposedDropdownMenuProductsInterested(
+                var expandedProducts by remember {
+                    mutableStateOf(false)
+                }
+                ExposedDropdownMenuGereric(
+                    title = "Productos Propapel",
+                    state = expandedProducts,
+                    colors = Color.White,
+                    listOptions = provideProductsPropapel(),
+                    onDimiss = {
+                        expandedProducts = !expandedProducts
+                    },
                     optionSelectable = state.productInterest,
-                    listOptions = listOf(
-                        ProductsPropapel.ROLLITOS,
-                        ProductsPropapel.INSTALACION_RACKS,
-                        ProductsPropapel.INSTALACION_CAMARA,
-                        ProductsPropapel.RENTA_IMPRESORA,
-                        ProductsPropapel.RENTA_EQUIPO_DE_COMPUTO,
-                        ProductsPropapel.PAPELERIA,
-                        ProductsPropapel.TOTAL_OFFICE
-                    ),
-                    optionSelectableClick = {
-                        onAction(AddLeadAction.OnProductInterestChange(it))
+                    content = {
+                        DropdownMenuItem(
+                            text = { androidx.compose.material.Text(text = it.name) },
+                            onClick = {
+                                expandedProducts = !expandedProducts
+                                onAction(AddLeadAction.OnProductInterestChange(it.name))
+                            }
+                        )
                     }
                 )
                 Text("*Puede agregar mas de un producto", color = Color.White)

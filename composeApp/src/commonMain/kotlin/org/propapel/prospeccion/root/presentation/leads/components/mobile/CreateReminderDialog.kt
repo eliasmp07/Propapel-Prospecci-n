@@ -1,6 +1,5 @@
 package org.propapel.prospeccion.root.presentation.leads.components.mobile
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -11,9 +10,10 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.IconButton
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Notes
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.DateRange
-import androidx.compose.material.icons.filled.Notes
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -25,7 +25,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.TextStyle
@@ -44,14 +43,12 @@ import network.chaintech.kmp_date_time_picker.utils.DateTimePickerView
 import network.chaintech.kmp_date_time_picker.utils.TimeFormat
 import network.chaintech.kmp_date_time_picker.utils.WheelPickerDefaults
 import network.chaintech.kmp_date_time_picker.utils.dateTimeToString
-import org.propapel.prospeccion.core.presentation.designsystem.PrimaryYellowLight
-import org.propapel.prospeccion.core.presentation.designsystem.SoporteSaiBlue30
 import org.propapel.prospeccion.core.presentation.designsystem.components.ProSalesActionButtonOutline
 import org.propapel.prospeccion.core.presentation.designsystem.components.ProSalesTextField
 import org.propapel.prospeccion.core.presentation.ui.typeHour
 import org.propapel.prospeccion.root.presentation.addlead.components.localDateTimeToLong
-import org.propapel.prospeccion.root.presentation.detailLead.DetailLeadAction
-import org.propapel.prospeccion.root.presentation.detailLead.DetailLeadSMState
+import org.propapel.prospeccion.root.presentation.createProject.componetns.ExposedDropdownMenuGereric
+import org.propapel.prospeccion.root.presentation.createReminder.components.utils.provideTypeOfAppointment
 import org.propapel.prospeccion.root.presentation.leads.LeadAction
 import org.propapel.prospeccion.root.presentation.leads.LeadSMState
 
@@ -77,13 +74,7 @@ fun CreateReminderLeadDialog(
                 modifier = modifier
             ) {
                 Column(
-                    modifier = Modifier.background(
-                        brush = Brush.verticalGradient(
-                            0f to PrimaryYellowLight,
-                            0.6f to SoporteSaiBlue30,
-                            1f to MaterialTheme.colorScheme.primary
-                        )
-                    ).padding(16.dp)
+                    modifier = Modifier.padding(16.dp)
                 ) {
                     IconButton(
                         modifier = Modifier.align(Alignment.End),
@@ -130,6 +121,31 @@ fun CreateReminderLeadDialog(
                     Spacer(
                         modifier = Modifier.height(8.dp)
                     )
+                    var expandedProducts by remember {
+                        mutableStateOf(false)
+                    }
+                    ExposedDropdownMenuGereric(
+                        title = "Tipo de cita",
+                        state = expandedProducts,
+                        optionSelectable = state.typeAppointment,
+                        colors = Color.Black,
+                        listOptions = provideTypeOfAppointment(),
+                        onDimiss = {
+                            expandedProducts = !expandedProducts
+                        },
+                        content = {
+                            DropdownMenuItem(
+                                text = { androidx.compose.material.Text(text = it.toString()) },
+                                onClick = {
+                                    expandedProducts = !expandedProducts
+                                    onAction(LeadAction.OnTypeAppointmentChange(it.name))
+                                }
+                            )
+                        }
+                    )
+                    Spacer(
+                        modifier = Modifier.height(8.dp)
+                    )
                     ProSalesTextField(
                         title = "Notas para la proxima cita",
                         state = state.notesAppointment,
@@ -146,7 +162,7 @@ fun CreateReminderLeadDialog(
                             }
                         ),
                         colors = Color.Black,
-                        startIcon = Icons.Filled.Notes,
+                        startIcon = Icons.AutoMirrored.Filled.Notes,
                         maxLines = 104
                     )
                     Spacer(Modifier.height(8.dp))

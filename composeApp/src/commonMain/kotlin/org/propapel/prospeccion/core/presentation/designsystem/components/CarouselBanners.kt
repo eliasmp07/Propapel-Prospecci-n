@@ -17,14 +17,13 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Icon
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowRight
+import androidx.compose.material.icons.automirrored.filled.ArrowRight
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.CoroutineScope
@@ -129,7 +128,7 @@ fun RightArrowIcon(
             .clickable { onClick() }
             .padding(8.dp)
             .size(20.dp),
-        imageVector = Icons.Default.ArrowRight,
+        imageVector = Icons.AutoMirrored.Filled.ArrowRight,
         contentDescription = null,
         tint = Color.Blue
     )

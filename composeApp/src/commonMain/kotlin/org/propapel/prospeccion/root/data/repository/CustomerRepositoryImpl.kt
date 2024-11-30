@@ -48,6 +48,7 @@ class CustomerRepositoryImpl(
         interactionDate: Long,
         notes: String,
         reminderDate: Long,
+        typeAppointment: String,
         description: String,
         isCompleted: Boolean?
     ): EmptyResult<DataError.Network> {
@@ -81,6 +82,7 @@ class CustomerRepositoryImpl(
                 ReminderRequest(
                     customerId = 0,
                     opportunityId = 0,
+                    typeAppointment = typeAppointment,
                     reminderDate =reminderDate,
                     description = description,
                     isCompleted = false
@@ -94,7 +96,8 @@ class CustomerRepositoryImpl(
                     customer = Customer(
                         contactName = contactName
                     ),
-                    isCompleted = false
+                    isCompleted = false,
+                    typeAppointment = ""
                 )
             )
         }

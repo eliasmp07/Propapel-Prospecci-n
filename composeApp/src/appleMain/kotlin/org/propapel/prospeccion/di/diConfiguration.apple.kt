@@ -1,11 +1,8 @@
 package org.propapel.prospeccion.di
 
-import org.koin.core.module.Module
-
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
-import kotlinx.cinterop.ExperimentalForeignApi
-import org.koin.compose.viewmodel.dsl.viewModelOf
+import org.koin.core.module.Module
 import org.koin.dsl.module
 import org.propapel.prospeccion.core.data.datastore.DATA_STORE_FILE_NAME
 import platform.Foundation.NSDocumentDirectory

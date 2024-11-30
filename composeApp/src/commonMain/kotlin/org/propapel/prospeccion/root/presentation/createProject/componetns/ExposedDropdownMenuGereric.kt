@@ -12,16 +12,21 @@ import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.ArrowDropUp
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import org.propapel.prospeccion.core.presentation.designsystem.components.ProSalesTextField
-import org.propapel.prospeccion.root.data.dto.customer.InteractionType
-import org.propapel.prospeccion.root.presentation.createProject.CreateProjectAction
 
+/**
+ * DropDownMenu generico para oppciones, este recibe una lista de valores
+ *
+ * @param modifier Modificador para cambiar el composable
+ * @param state Estado del drownmenu para ocultarlo
+ * @param title Titulo de Drowpmenu
+ * @param onDimiss Lambda que oculta el drowmmenu
+ * @param optionSelectable Opcion que esta selecionado
+ * @param content composable que se mostrara las opciones
+ * @param listOptions opciones por selecionar
+ */
 @Composable
 fun <T>ExposedDropdownMenuGereric(
     modifier: Modifier = Modifier,
@@ -36,7 +41,7 @@ fun <T>ExposedDropdownMenuGereric(
     ExposedDropdownMenuBox(
         expanded = state,
         onExpandedChange = {
-            //state = !state
+
         },
         modifier = modifier
     ) {
@@ -47,7 +52,7 @@ fun <T>ExposedDropdownMenuGereric(
             },
             colors = colors,
             readOnly = true,
-            state = optionSelectable,
+            state = if (optionSelectable.isEmpty()) "Selecione una opcion" else optionSelectable,
             startIcon = null,
             endIcon = if (state) Icons.Filled.ArrowDropUp else Icons.Filled.ArrowDropDown,
             hint = "",

@@ -2,6 +2,7 @@
 
 package org.propapel.prospeccion.root.presentation.addlead.components
 
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -24,6 +25,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
@@ -40,6 +42,7 @@ import org.propapel.prospeccion.core.presentation.designsystem.PrimaryGreen
 import org.propapel.prospeccion.core.presentation.designsystem.PrimaryViolet
 import org.propapel.prospeccion.core.presentation.designsystem.components.ProSalesActionButton
 import org.propapel.prospeccion.core.presentation.designsystem.components.ProSalesTextField
+import org.propapel.prospeccion.core.presentation.designsystem.components.util.rememberImeState
 import org.propapel.prospeccion.root.data.dto.customer.TypeOfClient
 import org.propapel.prospeccion.root.presentation.addlead.AddLeadAction
 import org.propapel.prospeccion.root.presentation.addlead.AddLeadState
@@ -53,13 +56,21 @@ fun AddClientDataScreen(
     focusManager: FocusManager,
     onAction: (AddLeadAction) -> Unit
 ) {
+    val imeState = rememberImeState()
+    val scrollState = rememberScrollState()
+
+    LaunchedEffect(key1 = imeState.value) {
+        if (imeState.value){
+            scrollState.animateScrollTo(scrollState.maxValue, tween(300))
+        }
+    }
     Column(
-        modifier = Modifier.verticalScroll(rememberScrollState()).fillMaxSize().background(
+        modifier = Modifier.background(
             Brush.verticalGradient(
                 0f to PrimaryViolet,
                 1f to PrimaryGreen
             )
-        ).padding(16.dp)
+        ).fillMaxSize().verticalScroll(scrollState)
     ) {
         IconButton(
             modifier = Modifier.align(Alignment.End).padding(16.dp),
@@ -87,6 +98,7 @@ fun AddClientDataScreen(
             fileRoute = "files/anim_customer.json"
         )
         ExpisedDropdownMenuTypeClient(
+            modifier = Modifier.padding(horizontal = 16.dp),
             title = "Tipo de cliente",
             listOptions = listOf(
                 TypeOfClient.NUEVO,
@@ -99,6 +111,7 @@ fun AddClientDataScreen(
             }
         )
         ProSalesTextField(
+            modifier = Modifier.padding(horizontal = 16.dp),
             title = "Razon social",
             state = state.nameCompany,
             error = state.errorRazonSocial,
@@ -118,6 +131,7 @@ fun AddClientDataScreen(
             startIcon = Icons.Filled.Business
         )
         ProSalesTextField(
+            modifier = Modifier.padding(horizontal = 16.dp),
             title = "Nombre completo",
             state = state.contactName,
             colors = Color.White,
@@ -137,6 +151,7 @@ fun AddClientDataScreen(
             startIcon = Icons.Filled.Person
         )
         ProSalesTextField(
+            modifier = Modifier.padding(horizontal = 16.dp),
             title = "Correo electronico",
             colors = Color.White,
             error = state.errorEmailLead,
@@ -156,6 +171,7 @@ fun AddClientDataScreen(
             startIcon = Icons.Filled.Email
         )
         ProSalesTextField(
+            modifier = Modifier.padding(horizontal = 16.dp),
             title = "Numero de telefono",
             colors = Color.White,
             state = state.phoneNumber,
@@ -175,6 +191,7 @@ fun AddClientDataScreen(
             startIcon = Icons.Filled.Phone
         )
         ProSalesTextField(
+            modifier = Modifier.padding(horizontal = 16.dp),
             title = "Direccion",
             colors = Color.White,
             state = state.fiscalAddress,
@@ -196,6 +213,7 @@ fun AddClientDataScreen(
             modifier = Modifier.weight(1f)
         )
         ProSalesActionButton(
+            modifier = Modifier.padding(horizontal = 16.dp).padding(bottom = 16.dp),
             text = "Guardar",
             isLoading = false,
             onClick = {
@@ -204,3 +222,4 @@ fun AddClientDataScreen(
         )
     }
 }
+

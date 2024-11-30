@@ -16,15 +16,15 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Notes
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.DateRange
-import androidx.compose.material.icons.filled.Notes
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -32,7 +32,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -46,7 +45,6 @@ import androidx.compose.ui.unit.sp
 import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
-import kotlinx.datetime.number
 import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
 import network.chaintech.kmp_date_time_picker.ui.datetimepicker.WheelDateTimePickerView
@@ -54,8 +52,6 @@ import network.chaintech.kmp_date_time_picker.utils.DateTimePickerView
 import network.chaintech.kmp_date_time_picker.utils.TimeFormat
 import network.chaintech.kmp_date_time_picker.utils.WheelPickerDefaults
 import network.chaintech.kmp_date_time_picker.utils.dateTimeToString
-import org.propapel.prospeccion.core.presentation.designsystem.PrimaryPink
-import org.propapel.prospeccion.core.presentation.designsystem.PrimaryYellowLight
 import org.propapel.prospeccion.core.presentation.designsystem.components.ProSalesActionButton
 import org.propapel.prospeccion.core.presentation.designsystem.components.ProSalesTextField
 import org.propapel.prospeccion.core.presentation.ui.typeHour
@@ -63,7 +59,8 @@ import org.propapel.prospeccion.root.presentation.addlead.AddLeadAction
 import org.propapel.prospeccion.root.presentation.addlead.AddLeadState
 import org.propapel.prospeccion.root.presentation.addlead.ContainerState
 import org.propapel.prospeccion.root.presentation.addlead.components.utils.KottieAnimationUtil
-import org.propapel.prospeccion.root.presentation.createReminder.components.DialogDayNoAvailable
+import org.propapel.prospeccion.root.presentation.createProject.componetns.ExposedDropdownMenuGereric
+import org.propapel.prospeccion.root.presentation.createReminder.components.utils.provideTypeOfAppointment
 
 @Composable
 fun AddInfoRemiderAppointmentScreen(
@@ -81,7 +78,7 @@ fun AddInfoRemiderAppointmentScreen(
 
 
     Column(
-        modifier = modifier.fillMaxSize().verticalScroll(rememberScrollState()).background(
+        modifier = modifier.background(
             Brush.verticalGradient(
                 colors = listOf(
                     Color(0xFF00BCD4), // Cian claro
@@ -89,7 +86,7 @@ fun AddInfoRemiderAppointmentScreen(
                     Color(0xFF00796B)  // Verde intenso
                 )
             )
-        ).padding(16.dp)
+        ).padding(16.dp).fillMaxSize().verticalScroll(rememberScrollState())
     ) {
         IconButton(
             modifier = Modifier.align(Alignment.End).padding(16.dp),
@@ -133,6 +130,31 @@ fun AddInfoRemiderAppointmentScreen(
         Spacer(
             modifier = Modifier.height(8.dp)
         )
+        var expandedProducts by remember {
+            mutableStateOf(false)
+        }
+        ExposedDropdownMenuGereric(
+            title = "Tipo de cita",
+            state = expandedProducts,
+            optionSelectable = state.typeAppointment,
+            colors = Color.White,
+            listOptions = provideTypeOfAppointment(),
+            onDimiss = {
+               expandedProducts = !expandedProducts
+            },
+            content = {
+                DropdownMenuItem(
+                    text = { androidx.compose.material.Text(text = it.toString()) },
+                    onClick = {
+                        expandedProducts = !expandedProducts
+                        onAction(AddLeadAction.OnTypeAppointmentChange(it.name))
+                    }
+                )
+            }
+        )
+        Spacer(
+            modifier = Modifier.height(8.dp)
+        )
         ProSalesTextField(
             title = "Notas para la proxima cita",
             state = state.descriptionNextAppointment,
@@ -149,7 +171,7 @@ fun AddInfoRemiderAppointmentScreen(
                 }
             ),
             colors = Color.White,
-            startIcon = Icons.Filled.Notes,
+            startIcon = Icons.AutoMirrored.Filled.Notes,
             maxLines = 104
         )
         Spacer(
@@ -157,6 +179,7 @@ fun AddInfoRemiderAppointmentScreen(
         )
         ProSalesActionButton(
             text = "Guardar",
+            textColor = Color.White,
             isLoading = false,
             onClick = {
                 onAction(AddLeadAction.OnNextScreenClick(ContainerState.FINISH))
@@ -169,13 +192,17 @@ fun AddInfoRemiderAppointmentScreen(
     if (showDatePicker) {
         WheelDateTimePickerView(
             title = "Fecha y hora de la cita",
-            modifier = Modifier.padding(top = 18.dp, bottom = 10.dp).fillMaxWidth(),
+            modifier = Modifier.padding(
+                top = 18.dp,
+                bottom = 10.dp
+            ).fillMaxWidth(),
             showDatePicker = showDatePicker,
             titleStyle = TextStyle(
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color(0xFF333333),
             ),
+            doneLabel = "Seleccionar",
             doneLabelStyle = TextStyle(
                 fontSize = 16.sp,
                 fontWeight = FontWeight(600),
@@ -193,23 +220,30 @@ fun AddInfoRemiderAppointmentScreen(
             ),
             onDoneClick = {
                 onAction(AddLeadAction.OnDateNextReminder(localDateTimeToLong(it)))
-                selectedDate = dateTimeToString(it, "dd-MM-yyyy hh:mm a")
-                showDatePicker = false
+                if (state.isDateAvailable) {
+                    selectedDate = dateTimeToString(
+                        it,
+                        "dd-MM-yyyy hh:mm a"
+                    )
+                    showDatePicker = false
+                }
             },
-            dateTimePickerView = DateTimePickerView.BOTTOM_SHEET_VIEW,
+            dateTimePickerView = DateTimePickerView.DIALOG_VIEW,
             onDismiss = {
                 showDatePicker = false
             }
         )
     }
-    if (state.showAvailableDayDialog) {
-        DialogDayNoAvailable {
-            onAction(AddLeadAction.OnToggleDateNoAvailable)
-        }
-    }
 
 }
 
+
+/**
+ * Funcion que convierte el locaslDateTime a Long
+ *
+ * @param localDateTime local date time que se va a convertir
+ * @return localdatetime ya convertido en formato long para validaciones
+ */
 fun localDateTimeToLong(localDateTime: LocalDateTime): Long {
     // Convierte LocalDateTime a Instant en la zona horaria UTC o la que prefieras
     val instant = localDateTime.toInstant(TimeZone.UTC)

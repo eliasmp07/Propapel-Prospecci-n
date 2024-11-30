@@ -10,7 +10,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Instant
-import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toInstant
@@ -46,6 +45,13 @@ class CreateReminderViewModel(
                     }
                 }else{
                     createReminder()
+                }
+            }
+            is CreateReminderAction.OnTypeAppointmentChange -> {
+                _state.update {
+                    it.copy(
+                        typeAppointment = action.type
+                    )
                 }
             }
             is CreateReminderAction.OnCustomerChange -> {
@@ -179,7 +185,8 @@ class CreateReminderViewModel(
             val result = reminderRepository.createReminder(
                 reminderDate = _state.value.dateNextReminder,
                 customerId = _state.value.customer.idCustomer,
-                description = _state.value.notesAppointment
+                description = _state.value.notesAppointment,
+                typeAppointment = _state.value.typeAppointment
             )
             when (result) {
                 is ResultExt.Error -> {

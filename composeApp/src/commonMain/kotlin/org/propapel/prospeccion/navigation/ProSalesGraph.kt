@@ -15,7 +15,6 @@ import androidx.navigation.navigation
 import androidx.navigation.toRoute
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.annotation.KoinExperimentalAPI
-import org.propapel.prospeccion.gerentePanel.presentation.root.GerentePanelScreen
 import org.propapel.prospeccion.navigation.utils.Destination
 import org.propapel.prospeccion.root.presentation.addlead.AddLeadScreenRoot
 import org.propapel.prospeccion.root.presentation.addlead.AddLeadViewModel
@@ -39,6 +38,7 @@ import org.propapel.prospeccion.root.presentation.updateCustomer.UpdateLeadScree
 import org.propapel.prospeccion.root.presentation.updateCustomer.UpdateLeadViewModel
 import org.propapel.prospeccion.root.presentation.updateProfile.UpdateProfileSMSScreenRoot
 import org.propapel.prospeccion.root.presentation.updateProfile.UpdateProfileSMViewModel
+import org.propapel.prospeccion.selectSucursal.presentation.root.GerentePanelScreen
 
 fun NavGraphBuilder.proSales(
     navController: NavHostController
@@ -47,82 +47,45 @@ fun NavGraphBuilder.proSales(
         startDestination = Destination.DashBoard
     ) {
         composable<Destination.DashBoard> {
+
             val viewModel = koinViewModel<HomeRootViewModel>()
 
             val state by viewModel.state.collectAsState()
+            HomeScreen(
+                viewModel = viewModel,
+                state = state,
+                onDarkTheme = {
 
-            if(state.user.roles.contains("Gerente")){
-                GerentePanelScreen(
-                    viewModel = viewModel,
-                    onDarkTheme = {
-
-                    },
-                    onAddLead = {
-                        navController.navigate(Destination.AddLead)
-                    },
-                    onCreateReminder = {
-                        navController.navigate(Destination.CreateReminder)
-                    },
-                    onUpdateProfile = {
-                        navController.navigate(Destination.EditProfile)
-                    },
-                    onLogout = {
-                        navController.navigate(Destination.AuthGraph) {
-                            popUpTo(Destination.ProSales) {
-                                inclusive = false
-                            }
+                },
+                onAddLead = {
+                    navController.navigate(Destination.AddLead)
+                },
+                onCreateReminder = {
+                    navController.navigate(Destination.CreateReminder)
+                },
+                onUpdateProfile = {
+                    navController.navigate(Destination.EditProfile)
+                },
+                onLogout = {
+                    navController.navigate(Destination.AuthGraph) {
+                        popUpTo(Destination.ProSales) {
+                            inclusive = false
                         }
-                    },
-                    onDetailLead = {
-                        navController.navigate(Destination.DetailCustomer(it))
-                    },
-                    onDetailReminderCustomer = {
-                        navController.navigate(Destination.DetailReminderCustomer(it))
-                    },
-                    onSearchLead = {
-                        navController.navigate(Destination.SearchLead)
-                    },
-                    onUpdateLead = {
-                        navController.navigate(Destination.UpdateLead(it))
                     }
-                )
-            }else{
-                HomeScreen(
-                    viewModel = viewModel,
-                    state = state,
-                    onDarkTheme = {
-
-                    },
-                    onAddLead = {
-                        navController.navigate(Destination.AddLead)
-                    },
-                    onCreateReminder = {
-                        navController.navigate(Destination.CreateReminder)
-                    },
-                    onUpdateProfile = {
-                        navController.navigate(Destination.EditProfile)
-                    },
-                    onLogout = {
-                        navController.navigate(Destination.AuthGraph) {
-                            popUpTo(Destination.ProSales) {
-                                inclusive = false
-                            }
-                        }
-                    },
-                    onDetailLead = {
-                        navController.navigate(Destination.DetailCustomer(it))
-                    },
-                    onDetailReminderCustomer = {
-                        navController.navigate(Destination.DetailReminderCustomer(it))
-                    },
-                    onSearchLead = {
-                        navController.navigate(Destination.SearchLead)
-                    },
-                    onUpdateLead = {
-                        navController.navigate(Destination.UpdateLead(it))
-                    }
-                )
-            }
+                },
+                onDetailLead = {
+                    navController.navigate(Destination.DetailCustomer(it))
+                },
+                onDetailReminderCustomer = {
+                    navController.navigate(Destination.DetailReminderCustomer(it))
+                },
+                onSearchLead = {
+                    navController.navigate(Destination.SearchLead)
+                },
+                onUpdateLead = {
+                    navController.navigate(Destination.UpdateLead(it))
+                }
+            )
         }
 
         composable<Destination.CreateReminder> {

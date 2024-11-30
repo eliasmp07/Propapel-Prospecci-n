@@ -6,17 +6,31 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import androidx.annotation.RequiresApi
-import kotlinx.datetime.Clock
-import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import org.propapel.prospeccion.core.domain.repository.AlarmHandler
 import org.propapel.prospeccion.root.domain.models.Reminder
-import java.time.ZonedDateTime
-import java.time.format.DateTimeFormatter
-import kotlin.random.Random
+import java.util.Calendar
 
+@RequiresApi(Build.VERSION_CODES.O)
+fun formatTime(time: Long): Long{
+    val calendar = Calendar.getInstance()
+    calendar.timeInMillis = time
+
+    val timeZone = java.util.TimeZone.getDefault()
+    val offset = timeZone.getOffset(calendar.timeInMillis)
+
+    // Ajustar la hora local restando el offset de la zona horaria
+    val localTimeInMillis = calendar.timeInMillis - offset
+    return localTimeInMillis
+}
+
+/**
+ *  Manejador de las notificaciones
+ *
+ *  @param context Contexto para poder inicializar el alarm manager
+ */
 class AlarmHandlerAndroid(
     private val context: Context
 ) : AlarmHandler {
@@ -25,15 +39,23 @@ class AlarmHandlerAndroid(
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun setRecurringAlarm(reminder: Reminder) {
+        val baseMoment = formatTime(reminder.reminderDate.toLong())
 
-        val date = Instant.fromEpochMilliseconds(reminder.reminderDate.toLong())
-
-        alarmManager.setExactAndAllowWhileIdle(
-            AlarmManager.RTC_WAKEUP,
-            date.toEpochMilliseconds(),
-            createPendingIntent(reminder)
+        val moments = listOf(
+            baseMoment, // Momento exacto
+            formatTime(reminder.reminderDate.toLong() - (24 * 60 * 60 * 1000)),
+            formatTime(reminder.reminderDate.toLong() - (60 * 60 * 1000))
         )
+
+        moments.forEachIndexed { index, moment ->
+            alarmManager.setExact(
+                AlarmManager.RTC_WAKEUP,
+                moment,
+                createPendingIntent(reminder, index )
+            )
+        }
     }
+
 
 
     override fun cancel(reminder: Reminder) {
@@ -41,7 +63,7 @@ class AlarmHandlerAndroid(
         alarmManager.cancel(pending)
     }
 
-    private fun createPendingIntent(reminder: Reminder): PendingIntent {
+    private fun createPendingIntent(reminder: Reminder, index: Int = 1): PendingIntent {
         val converteTime = Instant.fromEpochMilliseconds(reminder.reminderDate.toLong()).toLocalDateTime(TimeZone.UTC)
         val intent = Intent(context, AlarmReceiver::class.java).apply {
             putExtra(AlarmReceiver.REMINDER_ID, reminder.reminderId.toString())
@@ -51,7 +73,7 @@ class AlarmHandlerAndroid(
         }
         return PendingIntent.getBroadcast(
             context,
-            reminder.reminderId.hashCode(),
+            reminder.reminderId.hashCode() + index,
             intent,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )

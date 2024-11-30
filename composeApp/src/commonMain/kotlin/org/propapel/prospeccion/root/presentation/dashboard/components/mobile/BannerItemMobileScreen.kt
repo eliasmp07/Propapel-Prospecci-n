@@ -1,6 +1,5 @@
 package org.propapel.prospeccion.root.presentation.dashboard.components.mobile
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
@@ -16,9 +15,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
-import org.jetbrains.compose.resources.painterResource
-import prospeccion.composeapp.generated.resources.Res
-import prospeccion.composeapp.generated.resources.banner_prueba
 
 @Composable
 fun BannerItemMobileScreen(

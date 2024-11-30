@@ -8,12 +8,17 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.with
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import org.propapel.prospeccion.root.presentation.createProject.CreateProjectScreenState.*
+import org.propapel.prospeccion.root.presentation.createProject.CreateProjectScreenState.ADD_INFO_PROJECT
+import org.propapel.prospeccion.root.presentation.createProject.CreateProjectScreenState.CONFIRM_PROJECT
+import org.propapel.prospeccion.root.presentation.createProject.CreateProjectScreenState.ERROR_CREATE
+import org.propapel.prospeccion.root.presentation.createProject.CreateProjectScreenState.PRODUCTS_CHANGE
+import org.propapel.prospeccion.root.presentation.createProject.CreateProjectScreenState.SUCCESS_CREATE
+import org.propapel.prospeccion.root.presentation.createProject.CreateProjectScreenState.WELCOME
 import org.propapel.prospeccion.root.presentation.createProject.componetns.AddInfoProject
 import org.propapel.prospeccion.root.presentation.createProject.componetns.AddProductsProject
 import org.propapel.prospeccion.root.presentation.createProject.componetns.ConfirmProjectIsCorrect
@@ -48,9 +53,8 @@ private fun CreateProjectScreen(
         AnimatedContent(
             targetState = state.stateScreen,
             transitionSpec = {
-                fadeIn() + slideInVertically(animationSpec = tween(400),
-                                             initialOffsetY = { fullHeight -> fullHeight }) with
-                        fadeOut(animationSpec = tween(200))
+                (fadeIn() + slideInVertically(animationSpec = tween(400),
+                                              initialOffsetY = { fullHeight -> fullHeight })).togetherWith(fadeOut(animationSpec = tween(200)))
             }
         ){ tarjetState ->
             when(tarjetState){

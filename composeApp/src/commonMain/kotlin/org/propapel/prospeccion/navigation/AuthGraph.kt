@@ -32,12 +32,21 @@ fun NavGraphBuilder.auth(
             LoginScreenRoot(
                 viewModel = viewModel,
                 onLoginSuccess = {
-                    navController.navigate(Destination.ProSales) {
-                        popUpTo(Destination.AuthGraph) {
-                            inclusive = true
+                    if(it.roles.contains("Gerente Regional") && it.sucursales.size > 1){
+                        navController.navigate(Destination.Gerente){
+                            popUpTo(Destination.AuthGraph){
+                                inclusive = true
+                            }
                         }
+                    }else{
+                        navController.navigate(Destination.ProSales) {
+                            popUpTo(Destination.AuthGraph) {
+                                inclusive = true
+                            }
+                        }
+                        onSuccess("Inicion de session correcto")
                     }
-                    onSuccess("Inicion de session correcto")
+
                 }
             )
         }

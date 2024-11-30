@@ -14,8 +14,6 @@ import org.propapel.prospeccion.core.domain.ResultExt
 import org.propapel.prospeccion.root.domain.models.Interaction
 import org.propapel.prospeccion.root.domain.models.PurchaseRequest
 import org.propapel.prospeccion.root.domain.repository.InteractionRepository
-import org.propapel.prospeccion.root.presentation.addlead.ContainerState
-import org.propapel.prospeccion.root.presentation.addlead.components.utils.ProductsPropapel
 
 class CreateInteractionViewModel(
     private val interactionRepository: InteractionRepository
@@ -68,7 +66,7 @@ class CreateInteractionViewModel(
                     val products = it.productsIntereses.toMutableList()
                     products.add(
                         PurchaseRequest(
-                            productServiceName = it.productInterested.name,
+                            productServiceName = it.productInterested,
                             purchaseDate = Clock.System.now().toEpochMilliseconds(),
                             amount = if (it.price.isEmpty()) 0.0 else it.price.replace("$", "").toDouble()
                         )
@@ -76,7 +74,7 @@ class CreateInteractionViewModel(
                     it.copy(
                         price = "",
                         productsIntereses = products,
-                        productInterested = ProductsPropapel.PAPELERIA,
+                        productInterested = "Selecione una opción",
                     )
                 }
             }

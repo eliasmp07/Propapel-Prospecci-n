@@ -10,6 +10,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import contentScale.ContentScale
 import kottieComposition.KottieCompositionSpec
 import kottieComposition.animateKottieCompositionAsState
 import kottieComposition.rememberKottieComposition
@@ -20,6 +21,7 @@ import prospeccion.composeapp.generated.resources.Res
 fun KottieAnimationUtil(
     modifier: Modifier = Modifier,
     fileRoute: String = "",
+    contentScale: ContentScale = ContentScale.Fit,
     interations: Int = 100
 ){
     var animation by remember { mutableStateOf("") }
@@ -38,6 +40,7 @@ fun KottieAnimationUtil(
     )
     KottieAnimation(
         composition = composition,
+        contentScale = contentScale,
         progress = { animationState.progress },
         modifier = modifier
     )

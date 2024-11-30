@@ -23,8 +23,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.LightMode
@@ -36,7 +36,6 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -70,8 +69,6 @@ import org.jetbrains.compose.resources.painterResource
 import org.propapel.prospeccion.core.domain.AuthInfo
 import org.propapel.prospeccion.core.presentation.designsystem.PrimaryYellowLight
 import org.propapel.prospeccion.root.domain.models.Reminder
-import org.propapel.prospeccion.root.presentation.homeRoot.components.DropdownListObjects
-import org.propapel.prospeccion.root.presentation.leads.LeadAction
 import prospeccion.composeapp.generated.resources.Res
 import prospeccion.composeapp.generated.resources.customer_ref
 import prospeccion.composeapp.generated.resources.logo
@@ -312,7 +309,7 @@ fun CustomTopAppBar(
                                 },
                                 leadingIcon = {
                                     Icon(
-                                        imageVector = Icons.Filled.Logout,
+                                        imageVector = Icons.AutoMirrored.Filled.Logout,
                                         contentDescription = null
                                     )
                                 }
@@ -601,7 +598,7 @@ fun CustomTopAppBar(
                             },
                             leadingIcon = {
                                 Icon(
-                                    imageVector = Icons.Filled.Logout,
+                                    imageVector = Icons.AutoMirrored.Filled.Logout,
                                     contentDescription = null
                                 )
                             }

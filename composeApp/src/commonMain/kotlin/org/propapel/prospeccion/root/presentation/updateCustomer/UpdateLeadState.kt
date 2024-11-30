@@ -2,7 +2,6 @@ package org.propapel.prospeccion.root.presentation.updateCustomer
 
 import org.propapel.prospeccion.core.presentation.ui.UiText
 import org.propapel.prospeccion.root.data.dto.customer.TypeOfClient
-import org.propapel.prospeccion.root.domain.models.Customer
 
 data class UpdateLeadState(
     val isLoading: Boolean = false,

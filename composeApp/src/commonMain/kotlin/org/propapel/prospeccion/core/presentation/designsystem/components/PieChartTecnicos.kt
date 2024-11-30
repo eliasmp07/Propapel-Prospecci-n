@@ -1,9 +1,7 @@
 package org.propapel.prospeccion.core.presentation.designsystem.components
 
 import androidx.compose.animation.animateContentSize
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,8 +14,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowDownward
-import androidx.compose.material.icons.filled.ArrowUpward
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material3.CardDefaults
@@ -43,12 +39,9 @@ import androidx.compose.ui.unit.sp
 import com.aay.compose.baseComponents.model.LegendPosition
 import com.aay.compose.donutChart.PieChart
 import com.aay.compose.donutChart.model.PieChartData
-import org.jetbrains.compose.resources.painterResource
 import org.propapel.prospeccion.core.presentation.designsystem.SuccessGreen
 import org.propapel.prospeccion.root.data.dto.customer.TypeOfClient
 import org.propapel.prospeccion.root.domain.models.Customer
-import prospeccion.composeapp.generated.resources.Res
-import prospeccion.composeapp.generated.resources.img_no_data
 
 @Composable
 fun PieChartLeadsStatus(
@@ -61,43 +54,6 @@ fun PieChartLeadsStatus(
     var showMoreInfoDesarrollo by remember { mutableStateOf(false) }
     var showMoreInfoRecuperacion by remember { mutableStateOf(false) }
 
-    if (listCustomer.isEmpty()) {
-        // Mostrar un mensaje o gráfico vacío si no hay clientes
-        ElevatedCard(
-            shape = RoundedCornerShape(20.dp),
-            modifier = Modifier
-                .fillMaxWidth().padding(horizontal = 16.dp),
-        ) {
-            Column(
-                modifier = Modifier.fillMaxWidth().padding(8.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(
-                    text = "No hay informacion",
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color(0xFF007BFF)
-                )
-                Spacer(
-                    modifier = Modifier.height(8.dp)
-                )
-                Image(
-                    painter = painterResource(Res.drawable.img_no_data),
-                    contentDescription = null,
-                    modifier = Modifier.size(150.dp).align(Alignment.CenterHorizontally)
-                )
-                Spacer(
-                    modifier = Modifier.height(8.dp)
-                )
-                Text("No tienes clientes", )
-                Spacer(
-                    modifier = Modifier.height(8.dp)
-                )
-            }
-        }
-        return
-    }
-
 
     val customerNew = listCustomer.filter { it.typeClient == TypeOfClient.NUEVO.name }
     val customerDesarrollo = listCustomer.filter { it.typeClient == TypeOfClient.DESARROLLO.name }
@@ -106,7 +62,7 @@ fun PieChartLeadsStatus(
     ElevatedCard(
         shape = RoundedCornerShape(20.dp),
         modifier = Modifier
-            .fillMaxWidth().padding(horizontal = 16.dp),
+            .fillMaxWidth().padding(16.dp),
         elevation = CardDefaults.elevatedCardElevation(15.dp)
     ) {
         val testPieChartData: List<PieChartData> = listOf(
@@ -141,7 +97,7 @@ fun PieChartLeadsStatus(
                 modifier = Modifier.height(8.dp)
             )
             PieChart(
-                modifier = modifier.size(size).padding(top = 8.dp).align(Alignment.CenterHorizontally),
+                modifier = modifier.fillMaxWidth().height(size).padding(top = 8.dp).align(Alignment.CenterHorizontally),
                 legendPosition = LegendPosition.DISAPPEAR,
                 pieChartData = testPieChartData,
                 descriptionStyle = TextStyle(fontSize = 12.sp),

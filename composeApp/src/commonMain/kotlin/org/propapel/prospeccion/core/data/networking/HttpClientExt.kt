@@ -119,11 +119,17 @@ suspend inline fun <reified T> responseToResult(response: HttpResponse): ResultE
     }
 }
 
+/**
+ * Funcion que crea la ruta de la API
+ *
+ * @param route Ruta del endpoint
+ * @return devuelve el endopoint ya con su ruta
+ */
 
 fun constructRoute(route: String): String {
     return when {
-        route.contains("http://3.144.8.170:3002") -> route
-        route.startsWith("/") -> "http://3.144.8.170:3002" + route
-        else -> "http://3.144.8.170:3002" + "/$route"
+        route.contains(URLBackend.detectMode(false)) -> route
+        route.startsWith("/") -> URLBackend.detectMode(false) + route
+        else -> URLBackend.detectMode(false) + "/$route"
     }
 }

@@ -1,7 +1,6 @@
 package org.propapel.prospeccion.root.presentation.createProject
 
 import org.propapel.prospeccion.root.domain.models.Purchase
-import org.propapel.prospeccion.root.domain.models.PurchaseRequest
 
 sealed interface CreateProjectAction {
     data object OnBackClick: CreateProjectAction

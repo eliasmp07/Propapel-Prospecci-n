@@ -34,7 +34,8 @@ import org.propapel.prospeccion.navigation.utils.Destination
 
 @Composable
 fun RootGraph(
-    isLogging: Boolean = false
+    isLogging: Boolean = false,
+    isManager: Boolean = false,
 ) {
 
 
@@ -59,7 +60,7 @@ fun RootGraph(
     ) {
         NavHost(
             navController = mainNavigation,
-            startDestination = if (isLogging) Destination.ProSales else Destination.AuthGraph
+            startDestination = if (isLogging && isManager) Destination.Gerente else if (isLogging) Destination.ProSales else Destination.AuthGraph
         ) {
             auth(
                 navController = mainNavigation,
@@ -67,6 +68,9 @@ fun RootGraph(
                     messageSuccess = it
                     isSuccess = true
                 }
+            )
+            gerente(
+                navController = mainNavigation
             )
             proSales(navController = mainNavigation)
         }

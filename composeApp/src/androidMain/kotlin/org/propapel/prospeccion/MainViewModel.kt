@@ -5,8 +5,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import org.propapel.prospeccion.core.domain.SessionStorage
 
@@ -21,7 +19,8 @@ class MainViewModel(
         viewModelScope.launch {
             state = state.copy(isCheckingAuth = true)
             state = state.copy(
-                isLoggedIn = sessionStorage.get() != null
+                isLoggedIn = sessionStorage.get() != null,
+                isManager = sessionStorage.get()?.roles?.contains("Gerente Regional") ?: false && (sessionStorage.get()?.sucursales?.size ?: 0) > 1
             )
             state = state.copy(isCheckingAuth = false)
         }

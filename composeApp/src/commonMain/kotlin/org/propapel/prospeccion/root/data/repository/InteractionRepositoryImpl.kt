@@ -7,7 +7,6 @@ import org.propapel.prospeccion.core.data.networking.post
 import org.propapel.prospeccion.core.domain.ResultExt
 import org.propapel.prospeccion.core.domain.utils.DataError
 import org.propapel.prospeccion.root.data.dto.customer.CreatePurchaseRequest
-import org.propapel.prospeccion.root.data.dto.customer.InteractionDto
 import org.propapel.prospeccion.root.data.dto.customer.InteractionResponseDto
 import org.propapel.prospeccion.root.data.mappers.toInteraction
 import org.propapel.prospeccion.root.data.mappers.toPurcheDto

@@ -37,6 +37,14 @@ class HomeRootViewModel(
         }
     }
 
+    fun insertSucursalId(id: Int){
+        _state.update {
+            it.copy(
+                sucursalId = id
+            )
+        }
+    }
+
 
     private fun getAllMyReminders() {
         viewModelScope.launch(Dispatchers.IO) {

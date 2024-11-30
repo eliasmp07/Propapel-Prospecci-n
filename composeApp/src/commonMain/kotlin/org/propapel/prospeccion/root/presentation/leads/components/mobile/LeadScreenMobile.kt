@@ -1,8 +1,10 @@
-@file:OptIn(ExperimentalMaterialApi::class)
+@file:OptIn(ExperimentalMaterialApi::class,
+            ExperimentalAnimationApi::class
+)
 
 package org.propapel.prospeccion.root.presentation.leads.components.mobile
 
-import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -15,7 +17,6 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -23,18 +24,14 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Business
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.CalendarMonth
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.EditCalendar
 import androidx.compose.material.icons.filled.PersonAddAlt
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Update
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
@@ -42,21 +39,19 @@ import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
-import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -65,17 +60,19 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.jetbrains.compose.resources.painterResource
 import org.propapel.prospeccion.core.presentation.designsystem.PrimaryYellowLight
-import org.propapel.prospeccion.core.presentation.designsystem.SoporteSaiBlue
 import org.propapel.prospeccion.core.presentation.designsystem.SoporteSaiBlue30
 import org.propapel.prospeccion.core.presentation.designsystem.SuccessGreen
+import org.propapel.prospeccion.core.presentation.designsystem.components.MultiFloatingActionButton
 import org.propapel.prospeccion.core.presentation.designsystem.components.PieChartLeadsStatus
-import org.propapel.prospeccion.core.presentation.designsystem.components.util.animateEnterFromLeft
-import org.propapel.prospeccion.root.presentation.addlead.components.utils.ProductsPropapel
-import org.propapel.prospeccion.root.presentation.dashboard.DashboardChart
+import org.propapel.prospeccion.core.presentation.designsystem.components.util.FabIcon
+import org.propapel.prospeccion.core.presentation.designsystem.components.util.FabOption
+import org.propapel.prospeccion.core.presentation.designsystem.components.util.MultiFabItem
+import org.propapel.prospeccion.root.presentation.createReminder.components.DialogDayNoAvailable
 import org.propapel.prospeccion.root.presentation.dashboard.components.DonutChartInteractions
-import org.propapel.prospeccion.root.presentation.detailLead.components.CreateReminderDialog
+import org.propapel.prospeccion.root.presentation.leads.GenericContentLoading
 import org.propapel.prospeccion.root.presentation.leads.LeadAction
 import org.propapel.prospeccion.root.presentation.leads.LeadSMState
+import org.propapel.prospeccion.root.presentation.leads.UiState
 import org.propapel.prospeccion.root.presentation.leads.components.ActionIcon
 import org.propapel.prospeccion.root.presentation.leads.components.SwipeableItemWithActions
 import prospeccion.composeapp.generated.resources.Res
@@ -84,7 +81,6 @@ import prospeccion.composeapp.generated.resources.img_no_data
 
 @Composable
 fun LeadScreenMobile(
-    onRefresh: () -> Unit = {},
     state: LeadSMState,
     onAction: (LeadAction) -> Unit
 ) {
@@ -92,7 +88,11 @@ fun LeadScreenMobile(
     val lazyColumState = rememberLazyListState()
     val pullRefreshState = rememberPullRefreshState(
         state.isRefreshing,
-        { onRefresh() })
+        { onAction(LeadAction.OnRefresh) })
+
+
+    var page by remember { mutableStateOf(1) }
+
     Box(
         modifier = Modifier.fillMaxSize()
             .pullRefresh(pullRefreshState)
@@ -209,48 +209,8 @@ fun LeadScreenMobile(
                 Spacer(modifier = Modifier.height(16.dp))
 
             }
-            val ordes = state.customers.flatMap {
-                it.purchase
-            }
-            if (ordes.isNotEmpty()) {
-                item {
-                    DashboardChart(
-                        title = "Producto con mas interes",
-                        orders = ordes,
-                        products = listOf(
-                            ProductsPropapel.ROLLITOS,
-                            ProductsPropapel.INSTALACION_RACKS,
-                            ProductsPropapel.INSTALACION_CAMARA,
-                            ProductsPropapel.RENTA_IMPRESORA,
-                            ProductsPropapel.RENTA_EQUIPO_DE_COMPUTO,
-                            ProductsPropapel.PAPELERIA,
-                            ProductsPropapel.TOTAL_OFFICE
-                        )
-                    )
-                    Spacer(modifier = Modifier.height(16.dp))
-                }
-            }
-            if (state.customers.isNotEmpty()) {
-                item {
-                    Row(
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        DonutChartInteractions(
-                            Modifier,
-                            state.customers
-                        )
-                    }
-                    Spacer(modifier = Modifier.height(16.dp))
-                }
-            }
-            item {
-                PieChartLeadsStatus(
-                    modifier = Modifier,
-                    listCustomer = state.customers,
-                    size = 270.dp
-                )
-            }
-            if (state.customers.isEmpty()) {
+
+            if (state.customers is UiState.Empty) {
                 item {
                     Card(
                         shape = RoundedCornerShape(30.dp),
@@ -285,144 +245,181 @@ fun LeadScreenMobile(
                         }
                     }
                 }
-            } else {
+            } else if (state.customers is UiState.Success) {
+                val pageSize = 5
+                val totalCustomers = state.customers.value.size
+                val totalPages = (totalCustomers + pageSize - 1) / pageSize
+
+                // Sublista de clientes para la página actual
+                val startIndex = (page - 1) * pageSize
+                val endIndex = minOf(
+                    startIndex + pageSize,
+                    totalCustomers
+                )
+                val customersToShow = state.customers.value.subList(
+                    startIndex,
+                    endIndex
+                )
+
                 item {
-                    Card(
-                        shape = RoundedCornerShape(30.dp),
-                        modifier = Modifier
-                            .padding(16.dp)
-                            .fillMaxWidth(),
-                        colors = CardDefaults.cardColors(containerColor = Color(0xFFf1f4f9))
-                    ) {
-                        Column(
-                            modifier = Modifier.padding(16.dp)
-                        ) {
-                            Text(
-                                modifier = Modifier.align(Alignment.CenterHorizontally),
-                                text = "Mis clientes",
-                                fontSize = 20.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = Color.Black
-                            )
-                            Spacer(modifier = Modifier.height(8.dp))
-
-                            // Tamaño de página y cálculo del número total de páginas
-                            val pageSize = 5
-                            val totalCustomers = state.customers.size
-                            val totalPages = (totalCustomers + pageSize - 1) / pageSize  // Redondeo hacia arriba
-                            var page by remember { mutableIntStateOf(1) }
-
-                            // Controles de navegación de página
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                verticalAlignment = Alignment.CenterVertically,
-                            ) {
-                                IconButton(
-                                    onClick = { if (page > 1) page-- },
-                                    content = {
-                                        Icon(
-                                            imageVector = Icons.Default.ArrowBack,
-                                            contentDescription = null
+                    PaginationControls(
+                        modifier = Modifier.padding(16.dp),
+                        page = page,
+                        totalPages = totalPages,
+                        onPreviousPage = { if (page > 1) page-- },
+                        onNextPage = { if (page < totalPages) page++ }
+                    )
+                }
+                items(
+                    customersToShow,
+                    key = { it.idCustomer }) { customer ->
+                    SwipeableItemWithActions(
+                        modifier = Modifier.padding(horizontal = 16.dp),
+                        isRevealed = false,
+                        onExpanded = { /* Acción cuando se expande */ },
+                        onCollapsed = { /* Acción cuando se colapsa */ },
+                        actions = {
+                            ActionIcon(
+                                onClick = { onAction(LeadAction.OnUpdateLeadClick(customer.idCustomer.toString())) },
+                                backgroundColor = MaterialTheme.colorScheme.primary,
+                                icon = Icons.Default.Update,
+                                modifier = Modifier
+                                    .fillMaxHeight()
+                                    .clip(
+                                        RoundedCornerShape(
+                                            topStart = 30.dp,
+                                            bottomStart = 30.dp
                                         )
-                                    }
-                                )
-                                Spacer(modifier = Modifier.weight(1f))
-                                Text(
-                                    text = "Página $page de $totalPages",
-                                    style = MaterialTheme.typography.bodyMedium
-                                )
-                                Spacer(modifier = Modifier.weight(1f))
-                                IconButton(
-                                    onClick = { if (page < totalPages) page++ },
-                                    content = {
-                                        Icon(
-                                            imageVector = Icons.Default.ArrowBack,
-                                            contentDescription = null,
-                                            modifier = Modifier.rotate(180f)
-                                        )
-                                    }
-                                )
-                            }
-
-
-                            // Contenido de la página actual
-                            val startIndex = (page - 1) * pageSize
-                            val endIndex = minOf(startIndex + pageSize, totalCustomers)
-
-                            // Obtener sublista de clientes para la página actual
-                            val customersToShow = getSubList(state.customers, startIndex, endIndex - 1)
-                                ?: emptyList()
-
-                            // Mostrar cada cliente de la sublista
-                            customersToShow.forEachIndexed { index, customer ->
-                                SwipeableItemWithActions(
-                                    isRevealed = false,
-                                    onExpanded = { /* Acción cuando se expande */ },
-                                    onCollapsed = { /* Acción cuando se colapsa */ },
-                                    actions = {
-                                        ActionIcon(
-                                            onClick = {
-                                                onAction(LeadAction.OnUpdateLeadClick(customer.idCustomer.toString()))
-                                            },
-                                            backgroundColor = MaterialTheme.colorScheme.primary,
-                                            icon = Icons.Default.Update,
-                                            modifier = Modifier
-                                                .fillMaxHeight()
-                                                .clip(
-                                                    RoundedCornerShape(
-                                                        topStart = 30.dp,
-                                                        bottomStart = 30.dp
-                                                    )
-                                                )
-                                        )
-                                        ActionIcon(
-                                            onClick = {
-                                                onAction(LeadAction.OnToggleCreateAppointmentDialog(customer.idCustomer))
-                                            },
-                                            backgroundColor = SuccessGreen,
-                                            icon = Icons.Default.CalendarMonth,
-                                            tint = Color.White,
-                                            modifier = Modifier.fillMaxHeight()
-                                        )
-                                    },
-                                ) {
-                                    ItemLead(
-                                        customer = customer,
-                                        onClick = {
-                                            onAction(LeadAction.OnDetailLeadClick(it))
-                                        }
                                     )
-                                }
-                            }
+                            )
+                            ActionIcon(
+                                onClick = { onAction(LeadAction.OnToggleCreateAppointmentDialog(customer.idCustomer)) },
+                                backgroundColor = SuccessGreen,
+                                icon = Icons.Default.CalendarMonth,
+                                tint = Color.White,
+                                modifier = Modifier.fillMaxHeight()
+                            )
                         }
+                    ) {
+                        ItemLead(
+                            modifier = Modifier,
+                            customer = customer,
+                            onClick = { onAction(LeadAction.OnDetailLeadClick(it)) }
+                        )
                     }
+                }
+                item {
+                    Spacer(
+                        modifier = Modifier.height(16.dp)
+                    )
                 }
 
             }
-        }
-        ExtendedFloatingActionButton(
-            modifier = Modifier.align(Alignment.BottomEnd).padding(16.dp),
-            containerColor = MaterialTheme.colorScheme.primary,
-            icon = {
-                Icon(
-                    imageVector = Icons.Filled.PersonAddAlt,
-                    contentDescription = null,
-                    tint = Color.White
+
+            item {
+                GenericContentLoading(
+                    modifier = Modifier.height(600.dp),
+                    data = state.productInteres,
+                    retry = {
+                        onAction(LeadAction.OnRetryCustomer)
+                    },
+                    success = {
+                        BarCharProducts(
+                            modifier = Modifier.height(600.dp),
+                            it
+                        )
+                    }
                 )
-            },
-            expanded = lazyColumState.isScrolled(),
-            onClick = {
-                onAction(LeadAction.OnAddLeadClick)
-            },
-            text = {
-                Text(text = "Agregar lead", color = Color.White)
             }
+
+            item {
+                GenericContentLoading(
+                    modifier = Modifier.height(400.dp),
+                    data = state.project,
+                    retry = {
+                        onAction(LeadAction.OnRetryProject)
+                    },
+                    success = {
+                        BarCharProjects(
+                            modifier = Modifier.height(600.dp),
+                            projects = it
+                        )
+                    }
+                )
+            }
+            item {
+                GenericContentLoading(
+                    modifier = Modifier.height(400.dp),
+                    data = state.customers,
+                    retry = {
+                        onAction(LeadAction.OnRetryCustomer)
+                    },
+                    success = {
+                        DonutChartInteractions(
+                            customers = it
+                        )
+                    }
+                )
+            }
+            item {
+                GenericContentLoading(
+                    modifier = Modifier.height(500.dp),
+                    data = state.customers,
+                    retry = {
+                        onAction(LeadAction.OnRetryCustomer)
+                    },
+                    success = {
+                        PieChartLeadsStatus(
+                            listCustomer = it,
+                            size = 200.dp
+                        )
+                    }
+                )
+            }
+        }
+        MultiFloatingActionButton(
+            modifier = Modifier.align(Alignment.BottomEnd).padding(16.dp),
+            items = listOf(
+                MultiFabItem(
+                    id = 1,
+                    icon = Icons.Filled.PersonAddAlt,
+                    label = "Agregar Lead"
+                ),
+                MultiFabItem(
+                    id = 2,
+                    icon = Icons.Filled.EditCalendar,
+                    label = "Crear cita"
+                ),
+                MultiFabItem(
+                    id = 3,
+                    icon = Icons.Filled.Search,
+                    label = "Buscar lead"
+                )
+            ),
+            fabIcon = FabIcon(iconRes = Icons.Default.Add, iconRotate = 45f),
+            onFabItemClicked = {
+                when(it.id){
+                    1 ->  onAction(LeadAction.OnAddLeadClick)
+                    2 ->  onAction(LeadAction.OnCreateReminder)
+                    3 ->  onAction(LeadAction.OnSearchCustomerClick)
+                }
+            },
+            fabOption = FabOption(
+                iconTint = Color.White,
+                showLabel = true
+            )
         )
         PullRefreshIndicator(
             refreshing = state.isRefreshing,
             state = pullRefreshState,
             modifier = Modifier.align(Alignment.TopCenter)
         )
+    }
+
+    if (state.dateNoAvailable){
+        DialogDayNoAvailable {
+            onAction(LeadAction.OnDismissDialogDayNoAvailable)
+        }
     }
 
     if (state.showCreateDate) {
@@ -435,10 +432,6 @@ fun LeadScreenMobile(
         )
     }
 
-}
-
-fun <T> getSubList(list: List<T>, start: Int, end: Int): List<T>? {
-    return list.subList(start, end + 1)
 }
 
 @Composable

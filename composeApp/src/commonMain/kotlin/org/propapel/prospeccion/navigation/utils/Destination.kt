@@ -8,6 +8,9 @@ sealed interface Destination {
     data object AuthGraph: Destination
 
     @Serializable
+    data object Gerente: Destination
+
+    @Serializable
     data object IntroScreen: Destination
 
     @Serializable
@@ -30,6 +33,9 @@ sealed interface Destination {
 
     @Serializable
     data object SelectSucursal: Destination
+
+    @Serializable
+    data class GerenteDashboard(val sucursal: Int): Destination
 
     @Serializable
     data class UpdateLead(val customerId: String): Destination

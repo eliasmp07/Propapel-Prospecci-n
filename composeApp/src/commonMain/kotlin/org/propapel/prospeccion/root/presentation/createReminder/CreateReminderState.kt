@@ -1,7 +1,6 @@
 package org.propapel.prospeccion.root.presentation.createReminder
 
 import kotlinx.datetime.Clock
-import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toInstant
@@ -13,6 +12,7 @@ data class CreateReminderState(
     val customer: Customer = Customer(),
     val customers: List<Customer> = listOf(Customer()),
     val reminders: List<LocalDateTime> = listOf(),
+    val typeAppointment: String = "",
     val showDatePicker: Boolean = false,
     val dateNoAvailable: Boolean = false,
     val notesAppointment: String = "",

@@ -96,7 +96,8 @@ class LoginViewModel(
                     is ResultExt.Success -> {
                         _state.update {
                             it.copy(
-                                loginSuccess = true
+                                loginSuccess = true,
+                                user = result.data
                             )
                         }
                     }

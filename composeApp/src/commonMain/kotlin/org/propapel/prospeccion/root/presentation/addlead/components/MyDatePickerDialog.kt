@@ -27,8 +27,6 @@ fun DatePickerDialog(
     onDismiss: () -> Unit
 ) {
 
-    val datesOcupados = state.reminders.map { it.reminderDate.toLong()} // Supongo que tienes un campo llamado remiderDate
-
     val datePickerState = rememberDatePickerState(
         selectableDates = object : SelectableDates {
             override fun isSelectableDate(utcTimeMillis: Long): Boolean {

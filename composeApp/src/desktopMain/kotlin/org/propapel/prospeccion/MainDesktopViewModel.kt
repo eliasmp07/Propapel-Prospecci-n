@@ -20,7 +20,8 @@ class MainDesktopViewModel (
         viewModelScope.launch(Dispatchers.IO) {
             state = state.copy(isCheckingAuth = true)
             state = state.copy(
-                isLoggedIn = sessionStorage.get() != null
+                isLoggedIn = sessionStorage.get() != null,
+                isManager = sessionStorage.get()?.roles?.contains("Gerente Regional") ?: false && (sessionStorage.get()?.sucursales?.size ?: 0) > 1
             )
             state = state.copy(isCheckingAuth = false)
         }

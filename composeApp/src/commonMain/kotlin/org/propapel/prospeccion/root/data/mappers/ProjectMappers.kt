@@ -11,6 +11,7 @@ fun ProjectResponse.toProject(): Project{
         products = products?.map {
             it.toPurchase()
         }?: listOf(),
+        created = stringToLocalDateTime(this.createdAt),
         prioridad = prioridad?:"",
         valorProject = valorProject,
         status = status,

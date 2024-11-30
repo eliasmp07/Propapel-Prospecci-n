@@ -9,7 +9,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.with
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -53,11 +53,10 @@ private fun CompleteReminderScreen(
         AnimatedContent(
             modifier = Modifier.fillMaxSize(),
             transitionSpec = {
-                fadeIn(
+                (fadeIn(
 
                 ) + slideInVertically(animationSpec = tween(600),
-                                      initialOffsetY = { fullHeight -> fullHeight }) with
-                        fadeOut(animationSpec = tween(400))
+                                      initialOffsetY = { fullHeight -> fullHeight })).togetherWith(fadeOut(animationSpec = tween(400)))
             },
             targetState = state.screenState,
             label = "container transform",

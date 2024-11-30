@@ -1,11 +1,5 @@
 package org.propapel.prospeccion.updateApk
 
-import android.content.Context
-import android.icu.util.VersionInfo
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
-import java.io.File
-import java.net.URL
 /*
 interface UpdateAppRepository{
     suspend fun checkForUpdate()
