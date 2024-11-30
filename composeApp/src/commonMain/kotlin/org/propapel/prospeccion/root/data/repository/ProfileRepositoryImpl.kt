@@ -1,7 +1,6 @@
 package org.propapel.prospeccion.root.data.repository
 
 import io.ktor.client.HttpClient
-import org.propapel.prospeccion.core.data.networking.get
 import org.propapel.prospeccion.core.data.networking.put
 import org.propapel.prospeccion.core.domain.AuthInfo
 import org.propapel.prospeccion.core.domain.ResultExt
@@ -9,10 +8,7 @@ import org.propapel.prospeccion.core.domain.SessionStorage
 import org.propapel.prospeccion.core.domain.utils.DataError
 import org.propapel.prospeccion.root.data.dto.UpdateProfileRequest
 import org.propapel.prospeccion.root.data.dto.UpdateProfileResponse
-import org.propapel.prospeccion.root.data.dto.UsersResponse
 import org.propapel.prospeccion.root.domain.repository.ProfileRepository
-import org.propapel.prospeccion.root.domain.repository.User
-import org.propapel.prospeccion.root.domain.repository.toUser
 
 class ProfileRepositoryImpl(
     private val httpClient: HttpClient,
@@ -59,23 +55,6 @@ class ProfileRepositoryImpl(
                         accessToken = sessionStorage.get()?.accessToken?:"",
                     )
                 )
-            }
-        }
-    }
-
-    override suspend fun getAllUsers(): ResultExt<List<User>, DataError.Network> {
-        val result = httpClient.get<UsersResponse>(
-            route = "/users/getAllUsers"
-        )
-
-        return when(result){
-            is ResultExt.Error -> {
-                ResultExt.Error(result.error)
-            }
-            is ResultExt.Success -> {
-                ResultExt.Success(result.data.users.map {
-                    it.toUser()
-                })
             }
         }
     }

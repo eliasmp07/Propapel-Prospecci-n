@@ -4,7 +4,8 @@
     ExperimentalMaterial3Api::class,
     ExperimentalMaterial3Api::class,
     ExperimentalMaterial3Api::class,
-    ExperimentalMaterial3Api::class
+    ExperimentalMaterial3Api::class,
+    KoinExperimentalAPI::class
 )
 
 package org.propapel.prospeccion.root.presentation.homeRoot
@@ -54,6 +55,7 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.annotation.KoinExperimentalAPI
 import org.propapel.prospeccion.core.presentation.designsystem.SoporteSaiBlack
 import org.propapel.prospeccion.core.presentation.designsystem.SoporteSaiWhite
 import org.propapel.prospeccion.core.presentation.designsystem.components.CustomTopAppBar
@@ -259,6 +261,7 @@ fun HomeScreen(
                             onDetailLead = onDetailLead,
                             onAddLead = onAddLead,
                             onUpdateLead = onUpdateLead,
+                            onCreaReminder = onCreateReminder,
                             onSearchLead = onSearchLead
                         )  // Pantalla de Leads
                     }

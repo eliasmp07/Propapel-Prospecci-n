@@ -7,28 +7,18 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.PersonAddAlt
 import androidx.compose.material.icons.outlined.Person
-import androidx.compose.material.icons.outlined.WorkspacePremium
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.Favorite
 import androidx.compose.material3.Card
-import androidx.compose.material3.ElevatedCard
-import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -57,17 +47,20 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import kotlinx.coroutines.launch
-import org.jetbrains.compose.resources.painterResource
 import org.propapel.prospeccion.core.presentation.designsystem.components.Direction
 import org.propapel.prospeccion.core.presentation.designsystem.components.rememberSwipeableCardState
 import org.propapel.prospeccion.core.presentation.designsystem.components.swipableCard
-import org.propapel.prospeccion.root.domain.repository.User
+import org.propapel.prospeccion.selectSucursal.domain.model.UserItem
 
 @Composable
 fun UsersSMScreenRoot(
     viewModel: UserSMViewModel,
+    sucusalId: Int,
     onAddUser: () -> Unit
 ) {
+    LaunchedEffect(Unit){
+        viewModel.getUserBySucursal(sucusalId)
+    }
     val state by viewModel.state.collectAsState()
     UsersSMScreen(
         state  = state,
@@ -175,7 +168,7 @@ fun CircleButton(
 @Composable
 private fun ProfileCard(
     modifier: Modifier,
-    user: User,
+    user: UserItem,
 ) {
     Card(modifier) {
         Column {

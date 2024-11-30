@@ -12,9 +12,9 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Notes
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.DateRange
-import androidx.compose.material.icons.filled.Notes
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -30,7 +30,6 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.ImeAction.Companion
 import androidx.compose.ui.unit.dp
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
@@ -138,7 +137,7 @@ fun AddNewDateClientScreen(
             onTextChange = {
                 onAction(AddLeadAction.OnNoteChange(it))
             },
-            startIcon = Icons.Filled.Notes,
+            startIcon = Icons.AutoMirrored.Filled.Notes,
             maxLines = 104,
             keyboardOptions = KeyboardOptions(
                 imeAction = androidx.compose.ui.text.input.ImeAction.Done,

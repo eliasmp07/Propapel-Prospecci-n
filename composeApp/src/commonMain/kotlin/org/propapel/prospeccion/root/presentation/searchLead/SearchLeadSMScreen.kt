@@ -3,7 +3,6 @@ package org.propapel.prospeccion.root.presentation.searchLead
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -12,12 +11,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBackIosNew
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
@@ -38,8 +35,6 @@ import org.propapel.prospeccion.core.presentation.designsystem.SoporteSaiBlue30
 import org.propapel.prospeccion.core.presentation.designsystem.components.LoadingPropapel
 import org.propapel.prospeccion.core.presentation.designsystem.components.ProSalesActionButtonOutline
 import org.propapel.prospeccion.core.presentation.designsystem.components.handleResultView
-import org.propapel.prospeccion.root.presentation.createReminder.CreateReminderAction
-import org.propapel.prospeccion.root.presentation.detailLead.DetailLeadAction
 import org.propapel.prospeccion.root.presentation.leads.components.mobile.ItemLead
 import org.propapel.prospeccion.root.presentation.searchLead.components.SearchTextField
 import prospeccion.composeapp.generated.resources.Res

@@ -28,7 +28,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
@@ -39,11 +38,8 @@ import androidx.compose.ui.unit.dp
 import org.propapel.prospeccion.core.presentation.designsystem.PrimaryPink
 import org.propapel.prospeccion.core.presentation.designsystem.PrimaryPinkBlended
 import org.propapel.prospeccion.core.presentation.designsystem.components.ProSalesActionButton
-import org.propapel.prospeccion.root.presentation.addlead.AddLeadAction
-import org.propapel.prospeccion.root.presentation.addlead.ContainerState
 import org.propapel.prospeccion.root.presentation.addlead.components.ProductsInterestedItem
 import org.propapel.prospeccion.root.presentation.addlead.components.utils.ProSalesPriceTextField
-import org.propapel.prospeccion.root.presentation.completeReminder.CompleteReminderAction
 import org.propapel.prospeccion.root.presentation.createInteraction.CreateInteractionAction
 import org.propapel.prospeccion.root.presentation.createInteraction.CreateInteractionLeadState
 import org.propapel.prospeccion.root.presentation.createInteraction.CreateInteractionScreenState

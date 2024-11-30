@@ -6,18 +6,12 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import androidx.annotation.RequiresApi
-import kotlinx.datetime.Clock
-import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import org.propapel.prospeccion.core.domain.repository.AlarmHandler
 import org.propapel.prospeccion.root.domain.models.Reminder
-import java.time.LocalTime
-import java.time.ZonedDateTime
-import java.time.format.DateTimeFormatter
 import java.util.Calendar
-import kotlin.random.Random
 
 @RequiresApi(Build.VERSION_CODES.O)
 fun formatTime(time: Long): Long{

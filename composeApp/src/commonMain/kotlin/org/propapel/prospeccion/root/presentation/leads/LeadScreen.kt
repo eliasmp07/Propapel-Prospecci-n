@@ -5,6 +5,7 @@ import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import org.propapel.prospeccion.root.presentation.dashboard.isMobile
 import org.propapel.prospeccion.root.presentation.leads.components.desktop.LeadScreenDesktop
 import org.propapel.prospeccion.root.presentation.leads.components.mobile.LeadScreenMobile
 
@@ -14,6 +15,7 @@ fun LeadScreenRoot(
     windowSizeClass: WindowSizeClass,
     onUpdateLead: (String) -> Unit,
     onDetailLead: (String) -> Unit,
+    onCreaReminder: () -> Unit,
     onSearchLead: () -> Unit,
     onAddLead : () -> Unit
 ){
@@ -26,6 +28,7 @@ fun LeadScreenRoot(
                 LeadAction.OnAddLead -> {
                     onAddLead()
                 }
+                LeadAction.OnCreateReminder -> onCreaReminder()
                 is LeadAction.OnUpdateLeadClick -> onUpdateLead(action.leadId)
                 LeadAction.OnSearchCustomerClick -> onSearchLead()
                 LeadAction.OnAddLeadClick -> {
@@ -45,11 +48,8 @@ private fun LeadScreen(
     windowSizeClass: WindowSizeClass,
     onAction : (LeadAction) -> Unit,
 ){
-    if (windowSizeClass.widthSizeClass == WindowWidthSizeClass.Compact){
+    if (windowSizeClass.isMobile){
         LeadScreenMobile(
-            onRefresh = {
-                onAction(LeadAction.OnRefresh)
-            },
             state = state,
             onAction = onAction
         )

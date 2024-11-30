@@ -1,8 +1,10 @@
-@file:OptIn(ExperimentalMaterialApi::class)
+@file:OptIn(ExperimentalMaterialApi::class,
+            ExperimentalAnimationApi::class
+)
 
 package org.propapel.prospeccion.root.presentation.leads.components.mobile
 
-import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -15,7 +17,6 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -23,18 +24,14 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Business
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.CalendarMonth
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.EditCalendar
 import androidx.compose.material.icons.filled.PersonAddAlt
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Update
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
@@ -42,9 +39,7 @@ import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
-import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -57,7 +52,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -66,19 +60,19 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.jetbrains.compose.resources.painterResource
 import org.propapel.prospeccion.core.presentation.designsystem.PrimaryYellowLight
-import org.propapel.prospeccion.core.presentation.designsystem.SoporteSaiBlue
 import org.propapel.prospeccion.core.presentation.designsystem.SoporteSaiBlue30
 import org.propapel.prospeccion.core.presentation.designsystem.SuccessGreen
+import org.propapel.prospeccion.core.presentation.designsystem.components.MultiFloatingActionButton
 import org.propapel.prospeccion.core.presentation.designsystem.components.PieChartLeadsStatus
-import org.propapel.prospeccion.root.presentation.createProject.componetns.provideProductsPropapel
+import org.propapel.prospeccion.core.presentation.designsystem.components.util.FabIcon
+import org.propapel.prospeccion.core.presentation.designsystem.components.util.FabOption
+import org.propapel.prospeccion.core.presentation.designsystem.components.util.MultiFabItem
 import org.propapel.prospeccion.root.presentation.createReminder.components.DialogDayNoAvailable
-import org.propapel.prospeccion.root.presentation.dashboard.DashboardChart
 import org.propapel.prospeccion.root.presentation.dashboard.components.DonutChartInteractions
-import org.propapel.prospeccion.root.presentation.detailLead.components.CreateReminderDialog
 import org.propapel.prospeccion.root.presentation.leads.GenericContentLoading
 import org.propapel.prospeccion.root.presentation.leads.LeadAction
 import org.propapel.prospeccion.root.presentation.leads.LeadSMState
-import org.propapel.prospeccion.root.presentation.leads.State
+import org.propapel.prospeccion.root.presentation.leads.UiState
 import org.propapel.prospeccion.root.presentation.leads.components.ActionIcon
 import org.propapel.prospeccion.root.presentation.leads.components.SwipeableItemWithActions
 import prospeccion.composeapp.generated.resources.Res
@@ -87,7 +81,6 @@ import prospeccion.composeapp.generated.resources.img_no_data
 
 @Composable
 fun LeadScreenMobile(
-    onRefresh: () -> Unit = {},
     state: LeadSMState,
     onAction: (LeadAction) -> Unit
 ) {
@@ -95,10 +88,10 @@ fun LeadScreenMobile(
     val lazyColumState = rememberLazyListState()
     val pullRefreshState = rememberPullRefreshState(
         state.isRefreshing,
-        { onRefresh() })
+        { onAction(LeadAction.OnRefresh) })
 
 
-    var page by remember { mutableStateOf(1) } // Usar mutableStateOf para recomposición
+    var page by remember { mutableStateOf(1) }
 
     Box(
         modifier = Modifier.fillMaxSize()
@@ -217,70 +210,7 @@ fun LeadScreenMobile(
 
             }
 
-            item {
-                GenericContentLoading(
-                    modifier = Modifier.height(300.dp),
-                    data = state.productInteres,
-                    retry = {
-                        onAction(LeadAction.OnRefresh)
-                    },
-                    success = {
-                        DashboardChart(
-                            title = "Producto con mas interes",
-                            orders = it,
-                            products = provideProductsPropapel()
-                        )
-                    }
-                )
-            }
-
-            item {
-                GenericContentLoading(
-                    modifier = Modifier.height(600.dp),
-                    data = state.project,
-                    retry = {
-                        onAction(LeadAction.OnRetryProject)
-                    },
-                    success = {
-                        BarCharProjects(
-                            modifier = Modifier.height(600.dp),
-                            projects = it
-                        )
-                    }
-                )
-            }
-            item {
-                GenericContentLoading(
-                    modifier = Modifier.height(300.dp),
-                    data = state.customers,
-                    retry = {
-                        onAction(LeadAction.OnRefresh)
-                    },
-                    success = {
-                        DonutChartInteractions(
-                            Modifier,
-                            it
-                        )
-                    }
-                )
-            }
-            item {
-                GenericContentLoading(
-                    modifier = Modifier.height(270.dp),
-                    data = state.customers,
-                    retry = {
-                        onAction(LeadAction.OnRefresh)
-                    },
-                    success = {
-                        PieChartLeadsStatus(
-                            modifier = Modifier,
-                            listCustomer = it,
-                            size = 200.dp
-                        )
-                    }
-                )
-            }
-            if (state.customers is State.Empty) {
+            if (state.customers is UiState.Empty) {
                 item {
                     Card(
                         shape = RoundedCornerShape(30.dp),
@@ -315,7 +245,7 @@ fun LeadScreenMobile(
                         }
                     }
                 }
-            } else if (state.customers is State.Success) {
+            } else if (state.customers is UiState.Success) {
                 val pageSize = 5
                 val totalCustomers = state.customers.value.size
                 val totalPages = (totalCustomers + pageSize - 1) / pageSize
@@ -385,27 +315,99 @@ fun LeadScreenMobile(
                 }
 
             }
-        }
-        ExtendedFloatingActionButton(
-            modifier = Modifier.align(Alignment.BottomEnd).padding(16.dp),
-            containerColor = MaterialTheme.colorScheme.primary,
-            icon = {
-                Icon(
-                    imageVector = Icons.Filled.PersonAddAlt,
-                    contentDescription = null,
-                    tint = Color.White
-                )
-            },
-            expanded = lazyColumState.isScrolled(),
-            onClick = {
-                onAction(LeadAction.OnAddLeadClick)
-            },
-            text = {
-                Text(
-                    text = "Agregar lead",
-                    color = Color.White
+
+            item {
+                GenericContentLoading(
+                    modifier = Modifier.height(600.dp),
+                    data = state.productInteres,
+                    retry = {
+                        onAction(LeadAction.OnRetryCustomer)
+                    },
+                    success = {
+                        BarCharProducts(
+                            modifier = Modifier.height(600.dp),
+                            it
+                        )
+                    }
                 )
             }
+
+            item {
+                GenericContentLoading(
+                    modifier = Modifier.height(400.dp),
+                    data = state.project,
+                    retry = {
+                        onAction(LeadAction.OnRetryProject)
+                    },
+                    success = {
+                        BarCharProjects(
+                            modifier = Modifier.height(600.dp),
+                            projects = it
+                        )
+                    }
+                )
+            }
+            item {
+                GenericContentLoading(
+                    modifier = Modifier.height(400.dp),
+                    data = state.customers,
+                    retry = {
+                        onAction(LeadAction.OnRetryCustomer)
+                    },
+                    success = {
+                        DonutChartInteractions(
+                            customers = it
+                        )
+                    }
+                )
+            }
+            item {
+                GenericContentLoading(
+                    modifier = Modifier.height(500.dp),
+                    data = state.customers,
+                    retry = {
+                        onAction(LeadAction.OnRetryCustomer)
+                    },
+                    success = {
+                        PieChartLeadsStatus(
+                            listCustomer = it,
+                            size = 200.dp
+                        )
+                    }
+                )
+            }
+        }
+        MultiFloatingActionButton(
+            modifier = Modifier.align(Alignment.BottomEnd).padding(16.dp),
+            items = listOf(
+                MultiFabItem(
+                    id = 1,
+                    icon = Icons.Filled.PersonAddAlt,
+                    label = "Agregar Lead"
+                ),
+                MultiFabItem(
+                    id = 2,
+                    icon = Icons.Filled.EditCalendar,
+                    label = "Crear cita"
+                ),
+                MultiFabItem(
+                    id = 3,
+                    icon = Icons.Filled.Search,
+                    label = "Buscar lead"
+                )
+            ),
+            fabIcon = FabIcon(iconRes = Icons.Default.Add, iconRotate = 45f),
+            onFabItemClicked = {
+                when(it.id){
+                    1 ->  onAction(LeadAction.OnAddLeadClick)
+                    2 ->  onAction(LeadAction.OnCreateReminder)
+                    3 ->  onAction(LeadAction.OnSearchCustomerClick)
+                }
+            },
+            fabOption = FabOption(
+                iconTint = Color.White,
+                showLabel = true
+            )
         )
         PullRefreshIndicator(
             refreshing = state.isRefreshing,

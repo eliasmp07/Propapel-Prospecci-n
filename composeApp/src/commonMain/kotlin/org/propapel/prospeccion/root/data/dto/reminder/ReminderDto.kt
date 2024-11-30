@@ -1,6 +1,5 @@
 package org.propapel.prospeccion.root.data.dto.reminder
 
-import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime

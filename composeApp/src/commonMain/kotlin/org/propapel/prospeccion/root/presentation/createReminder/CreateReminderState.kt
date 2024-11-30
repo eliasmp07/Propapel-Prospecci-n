@@ -1,7 +1,6 @@
 package org.propapel.prospeccion.root.presentation.createReminder
 
 import kotlinx.datetime.Clock
-import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toInstant

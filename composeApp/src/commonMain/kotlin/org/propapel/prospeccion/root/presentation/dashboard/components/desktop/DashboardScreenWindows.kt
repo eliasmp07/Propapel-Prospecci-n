@@ -14,8 +14,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridItemSpan
@@ -24,7 +22,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Flag
 import androidx.compose.material.icons.outlined.Groups
-import androidx.compose.material.icons.outlined.Money
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
@@ -52,17 +49,13 @@ import org.propapel.prospeccion.core.presentation.designsystem.SoporteSaiBlue30
 import org.propapel.prospeccion.core.presentation.designsystem.SuccessGreen
 import org.propapel.prospeccion.core.presentation.designsystem.components.CalendarDatesCard
 import org.propapel.prospeccion.core.presentation.designsystem.components.DashboardCard
-import org.propapel.prospeccion.core.presentation.designsystem.components.SalesPeopleCard
 import org.propapel.prospeccion.root.data.dto.customer.TypeOfClient
 import org.propapel.prospeccion.root.presentation.dashboard.DashboardSMAction
 import org.propapel.prospeccion.root.presentation.dashboard.DashboardSMState
-import org.propapel.prospeccion.root.presentation.dashboard.DonutChartServices
 import org.propapel.prospeccion.root.presentation.dashboard.components.mobile.Banner
-import org.propapel.prospeccion.root.presentation.dashboard.components.mobile.BannerItemMobileScreen
-import org.propapel.prospeccion.root.presentation.dashboard.components.mobile.BannerPager
 import org.propapel.prospeccion.root.presentation.dashboard.components.mobile.BannerPaggerWindows
 import org.propapel.prospeccion.root.presentation.dashboard.components.mobile.GoalCard
-import org.propapel.prospeccion.root.presentation.leads.State
+import org.propapel.prospeccion.root.presentation.leads.UiState
 import prospeccion.composeapp.generated.resources.Res
 import prospeccion.composeapp.generated.resources.calendar_date
 import prospeccion.composeapp.generated.resources.customer_person
@@ -77,7 +70,7 @@ private fun providesItemsScreen(
 ): List<ItemScreen>{
     return listOf(
         ItemScreen {
-            if (state.myCustomer is State.Success){
+            if (state.myCustomer is UiState.Success){
 
                 val customerNew = state.myCustomer.value.filter { it.typeClient == TypeOfClient.NUEVO.name }
                 val customerDesarrollo = state.myCustomer.value.filter { it.typeClient == TypeOfClient.DESARROLLO.name }
@@ -274,7 +267,7 @@ fun DashboardScreenWindows(
                         .padding(vertical = 8.dp, horizontal = 8.dp).animateContentSize(),
                     horizontalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    if (state.myCustomer is State.Success){
+                    if (state.myCustomer is UiState.Success){
 
                         val listCustomer = state.myCustomer
                         val customerNew = listCustomer.value.filter { it.typeClient == TypeOfClient.NUEVO.name }

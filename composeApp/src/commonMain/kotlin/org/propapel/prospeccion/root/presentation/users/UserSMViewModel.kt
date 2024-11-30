@@ -10,24 +10,26 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.propapel.prospeccion.core.domain.ResultExt
-import org.propapel.prospeccion.root.domain.repository.ProfileRepository
-import org.propapel.prospeccion.root.domain.repository.User
+import org.propapel.prospeccion.selectSucursal.domain.model.UserItem
+import org.propapel.prospeccion.selectSucursal.domain.repository.UserRepository
 
 class UserSMViewModel(
-    private val profileRepository: ProfileRepository
+    private val userRepository: UserRepository
 ): ViewModel() {
 
     private var _state = MutableStateFlow(UsersSMState())
     val state: StateFlow<UsersSMState> get() = _state.asStateFlow()
 
-    init {
-        viewModelScope.launch(Dispatchers.IO) {
-            val result = profileRepository.getAllUsers()
+    fun getUserBySucursal(id: Int){
+        viewModelScope.launch(
+            Dispatchers.IO
+        ){
+            val result = userRepository.getAllUsersBySucursal(id)
             when(result){
                 is ResultExt.Error -> {
                     _state.update {
                         it.copy(
-                            users = listOf()
+                            users = listOf(UserItem())
                         )
                     }
                 }
@@ -41,8 +43,9 @@ class UserSMViewModel(
             }
         }
     }
+
 }
 
 data class UsersSMState(
-    val users: List<User> = listOf()
+    val users:List<UserItem> = emptyList()
 )

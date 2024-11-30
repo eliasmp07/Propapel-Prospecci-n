@@ -18,9 +18,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
@@ -50,6 +48,7 @@ import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.delay
 import org.jetbrains.compose.resources.painterResource
 import org.propapel.prospeccion.auth.presentation.login.components.ForgotPasswordDialog
+import org.propapel.prospeccion.core.domain.AuthInfo
 import org.propapel.prospeccion.core.presentation.designsystem.PrimaryYellowLight
 import org.propapel.prospeccion.core.presentation.designsystem.SoporteSaiBlue30
 import org.propapel.prospeccion.core.presentation.designsystem.components.ProSalesActionButton
@@ -61,13 +60,13 @@ import prospeccion.composeapp.generated.resources.logo
 @Composable
 fun LoginScreenRoot(
     viewModel: LoginViewModel,
-    onLoginSuccess: () -> Unit
+    onLoginSuccess: (AuthInfo) -> Unit
 ) {
     val state by viewModel.state.collectAsState()
 
     LaunchedEffect(key1 = state.loginSuccess) {
         if (state.loginSuccess) {
-            onLoginSuccess()
+            onLoginSuccess(state.user)
         }
     }
 

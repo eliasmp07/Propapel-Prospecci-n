@@ -58,13 +58,10 @@ import org.jetbrains.compose.resources.painterResource
 import org.propapel.prospeccion.core.presentation.designsystem.PrimaryYellowLight
 import org.propapel.prospeccion.core.presentation.designsystem.SoporteSaiBlue30
 import org.propapel.prospeccion.core.presentation.designsystem.components.LoadingPropapel
-import org.propapel.prospeccion.core.presentation.designsystem.components.ProSalesActionButton
 import org.propapel.prospeccion.core.presentation.designsystem.components.ProSalesActionButtonOutline
 import org.propapel.prospeccion.core.presentation.designsystem.components.ProSalesTextField
 import org.propapel.prospeccion.core.presentation.designsystem.components.handleResultView
 import org.propapel.prospeccion.root.data.dto.customer.TypeOfClient
-import org.propapel.prospeccion.root.presentation.addlead.AddLeadAction
-import org.propapel.prospeccion.root.presentation.addlead.ContainerState
 import org.propapel.prospeccion.root.presentation.addlead.components.utils.ExpisedDropdownMenuTypeClient
 import org.propapel.prospeccion.root.presentation.addlead.components.utils.KottieAnimationUtil
 import prospeccion.composeapp.generated.resources.Res

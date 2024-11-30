@@ -45,10 +45,4 @@ inline fun <T, U, V, R> Triple<T?, U?, V?>.biLet(body: (T, U, V) -> R): R? {
 }
 
 
-inline fun Any?.ifNull(action: () -> Unit) {
-    if (this == null) action()
-}
-
-inline fun Any?.isNotNull() = this != null
-
 inline fun Any?.isNull() = this == null

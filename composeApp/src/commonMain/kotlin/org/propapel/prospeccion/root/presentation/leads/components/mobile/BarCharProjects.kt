@@ -1,33 +1,26 @@
 package org.propapel.prospeccion.root.presentation.leads.components.mobile
 
-import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.animateColor
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.togetherWith
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -38,14 +31,18 @@ import androidx.compose.ui.unit.sp
 import com.aay.compose.barChart.BarChart
 import com.aay.compose.barChart.model.BarParameters
 import kotlinx.datetime.Clock
-import kotlinx.datetime.Instant
+import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
-import kotlinx.datetime.number
 import kotlinx.datetime.toLocalDateTime
-import org.propapel.prospeccion.core.domain.utils.Error
-import org.propapel.prospeccion.core.presentation.ui.UiText
+import org.jetbrains.compose.resources.vectorResource
+import org.propapel.prospeccion.core.presentation.ui.extensions.previousMoth
+import org.propapel.prospeccion.core.presentation.ui.extensions.previousYear
 import org.propapel.prospeccion.root.domain.models.Project
 import org.propapel.prospeccion.root.presentation.dashboard.components.monthGet
+import prospeccion.composeapp.generated.resources.Res
+import prospeccion.composeapp.generated.resources.ic_product_otline
+import prospeccion.composeapp.generated.resources.projects_ic_dra
+
 
 @Composable
 fun BarCharProjects(
@@ -55,9 +52,9 @@ fun BarCharProjects(
     // Helper para obtener los conteos
 
     // Fechas actuales y del mes anterior
-    val currentDate = Clock.System.now().toLocalDateTime(TimeZone.UTC).date
-    val previousMonthDate = if (currentDate.monthNumber == 1) 12 else currentDate.monthNumber - 1
-    val previousYear = if (currentDate.monthNumber == 1) currentDate.year - 1 else currentDate.year
+    val currentDate = Clock.System.now().toLocalDateTime(TimeZone.UTC)
+    val previousMonthDate = currentDate.previousMoth()
+
 
     // Calcular los conteos
     val (cierreNow, negociacionNow, perdidoNow) =
@@ -69,7 +66,7 @@ fun BarCharProjects(
     val (cierreLast, negociacionLast, perdidoLast) =
         calculateCounts(
             projects,
-            previousYear,
+            currentDate.year,
             previousMonthDate
         )
 
@@ -128,11 +125,21 @@ fun BarCharProjects(
             modifier = Modifier.padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            Text(
-                text = "Proyectos",
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold
-            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ){
+                Icon(
+                    imageVector = vectorResource(Res.drawable.projects_ic_dra),
+                    contentDescription = null
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                    text = "Proyectos",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold
+                )
+            }
             Text(
                 modifier = Modifier.align(Alignment.CenterHorizontally),
                 text = "${monthGet(currentDate.monthNumber)} vs ${monthGet(previousMonthDate)}",

@@ -13,8 +13,6 @@ import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toInstant
-import kotlinx.datetime.toLocalDateTime
-import org.propapel.prospeccion.auth.domain.validator.UserValidator
 import org.propapel.prospeccion.core.domain.ResultExt
 import org.propapel.prospeccion.root.domain.models.PurchaseRequest
 import org.propapel.prospeccion.root.domain.repository.CustomerRepository

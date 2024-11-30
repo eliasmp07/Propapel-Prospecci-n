@@ -12,11 +12,9 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -25,10 +23,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Business
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.Flag
-import androidx.compose.material.icons.filled.PanToolAlt
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.Groups
@@ -38,7 +34,6 @@ import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -52,9 +47,7 @@ import androidx.compose.ui.input.pointer.PointerIcon
 import androidx.compose.ui.input.pointer.pointerHoverIcon
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import org.jetbrains.compose.resources.painterResource
 import org.propapel.prospeccion.core.domain.AuthInfo
@@ -63,26 +56,16 @@ import org.propapel.prospeccion.core.presentation.designsystem.SoporteSaiBlue30
 import org.propapel.prospeccion.core.presentation.designsystem.SuccessGreen
 import org.propapel.prospeccion.core.presentation.designsystem.components.CalendarDatesCard
 import org.propapel.prospeccion.core.presentation.designsystem.components.DashboardCard
-import org.propapel.prospeccion.core.presentation.designsystem.components.LoadingPropapel
 import org.propapel.prospeccion.core.presentation.designsystem.components.PieChartLeadsStatus
-import org.propapel.prospeccion.core.presentation.designsystem.components.ProSalesActionButtonOutline
-import org.propapel.prospeccion.core.presentation.designsystem.components.handleResultView
-import org.propapel.prospeccion.gerentePanel.presentation.dashboard.getImageSucursal
 import org.propapel.prospeccion.root.presentation.dashboard.DashboardSMAction
 import org.propapel.prospeccion.root.presentation.dashboard.DashboardSMState
-import org.propapel.prospeccion.root.presentation.dashboard.components.ShimmerEffectDashboard
 import org.propapel.prospeccion.root.presentation.detailLead.components.ButtonItemDirectAccess
 import org.propapel.prospeccion.root.presentation.leads.GenericContentLoading
-import org.propapel.prospeccion.root.presentation.leads.LeadAction
-import org.propapel.prospeccion.root.presentation.leads.State
+import org.propapel.prospeccion.root.presentation.leads.UiState
+import org.propapel.prospeccion.selectSucursal.presentation.dashboard.getImageSucursal
 import prospeccion.composeapp.generated.resources.Res
-import prospeccion.composeapp.generated.resources.customer_person
-import prospeccion.composeapp.generated.resources.empty_info
-import prospeccion.composeapp.generated.resources.login_img
 import prospeccion.composeapp.generated.resources.logo
 import prospeccion.composeapp.generated.resources.mid_reference
-import prospeccion.composeapp.generated.resources.no_internet
-import prospeccion.composeapp.generated.resources.person_with_phone
 
 @Composable
 fun DashboardScreenMobile(
@@ -366,7 +349,7 @@ fun DashboardScreenMobile(
                             ),
                         horizontalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
-                        if (state.myCustomer is State.Success) {
+                        if (state.myCustomer is UiState.Success) {
                             DashboardCard(
                                 title = "Clientes totales",
                                 value = state.myCustomer.value.size.toString(),
@@ -380,21 +363,11 @@ fun DashboardScreenMobile(
                 }
             }
             item {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(
-                            vertical = 8.dp,
-                            horizontal = 16.dp
-                        ),
-                    horizontalArrangement = Arrangement.spacedBy(16.dp)
-                ) {
-                    CalendarDatesCard(
-                        state = state,
-                        modifier = Modifier.weight(1f),
-                        onAction = onAction
-                    )
-                }
+                CalendarDatesCard(
+                    state = state,
+                    modifier = Modifier.fillMaxWidth(),
+                    onAction = onAction
+                )
                 Spacer(modifier = Modifier.height(16.dp))
             }
         }

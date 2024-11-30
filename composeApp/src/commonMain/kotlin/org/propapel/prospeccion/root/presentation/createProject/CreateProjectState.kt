@@ -2,7 +2,6 @@ package org.propapel.prospeccion.root.presentation.createProject
 
 import org.propapel.prospeccion.root.domain.models.Customer
 import org.propapel.prospeccion.root.domain.models.Purchase
-import org.propapel.prospeccion.root.domain.models.PurchaseRequest
 
 data class CreateProjectState(
     val stateScreen: CreateProjectScreenState = CreateProjectScreenState.WELCOME,

@@ -1,7 +1,6 @@
 package org.propapel.prospeccion.root.presentation.completeReminder
 
 import org.propapel.prospeccion.root.data.dto.customer.InteractionType
-import org.propapel.prospeccion.root.data.dto.customer.TypeOfClient
 import org.propapel.prospeccion.root.domain.models.PurchaseRequest
 import org.propapel.prospeccion.root.presentation.completeReminder.components.CompleteReminderScreenState
 

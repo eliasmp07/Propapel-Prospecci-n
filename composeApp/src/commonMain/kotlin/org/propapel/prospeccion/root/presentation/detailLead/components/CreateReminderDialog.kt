@@ -10,9 +10,9 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.IconButton
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Notes
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.DateRange
-import androidx.compose.material.icons.filled.Notes
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
@@ -162,7 +162,7 @@ fun CreateReminderDialog(
                             }
                         ),
                         colors = Color.Black,
-                        startIcon = Icons.Filled.Notes,
+                        startIcon = Icons.AutoMirrored.Filled.Notes,
                         maxLines = 104
                     )
                     Spacer(Modifier.height(8.dp))
