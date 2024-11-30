@@ -1,6 +1,12 @@
 package org.propapel.prospeccion
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.expandIn
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkOut
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -8,12 +14,11 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ProgressIndicatorDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -24,7 +29,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
@@ -41,7 +45,6 @@ import org.propapel.prospeccion.core.presentation.designsystem.components.Provid
 import org.propapel.prospeccion.di.initKoin
 import org.propapel.prospeccion.navigation.RootGraph
 import prospeccion.composeapp.generated.resources.Res
-import prospeccion.composeapp.generated.resources.foreground
 import prospeccion.composeapp.generated.resources.logo
 import java.awt.Dimension
 
@@ -51,54 +54,41 @@ fun main(){
     val viewModel: MainDesktopViewModel = getKoin().get()
 
     application {
-
         var showSplashScreen by remember { mutableStateOf(true) }
 
-        if (showSplashScreen && !viewModel.state.isCheckingAuth) {
-            Window(
-                icon = painterResource(Res.drawable.logo),
-                onCloseRequest = ::exitApplication,
-                title = "ProPapel",
-                decoration = WindowDecoration.SystemDefault,
-                state = rememberWindowState(
-                    placement = WindowPlacement.Floating,
-                    position = WindowPosition(Alignment.Center)
-                )
-            ) {
-                SplashScreen {
-                    showSplashScreen = false
-                }
-            }
-        } else {
+        Window(
+            state = rememberWindowState(
+                placement = WindowPlacement.Maximized,
+                position = WindowPosition(Alignment.Center)
+            ),
+            decoration = WindowDecoration.SystemDefault,
+            icon = painterResource(Res.drawable.logo),
+            onCloseRequest = ::exitApplication,
+            title = "ProSales"
+        ) {
+            window.minimumSize = Dimension(350, 600)
 
-            Window(
-                state = rememberWindowState(
-                    placement = WindowPlacement.Maximized,
-                    position = WindowPosition(Alignment.Center)
-                ),
-                decoration = WindowDecoration.SystemDefault,
-                icon = painterResource(Res.drawable.logo),
-                onCloseRequest = ::exitApplication,
-                title = "ProSales"
-            ) {
-                window.minimumSize = Dimension(
-                    350,
-                    600
-                )
-                ProvideDesktopPlatformConfiguration {
-                    App(
-                        content = {
-                            RootGraph(
-                                isLogging = viewModel.state.isLoggedIn
-                            )
-                        }
-                    )
+            Crossfade(
+                targetState = showSplashScreen
+            ){tarjetValue ->
+                if(tarjetValue){
+                    SplashScreen {
+                        showSplashScreen = false
+                    }
+                }else{
+                    ProvideDesktopPlatformConfiguration {
+                        App(
+                            content = {
+                                RootGraph(
+                                    isLogging = viewModel.state.isLoggedIn,
+                                    isManager = viewModel.state.isManager
+                                )
+                            }
+                        )
+                    }
                 }
-
             }
         }
-
-
     }
 }
 
@@ -131,7 +121,10 @@ fun SplashScreen(onTimeout: () -> Unit) {
             )
             Spacer(modifier = Modifier.height(30.dp))
             CircularProgressIndicator(
-                progress = animatedProgress
+                progress = {
+                    animatedProgress
+                },
+                trackColor = ProgressIndicatorDefaults.circularIndeterminateTrackColor,
             )
             Spacer(
                 modifier = Modifier.weight(1f)

@@ -1,10 +1,9 @@
 package org.propapel.prospeccion.root.presentation.createReminder
 
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
@@ -13,18 +12,21 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Notes
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.DateRange
-import androidx.compose.material.icons.filled.Notes
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -56,9 +58,8 @@ import org.propapel.prospeccion.core.presentation.designsystem.components.ProSal
 import org.propapel.prospeccion.core.presentation.designsystem.components.ProSalesActionButtonOutline
 import org.propapel.prospeccion.core.presentation.designsystem.components.ProSalesTextField
 import org.propapel.prospeccion.core.presentation.designsystem.components.handleResultView
+import org.propapel.prospeccion.core.presentation.designsystem.components.util.rememberImeState
 import org.propapel.prospeccion.core.presentation.ui.typeHour
-import org.propapel.prospeccion.root.presentation.addlead.AddLeadAction
-import org.propapel.prospeccion.root.presentation.addlead.ContainerState
 import org.propapel.prospeccion.root.presentation.addlead.components.localDateTimeToLong
 import org.propapel.prospeccion.root.presentation.addlead.components.utils.KottieAnimationUtil
 import org.propapel.prospeccion.root.presentation.createProject.componetns.ExposedDropdownMenuGereric
@@ -96,7 +97,14 @@ private fun CreateReminderScreen(
 
     val date = Clock.System.now().toLocalDateTime(TimeZone.UTC)
     var selectedDate by remember { mutableStateOf("${date.dayOfMonth}-${date.monthNumber}-${date.year} ${date.hour}:${date.minute} ${typeHour(date.hour)}") }
+    val imeState = rememberImeState()
+    val scrollState = rememberScrollState()
 
+    LaunchedEffect(key1 = imeState.value) {
+        if (imeState.value){
+            scrollState.animateScrollTo(scrollState.maxValue, tween(300))
+        }
+    }
 
     val result = handleResultView(
         isLoading = state.isLoading,
@@ -231,7 +239,7 @@ private fun CreateReminderScreen(
                         Color(0xFF00796B)  // Verde intenso
                     )
                 )
-            ).padding(16.dp)
+            ).padding(16.dp).verticalScroll(scrollState)
         ) {
             IconButton(
                 modifier = Modifier.align(Alignment.End).padding(16.dp),
@@ -280,9 +288,6 @@ private fun CreateReminderScreen(
                 startIcon = Icons.Filled.DateRange,
                 maxLines = 104
             )
-            Spacer(
-                modifier = Modifier.height(8.dp)
-            )
             var expandedProducts by remember {
                 mutableStateOf(false)
             }
@@ -305,9 +310,6 @@ private fun CreateReminderScreen(
                     )
                 }
             )
-            Spacer(
-                modifier = Modifier.height(8.dp)
-            )
             ProSalesTextField(
                 title = "Notas para la proxima cita",
                 state = state.notesAppointment,
@@ -324,7 +326,7 @@ private fun CreateReminderScreen(
                     }
                 ),
                 colors = Color.White,
-                startIcon = Icons.Filled.Notes,
+                startIcon = Icons.AutoMirrored.Filled.Notes,
                 maxLines = 104
             )
             Spacer(

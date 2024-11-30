@@ -14,7 +14,6 @@ import org.propapel.prospeccion.core.domain.ResultExt
 import org.propapel.prospeccion.root.domain.models.Interaction
 import org.propapel.prospeccion.root.domain.models.PurchaseRequest
 import org.propapel.prospeccion.root.domain.repository.InteractionRepository
-import org.propapel.prospeccion.root.presentation.addlead.ContainerState
 
 class CreateInteractionViewModel(
     private val interactionRepository: InteractionRepository

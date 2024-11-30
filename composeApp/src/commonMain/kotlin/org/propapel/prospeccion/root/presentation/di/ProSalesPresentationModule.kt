@@ -2,7 +2,6 @@ package org.propapel.prospeccion.root.presentation.di
 
 import org.koin.compose.viewmodel.dsl.viewModelOf
 import org.koin.dsl.module
-import org.propapel.prospeccion.gerentePanel.presentation.dashboard.DashboardGerenteViewModel
 import org.propapel.prospeccion.root.presentation.account.AccountSMViewModel
 import org.propapel.prospeccion.root.presentation.addlead.AddLeadViewModel
 import org.propapel.prospeccion.root.presentation.completeReminder.CompleteReminderViewModel
@@ -19,6 +18,7 @@ import org.propapel.prospeccion.root.presentation.searchLead.SearchLeadSMViewMod
 import org.propapel.prospeccion.root.presentation.updateCustomer.UpdateLeadViewModel
 import org.propapel.prospeccion.root.presentation.updateProfile.UpdateProfileSMViewModel
 import org.propapel.prospeccion.root.presentation.users.UserSMViewModel
+import org.propapel.prospeccion.selectSucursal.presentation.dashboard.DashboardGerenteViewModel
 
 val proSalesPresentationModule = module {
     viewModelOf(::HomeRootViewModel)

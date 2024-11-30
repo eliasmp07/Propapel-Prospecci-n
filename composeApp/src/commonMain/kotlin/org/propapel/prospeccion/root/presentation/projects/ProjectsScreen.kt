@@ -1,7 +1,5 @@
 package org.propapel.prospeccion.root.presentation.projects
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -10,9 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.Favorite
 import androidx.compose.material3.Card
@@ -26,26 +22,19 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.pointer.PointerIcon
-import androidx.compose.ui.input.pointer.pointerHoverIcon
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil3.compose.AsyncImage
 import kotlinx.coroutines.launch
 import org.propapel.prospeccion.core.presentation.designsystem.components.Direction
 import org.propapel.prospeccion.core.presentation.designsystem.components.rememberSwipeableCardState
 import org.propapel.prospeccion.core.presentation.designsystem.components.swipableCard
 import org.propapel.prospeccion.root.domain.models.Project
-import org.propapel.prospeccion.root.domain.repository.User
 import org.propapel.prospeccion.root.presentation.detailLead.components.CustomCircularProgressIndicator
 import org.propapel.prospeccion.root.presentation.detailLead.components.progressColor
 import org.propapel.prospeccion.root.presentation.users.CircleButton
-import org.propapel.prospeccion.root.presentation.users.Scrim
 
 /**
  * Pantalla en modo de prueba
@@ -177,7 +166,7 @@ private fun ProjectCard(
                 modifier = Modifier.size(200.dp),
                 secondaryColor = Color.Black
             )
-            Scrim(Modifier.align(Alignment.BottomCenter))
+//Scrim(Modifier.align(Alignment.BottomCenter))
             Column(Modifier.align(Alignment.BottomStart)) {
                 Text(text = project.nameProject,
                      color = Color.Black,

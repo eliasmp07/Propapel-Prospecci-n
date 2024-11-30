@@ -9,7 +9,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.with
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -27,11 +27,11 @@ import org.propapel.prospeccion.core.presentation.designsystem.components.Loadin
 import org.propapel.prospeccion.root.presentation.addlead.components.AddClientDataScreen
 import org.propapel.prospeccion.root.presentation.addlead.components.AddInfoInteresedProductsScreen
 import org.propapel.prospeccion.root.presentation.addlead.components.AddInfoRemiderAppointmentScreen
+import org.propapel.prospeccion.root.presentation.addlead.components.AddMoreInfoLead
 import org.propapel.prospeccion.root.presentation.addlead.components.AddNewDateClientScreen
 import org.propapel.prospeccion.root.presentation.addlead.components.ErrorCreateScreen
 import org.propapel.prospeccion.root.presentation.addlead.components.HadDateWithClientScreen
 import org.propapel.prospeccion.root.presentation.addlead.components.HeIsInterestedInAProduct
-import org.propapel.prospeccion.root.presentation.addlead.components.AddMoreInfoLead
 import org.propapel.prospeccion.root.presentation.addlead.components.WantBookAAppointScreen
 import org.propapel.prospeccion.root.presentation.addlead.components.utils.SuccessCreateScreen
 import org.propapel.prospeccion.root.presentation.createReminder.components.DialogDayNoAvailable
@@ -92,11 +92,10 @@ private fun AddLeadScreen(
         AnimatedContent(
             modifier = Modifier.fillMaxSize(),
             transitionSpec = {
-                fadeIn(
+                (fadeIn(
 
                 ) + slideInVertically(animationSpec = tween(600),
-                    initialOffsetY = { fullHeight -> fullHeight }) with
-                        fadeOut(animationSpec = tween(400))
+                                      initialOffsetY = { fullHeight -> fullHeight })).togetherWith(fadeOut(animationSpec = tween(400)))
             },
             targetState = state.screenState,
             label = "container transform",

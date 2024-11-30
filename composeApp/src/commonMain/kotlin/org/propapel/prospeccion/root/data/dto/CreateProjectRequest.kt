@@ -1,7 +1,6 @@
 package org.propapel.prospeccion.root.data.dto
 
 import kotlinx.serialization.Serializable
-import org.propapel.prospeccion.root.domain.models.Customer
 
 @Serializable
 data class CreateProjectRequest(

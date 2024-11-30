@@ -13,7 +13,6 @@ import kotlinx.datetime.Clock
 import org.propapel.prospeccion.core.domain.ResultExt
 import org.propapel.prospeccion.root.domain.models.Customer
 import org.propapel.prospeccion.root.domain.models.Purchase
-import org.propapel.prospeccion.root.domain.models.PurchaseRequest
 import org.propapel.prospeccion.root.domain.repository.CustomerRepository
 import org.propapel.prospeccion.root.domain.repository.ProductRepository
 import org.propapel.prospeccion.root.domain.repository.ProjectRepository

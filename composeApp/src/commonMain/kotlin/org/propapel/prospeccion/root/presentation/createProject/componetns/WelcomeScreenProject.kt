@@ -20,13 +20,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.resources.painterResource
 import org.propapel.prospeccion.core.presentation.designsystem.components.ProSalesActionButton
-import org.propapel.prospeccion.core.presentation.designsystem.components.ProSalesActionButtonOutline
 import org.propapel.prospeccion.root.presentation.createProject.CreateProjectAction
 import org.propapel.prospeccion.root.presentation.createProject.CreateProjectScreenState
 import org.propapel.prospeccion.root.presentation.createProject.CreateProjectState
 import prospeccion.composeapp.generated.resources.Res
-import prospeccion.composeapp.generated.resources.create_project
-import prospeccion.composeapp.generated.resources.customer_person
 import prospeccion.composeapp.generated.resources.project_confirm
 
 @Composable

@@ -1,18 +1,11 @@
 package org.propapel.prospeccion.root.presentation.leads.components.mobile
 
-import KottieAnimation
 import androidx.compose.animation.Animatable
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
-import androidx.compose.animation.shrinkVertically
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -30,7 +23,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
@@ -44,24 +36,18 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import contentScale.ContentScale
-import io.github.alexzhirkevich.compottie.LottieCompositionSpec
-import io.github.alexzhirkevich.compottie.rememberLottieComposition
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kottieComposition.KottieCompositionSpec
-import kottieComposition.animateKottieCompositionAsState
-import kottieComposition.rememberKottieComposition
+import org.jetbrains.compose.resources.painterResource
 import org.propapel.prospeccion.core.presentation.designsystem.SuccessGreen
 import org.propapel.prospeccion.core.presentation.designsystem.components.util.animateAttention
-import org.propapel.prospeccion.core.presentation.designsystem.components.util.animateAttentionRepeat
 import org.propapel.prospeccion.root.domain.models.Customer
 import org.propapel.prospeccion.root.presentation.addlead.components.utils.KottieAnimationUtil
 import prospeccion.composeapp.generated.resources.Res
+import prospeccion.composeapp.generated.resources.customer_person
 
 @Composable
 fun ItemLead(
@@ -77,7 +63,7 @@ fun ItemLead(
     val color = remember {
         Animatable(Color.White)
     }
-    var scope = rememberCoroutineScope()
+    val scope = rememberCoroutineScope()
     LaunchedEffect(Unit) {
         loadProgress(
             value = customer.progressLead.toFloat(),
@@ -113,16 +99,15 @@ fun ItemLead(
                 modifier = Modifier
                     .size(90.dp)
                     .background(
-                        color = MaterialTheme.colorScheme.primary,
+                        color = color.value,
                         shape = RoundedCornerShape(12.dp)
                     )
                     .padding(3.dp),
-                contentAlignment = Alignment.Center
+                contentAlignment = Alignment.BottomCenter
             ) {
-                Icon(
-                    imageVector = Icons.Default.Person,
+                Image(
+                    painter = painterResource(Res.drawable.customer_person),
                     contentDescription = null,
-                    tint = Color.White
                 )
             }
             Spacer(

@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -60,13 +61,13 @@ fun HomeDateItem(
             }
         }
         if (isSelected) {
-            androidx.compose.material3.Divider(
-                thickness = 4.dp,
+            HorizontalDivider(
                 modifier = Modifier
                     .width(52.dp)
                     .align(Alignment.TopCenter)
                     .padding(horizontal = 14.dp)
                     .clip(RoundedCornerShape(14.dp)),
+                thickness = 4.dp,
                 color = MaterialTheme.colorScheme.tertiary
             )
         }

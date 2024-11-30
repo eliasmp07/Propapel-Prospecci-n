@@ -12,15 +12,9 @@ import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.ArrowDropUp
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import org.propapel.prospeccion.core.presentation.designsystem.components.ProSalesTextField
-import org.propapel.prospeccion.root.data.dto.customer.InteractionType
-import org.propapel.prospeccion.root.presentation.createProject.CreateProjectAction
 
 /**
  * DropDownMenu generico para oppciones, este recibe una lista de valores

@@ -17,16 +17,10 @@ import org.propapel.prospeccion.core.presentation.designsystem.CompactMediumTypo
 import org.propapel.prospeccion.core.presentation.designsystem.CompactSmallDimens
 import org.propapel.prospeccion.core.presentation.designsystem.CompactSmallTypography
 import org.propapel.prospeccion.core.presentation.designsystem.CompactTypography
-import org.propapel.prospeccion.core.presentation.designsystem.Dimens
 import org.propapel.prospeccion.core.presentation.designsystem.ExpandedDimens
 import org.propapel.prospeccion.core.presentation.designsystem.ExpandedTypography
 import org.propapel.prospeccion.core.presentation.designsystem.MediumDimens
 import org.propapel.prospeccion.core.presentation.designsystem.MediumTypography
-
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.compositionLocalOf
-import androidx.compose.runtime.remember
-import org.propapel.prospeccion.core.presentation.designsystem.Typography
 
 @Composable
 fun Theme(

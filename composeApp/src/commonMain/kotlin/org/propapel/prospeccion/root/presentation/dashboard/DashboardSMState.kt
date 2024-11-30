@@ -5,18 +5,15 @@ import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
-import org.propapel.prospeccion.core.presentation.ui.UiText
 import org.propapel.prospeccion.root.domain.models.Customer
 import org.propapel.prospeccion.root.domain.models.Reminder
-import org.propapel.prospeccion.root.presentation.leads.State
+import org.propapel.prospeccion.root.presentation.leads.UiState
 
 data class DashboardSMState(
-    val customers: List<Customer> = listOf(),
-    val myCustomer: State<List<Customer>> = State.Loading(),
+    val myCustomer: UiState<List<Customer>> = UiState.Loading(),
     val reminderDate: LocalDateTime = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()),
     val date: LocalDate = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date,
-    val reminders: List<Reminder> = listOf(),
+    val reminders: UiState<List<Reminder>> = UiState.Loading(),
     val totalRemindersMoth: Double = 0.0,
-    val isLoading: Boolean = false,
     val isRefreshing: Boolean = false
 )

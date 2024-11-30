@@ -21,7 +21,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import org.propapel.prospeccion.core.presentation.designsystem.SoporteSaiWhite
 import org.propapel.prospeccion.core.presentation.designsystem.SuccessGreen
-import org.propapel.prospeccion.core.presentation.designsystem.components.ProSalesActionButton
 import org.propapel.prospeccion.core.presentation.designsystem.components.ProSalesActionButtonOutline
 import org.propapel.prospeccion.root.presentation.addlead.components.utils.KottieAnimationUtil
 import org.propapel.prospeccion.root.presentation.createProject.CreateProjectAction

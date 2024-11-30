@@ -3,7 +3,6 @@ package org.propapel.prospeccion.di
 import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
-import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.android.ext.koin.androidContext
 import org.koin.compose.viewmodel.dsl.viewModelOf
 import org.koin.core.module.Module

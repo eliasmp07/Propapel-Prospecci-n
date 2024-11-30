@@ -57,7 +57,6 @@ import org.propapel.prospeccion.core.presentation.designsystem.PrimaryYellowLigh
 import org.propapel.prospeccion.core.presentation.designsystem.SoporteSaiBlue30
 import org.propapel.prospeccion.core.presentation.designsystem.components.LoadingPropapel
 import org.propapel.prospeccion.core.presentation.designsystem.components.util.animateEnterBottom
-import org.propapel.prospeccion.core.presentation.ui.extensions.isTrue
 import org.propapel.prospeccion.root.domain.models.Project
 import org.propapel.prospeccion.root.presentation.addlead.components.utils.KottieAnimationUtil
 import org.propapel.prospeccion.root.presentation.detailLead.components.CreateReminderDialog

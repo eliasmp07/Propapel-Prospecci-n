@@ -1,10 +1,10 @@
 package org.propapel.prospeccion.root.presentation.leads
 
-import org.propapel.prospeccion.root.presentation.detailLead.DetailLeadAction
-
 sealed interface LeadAction {
+    data object OnCreateReminder: LeadAction
     data class OnTypeAppointmentChange(val type: String): LeadAction
     data object OnRetryProject: LeadAction
+    data object OnRetryCustomer: LeadAction
     data object OnAddLead : LeadAction
     data object OnRefresh: LeadAction
     data object OnDismissDialogDayNoAvailable: LeadAction
