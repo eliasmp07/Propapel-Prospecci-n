@@ -31,6 +31,7 @@ import org.propapel.prospeccion.core.presentation.designsystem.components.ProSal
 fun <T>ExposedDropdownMenuGereric(
     modifier: Modifier = Modifier,
     state: Boolean = false,
+    error: String? = null,
     title: String,
     colors: Color = Color.White,
     onDimiss: () -> Unit,
@@ -50,6 +51,7 @@ fun <T>ExposedDropdownMenuGereric(
             modifierTextField = Modifier.clickable {
                 onDimiss()
             },
+            error = error,
             colors = colors,
             readOnly = true,
             state = if (optionSelectable.isEmpty()) "Selecione una opcion" else optionSelectable,

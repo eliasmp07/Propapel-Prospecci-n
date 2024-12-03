@@ -30,7 +30,7 @@ class AccountSMViewModel(
     fun onAction(action: AccountSMAction){
         when(action){
             AccountSMAction.OnLogoutClick -> {
-                viewModelScope.launch {
+                viewModelScope.launch(Dispatchers.IO){
                     sessionStorage.set(null)
                 }
             }

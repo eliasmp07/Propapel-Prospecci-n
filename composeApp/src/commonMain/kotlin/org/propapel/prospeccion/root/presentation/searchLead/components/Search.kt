@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalFocusManager
@@ -29,6 +30,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
+import org.propapel.prospeccion.core.presentation.designsystem.PrimaryYellowLight
 
 @ExperimentalAnimationApi
 @OptIn(ExperimentalComposeUiApi::class)
@@ -49,7 +51,9 @@ fun SearchBar(
 
     Row(
         modifier = modifier
-            .fillMaxWidth(),
+            .fillMaxWidth().background(
+                color = PrimaryYellowLight,
+            ),
         verticalAlignment = Alignment.CenterVertically
     ) {
 

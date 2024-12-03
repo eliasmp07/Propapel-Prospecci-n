@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -24,6 +25,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Update
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
@@ -52,7 +54,9 @@ import org.propapel.prospeccion.core.presentation.designsystem.SoporteSaiBlue30
 import org.propapel.prospeccion.core.presentation.designsystem.components.LoadingPropapel
 import org.propapel.prospeccion.core.presentation.designsystem.components.ProSalesActionButtonOutline
 import org.propapel.prospeccion.core.presentation.designsystem.components.handleResultView
+import org.propapel.prospeccion.root.presentation.leads.GenericContentLoading
 import org.propapel.prospeccion.root.presentation.leads.components.mobile.ItemLead
+import org.propapel.prospeccion.root.presentation.searchLead.components.ResultSearchScreen
 import org.propapel.prospeccion.root.presentation.searchLead.components.SearchBar
 import org.propapel.prospeccion.root.presentation.searchLead.components.SearchDisplay
 import org.propapel.prospeccion.root.presentation.searchLead.components.SearchTextField
@@ -91,118 +95,129 @@ private fun SearchLeadSMScreen(
     onAction: (SearchLeadSMAction) -> Unit
 ) {
 
-    if (state.isLoadingScreen){
-        LoadingPropapel()
-    }else{
-        Column(
-            modifier = Modifier
-                .fillMaxSize().background(
-                    Brush.verticalGradient(
-                        0f to PrimaryYellowLight,
-                        0.6f to SoporteSaiBlue30,
-                        1f to MaterialTheme.colorScheme.primary
-                    )
-                )
-        ) {
+    GenericContentLoading(
+        modifier = Modifier.fillMaxHeight(),
+        data = state.products,
+        retry = {
 
-            val stateSearch =
-                rememberSearchState(
-                    initialResults = state.products,
-                    suggestions = state.suggestion,
-                    timeoutMillis = 600,
-                ) { query: TextFieldValue ->
-                    viewModel.getCustomer(query.text)
-                }
-
-            SearchBar(
-                query = stateSearch.query,
-                onQueryChange = { stateSearch.query = it },
-                onSearchFocusChange = { stateSearch.focused = it },
-                onClearQuery = { stateSearch.query = TextFieldValue("") },
-                onBack = { stateSearch.query = TextFieldValue("") },
-                searching = stateSearch.searching,
-                focused = stateSearch.focused,
+        },
+        success = {
+            Column(
                 modifier = Modifier
-            )
-
-            when (stateSearch.searchDisplay) {
-                SearchDisplay.InitialResults -> {
-
-                }
-                SearchDisplay.Suggestions -> {
-                    SuggestionGridLayout(
-                        suggestions = stateSearch.suggestions,
-                        onSuggestionClick = {
-                            var text = stateSearch.query.text
-                            if (text.isEmpty()) text = it else text += " $it"
-                            text.trim()
-                            // Set text and cursor position to end of text
-                            stateSearch.query = TextFieldValue(
-                                text,
-                                TextRange(text.length)
-                            )
-                        },
-                        onCancel = {
-
-                        }
+                    .fillMaxSize().background(
+                        Brush.verticalGradient(
+                            0f to PrimaryYellowLight,
+                            0.6f to SoporteSaiBlue30,
+                            1f to MaterialTheme.colorScheme.primary
+                        )
                     )
-                }
-                SearchDisplay.SearchInProgress -> {
-                    LoadingPropapel()
-                }
-                SearchDisplay.Results -> {
-                    LazyColumn(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(16.dp)
-                            .padding(top = 8.dp),
-                        verticalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        items(
-                            stateSearch.searchResults,
-                            key = { it.idCustomer }) {
-                            ItemLead(
-                                customer = it,
-                                onClick = {
-                                    onAction(SearchLeadSMAction.OnCustomerDetailClick(it))
-                                }
-                            )
-                        }
+            ) {
+
+                val stateSearch =
+                    rememberSearchState(
+                        initialResults = it,
+                        suggestions = state.suggestion,
+                        timeoutMillis = 600,
+                    ) { query: TextFieldValue ->
+                        viewModel.getCustomer(query.text)
                     }
-                }
-                SearchDisplay.NoResults -> {
-                    Box(
-                        modifier = Modifier
-                            .padding(top = 16.dp)
-                            .fillMaxSize(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Column(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalAlignment = Alignment.CenterHorizontally
+
+                SearchBar(
+                    query = stateSearch.query,
+                    onQueryChange = { stateSearch.query = it },
+                    onSearchFocusChange = { stateSearch.focused = it },
+                    onClearQuery = { stateSearch.query = TextFieldValue("") },
+                    onBack = { stateSearch.query = TextFieldValue("") },
+                    searching = stateSearch.searching,
+                    focused = stateSearch.focused,
+                    modifier = Modifier
+                )
+
+                when (stateSearch.searchDisplay) {
+                    SearchDisplay.InitialResults -> {
+                        LazyColumn(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(16.dp)
+                                .padding(top = 8.dp),
+                            verticalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
-                            Image(
-                                modifier = Modifier.size(250.dp),
-                                painter = painterResource(Res.drawable.empty_info),
-                                contentDescription = null
-                            )
-                            Spacer(
-                                modifier = Modifier.height(8.dp)
-                            )
-                            Text(
-                                "❌ Sin resultados!",
-                                fontSize = 16.sp,
-                                color = Color(0xffDD2C00)
-                            )
+                            items(
+                                stateSearch.initialResults,
+                                key = { it.idCustomer }) {
+                                ItemLead(
+                                    customer = it,
+                                    onClick = {
+                                        onAction(SearchLeadSMAction.OnCustomerDetailClick(it))
+                                    }
+                                )
+                            }
                         }
+                    }
+                    SearchDisplay.Suggestions -> {
+                        SuggestionGridLayout(
+                            suggestions = stateSearch.suggestions,
+                            onSuggestionClick = {
+                                var text = stateSearch.query.text
+                                if (text.isEmpty()) text = it else text += " $it"
+                                text.trim()
+                                // Set text and cursor position to end of text
+                                stateSearch.query = TextFieldValue(
+                                    text,
+                                    TextRange(text.length)
+                                )
+                            },
+                            onCancel = {
 
+                            }
+                        )
+                    }
+                    SearchDisplay.SearchInProgress -> {
+                        LoadingPropapel()
+                    }
+                    SearchDisplay.Results -> {
+                        ResultSearchScreen(
+                            modifier = Modifier,
+                            customers = stateSearch.searchResults,
+                            onClickCustomer = {
+                                onAction(SearchLeadSMAction.OnCustomerDetailClick(it))
+                            }
+                        )
+                    }
+                    SearchDisplay.NoResults -> {
+                        Box(
+                            modifier = Modifier
+                                .padding(top = 16.dp)
+                                .fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Column(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                Image(
+                                    modifier = Modifier.size(250.dp),
+                                    painter = painterResource(Res.drawable.empty_info),
+                                    contentDescription = null
+                                )
+                                Spacer(
+                                    modifier = Modifier.height(8.dp)
+                                )
+                                Text(
+                                    "❌ Sin resultados!",
+                                    fontSize = 16.sp,
+                                    color = Color(0xffDD2C00)
+                                )
+                            }
+
+                        }
                     }
                 }
+
+
             }
-
-
         }
-    }
+    )
 
 
 }
@@ -229,9 +244,6 @@ private fun SuggestionGridLayout(
                 onClick = {
                     onSuggestionClick(it.tag)
                 },
-                onCancel = {
-                    onCancel(it)
-                }
             )
         }
     }
@@ -242,7 +254,6 @@ fun CancelableChip(
     modifier: Modifier = Modifier,
     suggestion: SuggestionModel,
     onClick: ((SuggestionModel) -> Unit)? = null,
-    onCancel: ((SuggestionModel) -> Unit)? = null
 ) {
 
     Surface(
@@ -272,63 +283,21 @@ fun CancelableChip(
                 style = MaterialTheme.typography.bodyMedium,
                 modifier = Modifier.padding(end = 8.dp)
             )
-
-            Surface(
-                color = Color.DarkGray,
-                modifier = Modifier,
-                shape = CircleShape
-            ) {
+            Surface(color = Color.DarkGray, modifier = Modifier, shape = CircleShape) {
                 IconButton(
                     onClick = {
-                        onCancel?.run {
-                            invoke(suggestion)
-                        }
                     },
                     modifier = Modifier
                         .size(16.dp)
                         .padding(1.dp)
                 ) {
                     Icon(
-                        imageVector = Icons.Filled.Close,
+                        imageVector = Icons.Filled.Update,
                         tint = Color(0xFFE0E0E0),
                         contentDescription = null
                     )
                 }
             }
-        }
-    }
-}
-
-@Composable
-fun CustomChip(
-    modifier: Modifier = Modifier,
-    text: String,
-    drawableResource: DrawableResource? = null,
-    cancelable: Boolean = false
-) {
-
-    Surface(
-        elevation = 0.dp,
-        modifier = modifier,
-        color = Color(0xFFE0E0E0),
-        shape = RoundedCornerShape(16.dp)
-    ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            if (drawableResource!= null) {
-                Image(
-                    painter = painterResource(drawableResource),
-                    modifier = Modifier
-                        .padding(8.dp)
-                        .size(20.dp)
-                        .clip(CircleShape),
-                    contentDescription = null
-                )
-            }
-            Text(
-                text = text,
-                style = MaterialTheme.typography.bodyMedium,
-                modifier = Modifier.padding(end = 8.dp)
-            )
         }
     }
 }

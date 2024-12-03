@@ -111,6 +111,7 @@ fun AddProductsProject(
                 ExposedDropdownMenuGereric(
                     title = "Productos Propapel",
                     state = expandedProducts2,
+                    error = state.nameProductError,
                     listOptions = provideProductsPropapel(),
                     onDimiss = {
                         expandedProducts2 = !expandedProducts2
@@ -130,6 +131,7 @@ fun AddProductsProject(
                 ProSalesPriceTextField(
                     title = "Valor de la venta: ",
                     state = state.amoutProduct,
+                    error = state.priceError,
                     onTextChange = {
                         onAction(
                             CreateProjectAction.OnPriceProductChange(it)

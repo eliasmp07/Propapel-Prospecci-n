@@ -3,6 +3,7 @@ package org.propapel.prospeccion.core.domain
 data class AuthInfo(
     val accessToken: String = "",
     val refreshToken: String = "",
+    val puesto: String = "",
     val userId: String = "",
     val name: String = "",
     val roles: List<String> = emptyList(),

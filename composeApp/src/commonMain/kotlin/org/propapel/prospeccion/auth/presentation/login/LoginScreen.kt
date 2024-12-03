@@ -183,18 +183,15 @@ private fun LoginScreen(
             Spacer(
                 modifier = Modifier.weight(0.5f)
             )
-            if (toggleDialogForgotPassword) {
-                ForgotPasswordDialog(
-                    modifier = Modifier,
-                    email = "",
-                    onDismissRequest = {
-                        toggleDialogForgotPassword = !toggleDialogForgotPassword
-                    },
-                    onValueChange = {
-
-                    }
-                )
-            }
+            Text(
+                modifier = Modifier.align(Alignment.CenterHorizontally),
+                text = "V 1.0.0",
+                style = MaterialTheme.typography.titleMedium,
+                color = Color.Black
+            )
+            Spacer(
+                modifier = Modifier.height(8.dp)
+            )
         }
 
         AnimatedVisibility(

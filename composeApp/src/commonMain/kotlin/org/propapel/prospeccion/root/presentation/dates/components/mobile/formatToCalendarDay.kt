@@ -69,7 +69,7 @@ fun CalendarCell(
 }
 
 fun Int.getDayOfWeek3Letters(): String {
-    val daysOfWeek = listOf("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun")
+    val daysOfWeek = listOf("Lun", "Mart", "Mier", "Jueves", "Viernes", "Sab", "Dom")
     val dayIndex = (this % 7)
     return daysOfWeek.getOrNull(dayIndex) ?: ""
 }

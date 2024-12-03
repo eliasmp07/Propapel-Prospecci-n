@@ -155,7 +155,7 @@ fun DashboardScreenMobile(
                             )
                             Column {
                                 Text(
-                                    text = "Bienvenido",
+                                    text = "Bienvenido:",
                                     style = MaterialTheme.typography.headlineMedium,
                                     fontWeight = FontWeight.Bold,
                                     color = Color.White
@@ -176,7 +176,7 @@ fun DashboardScreenMobile(
                             Spacer(
                                 modifier = Modifier.weight(1f)
                             )
-                            if (user.image.isNotBlank()) {
+                            if (user.image.isNotEmpty()) {
                                 AsyncImage(
                                     model = user.image,
                                     contentDescription = "Image",

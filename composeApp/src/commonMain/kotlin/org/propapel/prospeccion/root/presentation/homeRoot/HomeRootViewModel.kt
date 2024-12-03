@@ -26,6 +26,8 @@ class HomeRootViewModel(
 
     private var _state = MutableStateFlow(HomeSMRootState())
     val state: StateFlow<HomeSMRootState> get() = _state.asStateFlow()
+
+
     init {
         getAllMyReminders()
         viewModelScope.launch(Dispatchers.IO) {

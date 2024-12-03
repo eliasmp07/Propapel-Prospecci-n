@@ -11,12 +11,19 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.propapel.prospeccion.core.domain.ResultExt
 import org.propapel.prospeccion.core.presentation.ui.asUiText
+import org.propapel.prospeccion.core.presentation.ui.toImageAndTextError
 import org.propapel.prospeccion.root.domain.models.Customer
 import org.propapel.prospeccion.root.domain.repository.CustomerRepository
+import org.propapel.prospeccion.root.presentation.leads.UiState
+import org.propapel.prospeccion.root.presentation.leads.toState
 
 class SearchLeadSMViewModel(
     private val customerRepository: CustomerRepository
 ) : ViewModel() {
+
+
+    private var _state = MutableStateFlow(SearchLeadSMState())
+    val state: StateFlow<SearchLeadSMState> get() = _state.asStateFlow()
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
@@ -31,7 +38,7 @@ class SearchLeadSMViewModel(
                 is ResultExt.Error -> {
                     _state.update {
                         it.copy(
-                            products = listOf()
+                            products = UiState.Error(result.error.toImageAndTextError())
                         )
                     }
                 }
@@ -55,16 +62,13 @@ class SearchLeadSMViewModel(
                         it.copy(
                             isLoadingScreen = false,
                             suggestion = sugestions.toList(),
-                            products = result.data
+                            products = result.data.toState()
                         )
                     }
                 }
             }
         }
     }
-
-    private var _state = MutableStateFlow(SearchLeadSMState())
-    val state: StateFlow<SearchLeadSMState> get() = _state.asStateFlow()
 
     fun onAction(action: SearchLeadSMAction) {
         when (action) {
@@ -82,25 +86,32 @@ class SearchLeadSMViewModel(
     }
 
     fun getCustomer(query: String): List<Customer>{
-        val filteredList = linkedSetOf<Customer>()
+        val data = _state.value.products
+        if (data is UiState.Success){
+            val filteredList = linkedSetOf<Customer>()
 
-        _state.value.products.forEach { customer ->
 
-            if (customer.companyName.contains(query, ignoreCase = true)) {
-                filteredList.add(customer)
-            }
+            data.value.forEach { customer ->
 
-            if (customer.contactName.contains(query, ignoreCase = true)) {
-                filteredList.add(customer)
-            }
-
-            customer.tags.forEach {
-                if (it.contains(query, ignoreCase = true)) {
+                if (customer.companyName.contains(query, ignoreCase = true)) {
                     filteredList.add(customer)
                 }
+
+                if (customer.contactName.contains(query, ignoreCase = true)) {
+                    filteredList.add(customer)
+                }
+
+                customer.tags.forEach {
+                    if (it.contains(query, ignoreCase = true)) {
+                        filteredList.add(customer)
+                    }
+                }
             }
+            return filteredList.toList()
+        }else{
+            return emptyList()
         }
-        return filteredList.toList()
+
     }
 
     private fun searchProduct() {
@@ -120,7 +131,7 @@ class SearchLeadSMViewModel(
                     is ResultExt.Error -> {
                         currentState.copy(
                             isSearching = false,
-                            products = emptyList(),
+                            products = UiState.Empty(),
                             error = result.error.asUiText()
                         )
                     }
@@ -139,7 +150,7 @@ class SearchLeadSMViewModel(
                         currentState.copy(
                             isSearching = false,
                             isEmpty = filteredCustomers.isEmpty(),
-                            products = filteredCustomers,
+                            products = filteredCustomers.toState(),
                             error = null
                         )
                     }

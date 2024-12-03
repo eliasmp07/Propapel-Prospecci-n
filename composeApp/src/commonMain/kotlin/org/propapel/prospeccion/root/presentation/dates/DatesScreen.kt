@@ -49,7 +49,8 @@ fun DateScreenRoot(
     val state by viewModel.state.collectAsState()
     DateScreen(
         windowWidthSizeClass,
-        state = state
+        state = state,
+        onAction = viewModel::onAction
     )
 }
 
@@ -89,8 +90,8 @@ private fun getDaysInMonth(
     month: Int
 ): Int {
     return when (month) {
-        1 -> if (year % 4 == 0 && (year % 100 != 0 || year % 400 == 0)) 29 else 28 // Enero
-        2 -> 31 // Febrero
+        1 -> 31 // Enero
+        2 -> if (year % 4 == 0 && (year % 100 != 0 || year % 400 == 0)) 29 else 28 // Febrero
         3 -> 31 // Marzo
         4 -> 30 // Abril
         5 -> 31 // Mayo
@@ -108,11 +109,13 @@ private fun getDaysInMonth(
 @Composable
 private fun DateScreen(
     windowWidthSizeClass: WindowSizeClass,
-    state: DatesSMState
+    state: DatesSMState,
+    onAction: (DatesAction) -> Unit
 ){
     if (windowWidthSizeClass.isMobile){
         DatesScreenMobile(
-            state = state
+            state = state,
+            onAction = onAction
         )
     } else {
         DatesScreenDesktop(
@@ -278,7 +281,7 @@ fun CalendarView(
                     },
                 )
             Text(
-                text = month.formatToMonthString(),
+                text = "${month.formatToMonthString()} ${month.year}",
                 style = typography.headlineMedium,
                 color = colorScheme.onPrimaryContainer,
                 modifier = Modifier.align(Alignment.Center),
@@ -302,18 +305,18 @@ fun CalendarView(
 
 fun LocalDate.formatToMonthString(): String {
     val monthNames = listOf(
-        "January",
-        "February",
-        "March",
-        "April",
-        "May",
-        "June",
-        "July",
-        "August",
-        "September",
-        "October",
-        "November",
-        "December"
+        "Enero",
+        "Febrero",
+        "Marzo",
+        "Abril",
+        "Mayo",
+        "Junio",
+        "Julio",
+        "Agosto",
+        "Septiembre",
+        "Octubre",
+        "Noviembre",
+        "Diciembre"
     )
     return monthNames[this.month.ordinal].replaceFirstChar { it.uppercase() }
 }

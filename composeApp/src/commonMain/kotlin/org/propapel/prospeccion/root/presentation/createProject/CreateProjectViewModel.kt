@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
+import org.propapel.prospeccion.auth.domain.validator.UserValidator
 import org.propapel.prospeccion.core.domain.ResultExt
 import org.propapel.prospeccion.root.domain.models.Customer
 import org.propapel.prospeccion.root.domain.models.Purchase
@@ -31,11 +32,23 @@ class CreateProjectViewModel(
     ) {
         when (action) {
             is CreateProjectAction.OnNextScreen -> {
-                _state.update {
-                    it.copy(
-                        stateScreen = action.screen
-                    )
+                if(action.screen == CreateProjectScreenState.PRODUCTS_CHANGE){
+                    if (!validateAndSetErrors()){
+                        _state.update {
+                            it.copy(
+                                stateScreen = action.screen
+                            )
+                        }
+                    }
+                }else{
+                    _state.update {
+                        it.copy(
+                            stateScreen = action.screen
+                        )
+                    }
                 }
+
+
             }
             is CreateProjectAction.OnChangeProduct -> {
                 val purchases = _state.value.purchases.toMutableList()
@@ -178,48 +191,51 @@ class CreateProjectViewModel(
         viewModelScope.launch(
             Dispatchers.IO
         ) {
-            _state.update {
-                it.copy(
-                    isCreatingProduct = true
-                )
-            }
-            val result = productRepository.create(
-                customerId = _state.value.customer.idCustomer,
-                amount = _state.value.amoutProduct.toDouble(),
-                productServiceName = _state.value.productServiceName,
-                purchaseDate = Clock.System.now().toEpochMilliseconds()
-            )
-
-            when(result){
-                is ResultExt.Error -> {
-                    _state.update {
-                        it.copy(
-                            isCreatingProduct = false
-                        )
-                    }
-                }
-                is ResultExt.Success -> {
-                    val products = _state.value.productsProject.toMutableList()
-                    products.add(
-                        Purchase(
-                            purcheseId = result.data.purcheseId,
-                            productServiceName = result.data.productServiceName,
-                            isIntoProduct = true,
-                            amount = result.data.amount,
-                            purchaseDate = result.data.purchaseDate
-                        )
+            if (!validAndSetErrorsCreateProduct()){
+                _state.update {
+                    it.copy(
+                        isCreatingProduct = true
                     )
-                    _state.update {
-                        it.copy(
-                            successCreateProduct = !it.successCreateProduct,
-                            isCreatingProduct = false,
-                            productServiceName = "Selecciona una opción",
-                            amoutProduct = "",
-                            productsProject = products
+                }
+                val result = productRepository.create(
+                    customerId = _state.value.customer.idCustomer,
+                    amount = _state.value.amoutProduct.toDouble(),
+                    productServiceName = _state.value.productServiceName,
+                    purchaseDate = Clock.System.now().toEpochMilliseconds()
+                )
+
+                when(result){
+                    is ResultExt.Error -> {
+                        _state.update {
+                            it.copy(
+                                isCreatingProduct = false
+                            )
+                        }
+                    }
+                    is ResultExt.Success -> {
+                        val products = _state.value.productsProject.toMutableList()
+                        products.add(
+                            Purchase(
+                                purcheseId = result.data.purcheseId,
+                                productServiceName = result.data.productServiceName,
+                                isIntoProduct = true,
+                                amount = result.data.amount,
+                                purchaseDate = result.data.purchaseDate
+                            )
                         )
+                        _state.update {
+                            it.copy(
+                                successCreateProduct = !it.successCreateProduct,
+                                isCreatingProduct = false,
+                                productServiceName = "",
+                                amoutProduct = "",
+                                productsProject = products
+                            )
+                        }
                     }
                 }
             }
+
         }
     }
 
@@ -227,41 +243,89 @@ class CreateProjectViewModel(
         totalProject: Double
     ){
         viewModelScope.launch(Dispatchers.IO) {
-            _state.update {
-                it.copy(
-                    isCreatingProduct = true
+                _state.update {
+                    it.copy(
+                        isCreatingProduct = true
+                    )
+                }
+                val result = projectRepository.createProject(
+                    customerId = _state.value.customer.idCustomer.toString(),
+                    nameProject = _state.value.nameProject,
+                    totalProject = totalProject,
+                    stateProeject = _state.value.stateProject,
+                    priority = _state.value.priorityProject,
+                    progressProject = 90,
+                    products = _state.value.productsProject
                 )
-            }
-            val result = projectRepository.createProject(
-                customerId = _state.value.customer.idCustomer.toString(),
-                nameProject = _state.value.nameProject,
-                totalProject = totalProject,
-                stateProeject = _state.value.stateProject,
-                priority = _state.value.priorityProject,
-                progressProject = 90,
-                products = _state.value.productsProject
-            )
 
-            when(result){
-                is ResultExt.Error -> {
-                    _state.update {
-                        it.copy(
-                            isCreatingProduct = false,
-                            stateScreen = CreateProjectScreenState.ERROR_CREATE
-                        )
+                when(result){
+                    is ResultExt.Error -> {
+                        _state.update {
+                            it.copy(
+                                isCreatingProduct = false,
+                                stateScreen = CreateProjectScreenState.ERROR_CREATE
+                            )
+                        }
+                    }
+                    is ResultExt.Success -> {
+                        _state.update {
+                            it.copy(
+                                isCreatingProduct = false,
+                                stateScreen = CreateProjectScreenState.SUCCESS_CREATE
+                            )
+                        }
                     }
                 }
-                is ResultExt.Success -> {
-                    _state.update {
-                        it.copy(
-                            isCreatingProduct = false,
-                            stateScreen = CreateProjectScreenState.SUCCESS_CREATE
-                        )
-                    }
-                }
-            }
+
         }
     }
+
+    //Funcion que verifica si puede inicar sesión
+    private fun validateAndSetErrors(): Boolean {
+        val projectError = validErrorNameProject(_state.value.nameProject)
+        _state.update {
+            it.copy(
+                nameProjectError = projectError
+            )
+        }
+        return projectError != null
+    }
+
+    private fun validAndSetErrorsCreateProduct(): Boolean{
+        val errorPrice = validPriceProduct(_state.value.amoutProduct)
+        val errorNameProduct = validNameProduct(_state.value.productServiceName)
+        _state.update {
+            it.copy(
+                priceError = errorPrice,
+                nameProductError = errorNameProduct
+            )
+        }
+
+        return  errorNameProduct != null || errorPrice != null
+    }
+
+
+    private fun validErrorNameProject(email: String): String?{
+        return when {
+            email.isEmpty() -> "El campo esta vacio"
+            else -> null
+        }
+    }
+
+    private fun validNameProduct(name: String): String?{
+        return when{
+            name.isEmpty() -> "Por favor seleciona una opcion"
+            else -> null
+        }
+    }
+
+    private fun validPriceProduct(price: String): String?{
+        return when{
+            price.isEmpty() -> "Ingrese un valor"
+            else -> null
+        }
+    }
+
 }
 
 expect fun formatString(value:Double): String

@@ -48,7 +48,7 @@ fun AccountScreenMobile(
             modifier = Modifier.padding(8.dp)
         ) {
             Text(text = state.user.name + " " +state.user.lastname, style = MaterialTheme.typography.headlineMedium)
-            Text(text = if(state.user.roles.isEmpty()) "" else state.user.roles.first(), style = MaterialTheme.typography.titleMedium)
+            Text(text = state.user.puesto, style = MaterialTheme.typography.titleMedium)
             Spacer(
                 modifier = Modifier.height(8.dp)
             )

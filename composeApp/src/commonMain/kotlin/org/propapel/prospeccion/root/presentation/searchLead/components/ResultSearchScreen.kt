@@ -4,6 +4,12 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PageSize
 import androidx.compose.foundation.pager.PagerState
@@ -25,7 +31,11 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import org.propapel.prospeccion.core.presentation.designsystem.PrimaryYellowLight
+import org.propapel.prospeccion.root.data.dto.customer.TypeOfClient
 import org.propapel.prospeccion.root.domain.models.Customer
+import org.propapel.prospeccion.root.presentation.leads.components.mobile.ItemLead
+import org.propapel.prospeccion.root.presentation.searchLead.SearchLeadSMAction
 
 
 internal val tabList = listOf("Nuevos", "En desarrollo", "En recuperación")
@@ -34,8 +44,8 @@ internal val tabList = listOf("Nuevos", "En desarrollo", "En recuperación")
 @Composable
 fun ResultSearchScreen(
     modifier: Modifier,
-    tutorialList: List<List<Customer>>,
-    navigateToTutorial: (String) -> Unit
+    customers: List<Customer>,
+    onClickCustomer: (String) -> Unit,
 ) {
 
     var shouldScrollToFirstPage by remember {
@@ -52,8 +62,10 @@ fun ResultSearchScreen(
     val coroutineScope = rememberCoroutineScope()
 
     ScrollableTabRow(
+        modifier = Modifier.fillMaxWidth(),
         contentColor = MaterialTheme.colorScheme.onSurface,
         edgePadding = 8.dp,
+        containerColor = PrimaryYellowLight,
         // selected tab is our current page
         selectedTabIndex = pagerState.currentPage,
         // Override the indicator, using the provided pagerTabIndicatorOffset modifier
@@ -128,12 +140,66 @@ fun ResultSearchScreen(
         state = pagerState
     ) { page: Int ->
         when (page) {
-            0 -> TutorialListContent(modifier, tutorialList[0], navigateToTutorial)
-            1 -> TutorialListContent(modifier, tutorialList[1], navigateToTutorial)
-            2 -> TutorialListContent(modifier, tutorialList[2], navigateToTutorial)
-            3 -> TutorialListContent(modifier, tutorialList[3], navigateToTutorial)
-            4 -> TutorialListContent(modifier, tutorialList[4], navigateToTutorial)
-            else -> ComingSoonScreen()
+            0 -> {
+                CustomerListContent(
+                    modifier = Modifier,
+                    onClickCustomer = {
+                        onClickCustomer(it)
+                    },
+                    customers = customers.filter {
+                        it.typeClient == TypeOfClient.NUEVO.name
+                    }
+                )
+            }
+            1 -> {
+                CustomerListContent(
+                    modifier = Modifier,
+                    onClickCustomer = {
+                        onClickCustomer(it)
+                    },
+                    customers = customers.filter {
+                        it.typeClient == TypeOfClient.DESARROLLO.name
+                    }
+                )
+            }
+            2 -> {
+                CustomerListContent(
+                    modifier = Modifier,
+                    onClickCustomer = {
+                        onClickCustomer(it)
+                    },
+                    customers = customers.filter {
+                        it.typeClient == TypeOfClient.RECUPERACIÓN.name
+                    }
+                )
+            }
+        }
+    }
+}
+
+
+@Composable
+fun CustomerListContent(
+    modifier: Modifier = Modifier,
+    customers: List<Customer>,
+    onClickCustomer: (String) -> Unit
+){
+    LazyColumn(
+        modifier = modifier
+            .fillMaxSize()
+            .padding(16.dp)
+            .padding(top = 8.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        items(
+            customers,
+            key = { it.idCustomer }) {
+            ItemLead(
+                customer = it,
+                onClick = {
+                    onClickCustomer(it)
+                }
+            )
         }
     }
 }
