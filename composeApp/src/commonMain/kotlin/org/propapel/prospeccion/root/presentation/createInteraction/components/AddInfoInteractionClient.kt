@@ -43,6 +43,7 @@ import org.propapel.prospeccion.root.presentation.addlead.components.utils.Kotti
 import org.propapel.prospeccion.root.presentation.createInteraction.CreateInteractionAction
 import org.propapel.prospeccion.root.presentation.createInteraction.CreateInteractionLeadState
 import org.propapel.prospeccion.root.presentation.createInteraction.CreateInteractionScreenState
+import org.propapel.prospeccion.root.presentation.dashboard.components.monthGet
 
 @Composable
 fun AddInfoInteractionClient(
@@ -52,13 +53,6 @@ fun AddInfoInteractionClient(
 ) {
 
     val focusManager = LocalFocusManager.current
-
-    val currentDateTime = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
-
-    // Extraer el mes actual y el año
-    val currentMonth = currentDateTime.month
-    val currentYear = currentDateTime.year
-
 
     Column(
         modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()).background(
@@ -83,7 +77,7 @@ fun AddInfoInteractionClient(
         )
         Text(
             modifier = Modifier.align(Alignment.CenterHorizontally),
-            text = "Informacion de la interacion",
+            text = "Informacion de la actividad",
             fontWeight = FontWeight.ExtraBold,
             style = MaterialTheme.typography.headlineSmall,
             color = Color.White
@@ -96,10 +90,10 @@ fun AddInfoInteractionClient(
             modifier = Modifier.height(32.dp)
         )
         ProSalesTextField(
-            title = "Fecha de la visita del dia de hoy",
+            title = "Fecha de la visita de la actividad",
             readOnly = true,
             colors = Color.White,
-            state = "${currentDateTime.dayOfMonth}/${currentMonth.number}/$currentYear",
+            state = "${state.date.dayOfMonth}/${monthGet(state.date.monthNumber)}/${state.date.year}",
             onTextChange = {
 
             },

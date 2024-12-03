@@ -38,7 +38,12 @@ import org.jetbrains.compose.resources.vectorResource
 import org.propapel.prospeccion.core.presentation.ui.extensions.previousMoth
 import org.propapel.prospeccion.core.presentation.ui.extensions.previousYear
 import org.propapel.prospeccion.root.domain.models.Project
+import org.propapel.prospeccion.root.presentation.createReminder.convertLocalDate
 import org.propapel.prospeccion.root.presentation.dashboard.components.monthGet
+import org.propapel.prospeccion.selectSucursal.domain.model.ProjectUser
+import org.propapel.prospeccion.selectSucursal.presentation.dashboard.components.ContentValidateLastMoth
+import org.propapel.prospeccion.selectSucursal.presentation.dashboard.components.calculoPorcentual
+import org.propapel.prospeccion.selectSucursal.presentation.dashboard.components.infoValidateProjects
 import prospeccion.composeapp.generated.resources.Res
 import prospeccion.composeapp.generated.resources.ic_product_otline
 import prospeccion.composeapp.generated.resources.projects_ic_dra
@@ -54,6 +59,13 @@ fun BarCharProjects(
     // Fechas actuales y del mes anterior
     val currentDate = Clock.System.now().toLocalDateTime(TimeZone.UTC)
     val previousMonthDate = currentDate.previousMoth()
+
+
+    val (isLow, diffence) = infoValidateProject(
+        projects = projects,
+        currentMoth = currentDate.monthNumber,
+        mothLast = previousMonthDate
+    )
 
 
     // Calcular los conteos
@@ -139,6 +151,13 @@ fun BarCharProjects(
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold
                 )
+                Spacer(
+                    modifier = Modifier.weight(1f)
+                )
+                ContentValidateLastMoth(
+                    isLow = !isLow,
+                    diffence
+                )
             }
             Text(
                 modifier = Modifier.align(Alignment.CenterHorizontally),
@@ -199,5 +218,49 @@ fun calculateCounts(
         cierre,
         negociacion,
         perdido
+    )
+}
+
+
+private fun infoValidateProject(
+    projects: List<Project>,
+    mothLast: Int,
+    currentMoth: Int
+): Pair<Boolean, String> {
+    var infoDiference = ""
+    var mothLastCount = 0
+    var mothCurrentCount = 0
+    var isImproveThisCount = false
+
+
+    projects.forEach {
+        when (it.created.monthNumber) {
+            mothLast -> mothLastCount++
+            currentMoth -> mothCurrentCount++
+        }
+    }
+
+    if (mothLastCount > mothCurrentCount) {
+        isImproveThisCount = false
+        infoDiference = "-${
+            calculoPorcentual(
+                mothLastCount,
+                mothCurrentCount
+            )
+        }%"
+
+    } else {
+        isImproveThisCount = true
+        infoDiference = "+${
+            calculoPorcentual(
+                mothLastCount,
+                mothCurrentCount
+            )
+        }%"
+    }
+
+    return Pair(
+        isImproveThisCount,
+        infoDiference
     )
 }

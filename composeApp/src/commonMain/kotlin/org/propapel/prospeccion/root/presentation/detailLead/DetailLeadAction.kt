@@ -46,7 +46,7 @@ sealed interface DetailLeadAction {
 
     data class OnDetailReminderCustomer(val idReminder: String): DetailLeadAction
 
-    data class AddInteractionsClick(val idCustomer: String): DetailLeadAction
+    data class AddInteractionsClick(val idCustomer: String, val reminderId: String , val date: Long): DetailLeadAction
 
     data class OnNoteAppointmentChange(val notes: String): DetailLeadAction
     data object CreateAppointmentClick: DetailLeadAction

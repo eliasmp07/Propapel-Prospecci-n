@@ -252,6 +252,7 @@ fun DashboardScreenMobile(
                                         onAction(DashboardSMAction.OnMoveLeadScreenClick)
                                     }
                                 )
+                                /*
                                 ButtonItemDirectAccess(
                                     modifier = Modifier.padding(8.dp).weight(1f),
                                     text = "Crear cita",
@@ -263,7 +264,7 @@ fun DashboardScreenMobile(
                                     onClick = {
                                         onAction(DashboardSMAction.OnCreateReminderClick)
                                     }
-                                )
+                                )*/
                                 ButtonItemDirectAccess(
                                     modifier = Modifier.padding(8.dp).weight(1f),
                                     text = "Buscar Lead",

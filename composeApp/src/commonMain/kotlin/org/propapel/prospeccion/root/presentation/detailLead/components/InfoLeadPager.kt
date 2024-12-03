@@ -336,9 +336,14 @@ fun InfoLeadPagerScreen(
                                 items(customer.interactions) {
                                     ItemInterationCustomer(it)
                                 }
-                                items(state.reminders){
-                                    if (it.isCompleted == true){
-                                        ItemReminders(it)
+                                items(
+                                    state.reminders,
+                                    key = { it.reminderId }) {
+                                    if (it.isCompleted == true) {
+                                        ItemReminders(
+                                            interaction = it,
+                                            modifier = Modifier.animateItem()
+                                        )
                                     }
 
                                 }
@@ -384,7 +389,13 @@ fun InfoLeadPagerScreen(
                             shape = RoundedCornerShape(30.dp),
                             expanded = lazyColumState.isScrolled(),
                             onClick = {
-                                onAction(DetailLeadAction.AddInteractionsClick(customer.idCustomer.toString()))
+                                onAction(
+                                    DetailLeadAction.AddInteractionsClick(
+                                        idCustomer = customer.idCustomer.toString(),
+                                        reminderId = "0",
+                                        date = 0
+                                    )
+                                )
                             },
                             text = {
                                 Text(
@@ -447,7 +458,13 @@ fun InfoLeadPagerScreen(
                                             ActionIcon(
                                                 modifier = Modifier.fillMaxHeight(),
                                                 onClick = {
-                                                    onCloseAppointment(it)
+                                                    onAction(
+                                                        DetailLeadAction.AddInteractionsClick(
+                                                            idCustomer = customer.idCustomer.toString(),
+                                                            reminderId = it.reminderId.toString(),
+                                                            date = it.reminderDate.toLong()
+                                                        )
+                                                    )
                                                 },
                                                 backgroundColor = SuccessGreen,
                                                 icon = Icons.Default.CheckCircle,
@@ -644,6 +661,7 @@ fun InfoLeadPagerScreen(
 
 @Composable
 fun ItemReminders(
+    modifier: Modifier = Modifier,
     interaction: Reminder
 ) {
     val date = Instant.fromEpochMilliseconds(interaction.reminderDate.toLong()).toLocalDateTime(TimeZone.UTC)
@@ -653,7 +671,7 @@ fun ItemReminders(
     ) {
         ElevatedCard(
             shape = RoundedCornerShape(20.dp),
-            modifier = Modifier
+            modifier = modifier
                 .fillMaxWidth()
                 .height(100.dp),
             elevation = CardDefaults.elevatedCardElevation(15.dp)

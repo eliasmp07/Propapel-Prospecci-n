@@ -1,5 +1,6 @@
 package org.propapel.prospeccion.root.presentation.createInteraction
 
+import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
@@ -10,35 +11,51 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import org.propapel.prospeccion.core.domain.ResultExt
+import org.propapel.prospeccion.core.presentation.designsystem.SuccessGreen
+import org.propapel.prospeccion.core.presentation.ui.TimeUtils
+import org.propapel.prospeccion.core.presentation.ui.UiText
 import org.propapel.prospeccion.root.domain.models.Interaction
 import org.propapel.prospeccion.root.domain.models.PurchaseRequest
+import org.propapel.prospeccion.root.domain.models.Reminder
 import org.propapel.prospeccion.root.domain.repository.InteractionRepository
+import org.propapel.prospeccion.root.domain.repository.ReminderRepository
+import org.propapel.prospeccion.root.presentation.createReminder.convertLocalDate
 
 class CreateInteractionViewModel(
-    private val interactionRepository: InteractionRepository
-) : ViewModel(){
+    private val interactionRepository: InteractionRepository,
+    private val reminderRepository: ReminderRepository
+) : ViewModel() {
 
     private val _state = MutableStateFlow(CreateInteractionLeadState())
     val state: StateFlow<CreateInteractionLeadState> get() = _state.asStateFlow()
 
 
-    fun onChangeIdCustomer(idCustomer: String){
+    fun onChangeIdCustomer(
+        idCustomer: String,
+        date: Long,
+        reminderId: Int
+    ) {
         _state.update {
             it.copy(
                 idCustomer = idCustomer,
+                date = if (reminderId != 0) convertLocalDate(date) else Clock.System.now()
+                    .toLocalDateTime(TimeZone.currentSystemDefault()),
+                reminderId = reminderId
             )
         }
     }
 
     fun onAction(
         action: CreateInteractionAction
-    ){
-        when(action){
+    ) {
+        when (action) {
             is CreateInteractionAction.OnNextScreen -> {
-                if (action.screen == CreateInteractionScreenState.FINISH){
-                    createCustomer()
-                }else{
+                if (action.screen == CreateInteractionScreenState.FINISH) {
+                    createInteraction()
+                } else {
                     _state.update {
                         it.copy(
                             screenState = action.screen
@@ -68,7 +85,10 @@ class CreateInteractionViewModel(
                         PurchaseRequest(
                             productServiceName = it.productInterested,
                             purchaseDate = Clock.System.now().toEpochMilliseconds(),
-                            amount = if (it.price.isEmpty()) 0.0 else it.price.replace("$", "").toDouble()
+                            amount = if (it.price.isEmpty()) 0.0 else it.price.replace(
+                                "$",
+                                ""
+                            ).toDouble()
                         )
                     )
                     it.copy(
@@ -90,7 +110,7 @@ class CreateInteractionViewModel(
         }
     }
 
-    private fun createCustomer(){
+    private fun createInteraction() {
         viewModelScope.launch(Dispatchers.IO) {
             _state.update {
                 it.copy(
@@ -108,7 +128,41 @@ class CreateInteractionViewModel(
                 purchese = _state.value.productsIntereses,
             )
 
-            when(result){
+            when (result) {
+                is ResultExt.Error -> {
+                    _state.update {
+                        it.copy(
+                            isCreatingInteraction = false,
+                            isSuccessCreate = false
+                        )
+                    }
+                }
+                is ResultExt.Success -> {
+                    if (_state.value.reminderId != 0) {
+                        completeDate()
+                    } else {
+                        _state.update {
+                            it.copy(
+                                isSuccessCreate = true,
+                                isCreatingInteraction = false
+                            )
+                        }
+                    }
+
+                }
+            }
+        }
+    }
+
+    private fun completeDate() {
+        viewModelScope.launch(
+            Dispatchers.IO
+        ) {
+            val result = reminderRepository.completeReminder(
+                _state.value.reminderId
+            )
+
+            when (result) {
                 is ResultExt.Error -> {
                     _state.update {
                         it.copy(

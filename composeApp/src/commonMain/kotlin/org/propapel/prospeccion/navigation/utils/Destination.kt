@@ -52,7 +52,7 @@ sealed interface Destination {
     data class DetailReminderCustomer(val idReminder: String)
 
     @Serializable
-    data class CreateInteraction(val customerId: String): Destination
+    data class CreateInteraction(val customerId: String, val reminderId: String, val date: Long): Destination
 
     @Serializable
     data class CreateProject(val customerId: String): Destination

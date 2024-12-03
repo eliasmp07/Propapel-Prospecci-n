@@ -138,8 +138,14 @@ fun NavGraphBuilder.proSales(
                 onDetailReminderLead = {
                     navController.navigate(Destination.DetailReminderCustomer(it))
                 },
-                onAddInteractions = {
-                    navController.navigate(Destination.CreateInteraction(it))
+                onAddInteractions = { customerId, reminderId, date ->
+                    navController.navigate(
+                        Destination.CreateInteraction(
+                            reminderId = reminderId,
+                            customerId = customerId,
+                            date = date
+                        )
+                    )
                 },
                 onBack = {
                     navController.navigateUp()
@@ -225,9 +231,15 @@ fun NavGraphBuilder.proSales(
         composable<Destination.CreateInteraction> { navBackStackEntry ->
             val viewModel = koinViewModel<CreateInteractionViewModel>()
             val customerId = navBackStackEntry.toRoute<Destination.CreateInteraction>().customerId
+            val reminderId = navBackStackEntry.toRoute<Destination.CreateInteraction>().reminderId
+            val date = navBackStackEntry.toRoute<Destination.CreateInteraction>().date
 
             LaunchedEffect(Unit) {
-                viewModel.onChangeIdCustomer(customerId)
+                viewModel.onChangeIdCustomer(
+                    idCustomer = customerId,
+                    reminderId = reminderId.toInt(),
+                    date = date
+                )
             }
 
             CreateInteractionLeadScreeRoot(

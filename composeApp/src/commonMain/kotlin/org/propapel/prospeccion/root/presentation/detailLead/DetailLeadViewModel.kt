@@ -20,6 +20,7 @@ import org.propapel.prospeccion.root.domain.models.Reminder
 import org.propapel.prospeccion.root.domain.repository.CustomerRepository
 import org.propapel.prospeccion.root.domain.repository.ProjectRepository
 import org.propapel.prospeccion.root.domain.repository.ReminderRepository
+import org.propapel.prospeccion.root.presentation.createReminder.convertLocalDate
 
 class DetailLeadViewModel(
     private val customerRepository: CustomerRepository,
@@ -54,6 +55,7 @@ class DetailLeadViewModel(
             is DetailLeadAction.OnDateNextReminder -> {
                 _state.update {
                     it.copy(
+                        date = convertLocalDate(action.date),
                         dateNextReminder = action.date
                     )
                 }
@@ -103,9 +105,6 @@ class DetailLeadViewModel(
             }
             DetailLeadAction.OnCloseProject -> {
                 onCloseProject()
-            }
-            DetailLeadAction.OnCloseAppointment -> {
-                completeDate()
             }
             is DetailLeadAction.OnPriceChange -> {
                 _state.update {
@@ -351,8 +350,9 @@ class DetailLeadViewModel(
                         reminders.add(result.data)
                         it.copy(
                             errorColor = SuccessGreen,
+                            congratulationsCloseProject = true,
                             showCreateDate = !it.showCreateDate,
-                            dateNextReminder = 0,
+                            dateNextReminder = Clock.System.now().toEpochMilliseconds(),
                             notesAppointment = "",
                             error = UiText.DynamicString("Cita creada con éxito"),
                             isError = true,
@@ -465,47 +465,5 @@ class DetailLeadViewModel(
         }
     }
 
-    fun completeDate(){
-        viewModelScope.launch(
-            Dispatchers.IO
-        ) {
-            val result = reminderRepository.completeReminder(
-                _state.value.reminderClose.reminderId
-            )
-
-            when(result){
-                is ResultExt.Error -> {
-                    _state.update {
-                        it.copy(
-                            isError = false,
-                            errorColor = Color.Red,
-                            error = UiText.DynamicString("Error al cerrar la cita"),
-                            congratulationsCloseProject = false
-                        )
-                    }
-                }
-                is ResultExt.Success -> {
-                    _state.update {
-                        val reminders = it.customer.reminders.map {reminderList: Reminder ->
-                            if (_state.value.reminderClose.reminderId == reminderList.reminderId){
-                                reminderList.copy(
-                                    isCompleted = true
-                                )
-                            }else{
-                                reminderList
-                            }
-                        }
-                        it.copy(
-                            reminders = reminders,
-                            isError = true,
-                            errorColor = SuccessGreen,
-                            congratulationsCloseProject = true,
-                            error = UiText.DynamicString("Cita cerrada con exito, felicidades por cumplir :3"),
-                        )
-                    }
-                }
-            }
-        }
-    }
 
 }

@@ -55,6 +55,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -75,9 +76,12 @@ import org.propapel.prospeccion.root.presentation.leads.LeadSMState
 import org.propapel.prospeccion.root.presentation.leads.UiState
 import org.propapel.prospeccion.root.presentation.leads.components.ActionIcon
 import org.propapel.prospeccion.root.presentation.leads.components.SwipeableItemWithActions
+import org.propapel.prospeccion.selectSucursal.presentation.dashboard.getImageSucursal
 import prospeccion.composeapp.generated.resources.Res
 import prospeccion.composeapp.generated.resources.customer_person
 import prospeccion.composeapp.generated.resources.img_no_data
+import prospeccion.composeapp.generated.resources.mid_reference
+import prospeccion.composeapp.generated.resources.papeleria_backgrounds_lead
 
 @Composable
 fun LeadScreenMobile(
@@ -139,11 +143,6 @@ fun LeadScreenMobile(
                                 color = Color.Black
                             )
                         }
-                        Image(
-                            modifier = Modifier.size(100.dp).align(Alignment.BottomEnd),
-                            painter = painterResource(Res.drawable.customer_person),
-                            contentDescription = null
-                        )
                     }
                     Box(
                         modifier = Modifier
@@ -212,38 +211,10 @@ fun LeadScreenMobile(
 
             if (state.customers is UiState.Empty) {
                 item {
-                    Card(
-                        shape = RoundedCornerShape(30.dp),
-                        modifier = Modifier
-                            .padding(16.dp)
-                            .fillMaxWidth(),
-                        colors = CardDefaults.cardColors(containerColor = Color(0xFFf1f4f9))
-                    ) {
-                        Column(
-                            modifier = Modifier.fillParentMaxWidth().padding(16.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            Text(
-                                text = "Leads",
-                                fontSize = 20.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = Color(0xFF007BFF)
-                            )
-                            Image(
-                                painter = painterResource(Res.drawable.img_no_data),
-                                contentDescription = null,
-                                modifier = Modifier.size(150.dp).align(Alignment.CenterHorizontally)
-                            )
-                            Spacer(
-                                modifier = Modifier.height(8.dp)
-                            )
-                            Text(
-                                "No tienes leads registrados",
-                                style = MaterialTheme.typography.bodyMedium
-                            )
-
-                        }
-                    }
+                    GenericContentLoading.GenericEmptyContent(
+                        modifier = Modifier.fillMaxWidth().height(300.dp),
+                        text = "No tienes leads agregados"
+                    )
                 }
             } else if (state.customers is UiState.Success) {
                 val pageSize = 5
@@ -363,7 +334,6 @@ fun LeadScreenMobile(
             }
             item {
                 GenericContentLoading(
-                    modifier = Modifier.height(500.dp),
                     data = state.customers,
                     retry = {
                         onAction(LeadAction.OnRetryCustomer)

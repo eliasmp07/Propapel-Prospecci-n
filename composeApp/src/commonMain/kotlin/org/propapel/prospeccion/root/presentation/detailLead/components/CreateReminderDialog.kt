@@ -49,6 +49,7 @@ import org.propapel.prospeccion.core.presentation.ui.typeHour
 import org.propapel.prospeccion.root.presentation.addlead.components.localDateTimeToLong
 import org.propapel.prospeccion.root.presentation.createProject.componetns.ExposedDropdownMenuGereric
 import org.propapel.prospeccion.root.presentation.createReminder.components.utils.provideTypeOfAppointment
+import org.propapel.prospeccion.root.presentation.dashboard.components.monthGet
 import org.propapel.prospeccion.root.presentation.detailLead.DetailLeadAction
 import org.propapel.prospeccion.root.presentation.detailLead.DetailLeadSMState
 
@@ -62,9 +63,6 @@ fun CreateReminderDialog(
     var showDatePicker by remember {
         mutableStateOf(false)
     }
-
-    val date = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
-    var selectedDate by remember { mutableStateOf("${date.dayOfMonth}-${date.monthNumber}-${date.year} ${date.hour}:${date.minute} ${typeHour(date.hour)}") }
 
     val focusManager = LocalFocusManager.current
     Dialog(
@@ -111,7 +109,7 @@ fun CreateReminderDialog(
                             showDatePicker = true
                         },
                         colors = Color.Black,
-                        state = selectedDate,
+                        state = "${state.date.dayOfMonth}/${monthGet(state.date.monthNumber)}/${state.date.year}",
                         onTextChange = {
 
                         },
@@ -205,7 +203,6 @@ fun CreateReminderDialog(
             ),
             onDoneClick = {
                 onAction(DetailLeadAction.OnDateNextReminder(localDateTimeToLong(it)))
-                selectedDate = dateTimeToString(it, "dd-MM-yyyy hh:mm a")
                 showDatePicker = false
             },
             dateTimePickerView = DateTimePickerView.DIALOG_VIEW,
