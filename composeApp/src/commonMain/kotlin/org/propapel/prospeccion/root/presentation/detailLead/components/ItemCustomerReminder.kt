@@ -92,24 +92,37 @@ fun ItemCustomerReminder(
                 // Right side with the date and schedule
                 Column(
                     modifier = Modifier
-                        .padding(16.dp)
+                        .padding(8.dp)
                         .weight(1f)
                         .fillMaxHeight(),
                     verticalArrangement = Arrangement.Center
                 ) {
-                    Text(
-                        text = "Mes: \n${monthGet(reminderDate.monthNumber)}",
-                        fontWeight = FontWeight.Medium,
-                        lineHeight = 12.sp,
-                        fontSize = 14.sp
-                    )
-                    Text(
-                        text = "Dia\n${reminderDate.date.dayOfWeekSpanish()}",
-                        lineHeight = 12.sp,
-                        fontWeight = FontWeight.Medium,
-                        fontSize = 14.sp
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = "Mes: ",
+                            style = MaterialTheme.typography.titleMedium
+                        )
+                        Text(
+                            text = monthGet(reminderDate.monthNumber),
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = Color.Gray
+                        )
+                    }
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = "Dia: ",
+                            style = MaterialTheme.typography.titleMedium
+                        )
+                        Text(
+                            text = reminderDate.date.dayOfWeekSpanish(),
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = Color.Gray
+                        )
+                    }
                 }
                 Text(text = "${reminderDate.hour}: ${reminderDate.minute} ${typeHour(reminderDate.hour)}", style = MaterialTheme.typography.titleSmall)
                 Box(

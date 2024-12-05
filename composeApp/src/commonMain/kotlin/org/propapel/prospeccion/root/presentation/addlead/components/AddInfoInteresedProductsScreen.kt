@@ -114,7 +114,7 @@ fun AddInfoInteresedProductsScreen(
                     optionSelectable = state.productInterest,
                     content = {
                         DropdownMenuItem(
-                            text = { androidx.compose.material.Text(text = it.name) },
+                            text = { androidx.compose.material.Text(text = it.toString()) },
                             onClick = {
                                 expandedProducts = !expandedProducts
                                 onAction(AddLeadAction.OnProductInterestChange(it.name))

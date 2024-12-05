@@ -12,7 +12,11 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -50,6 +54,18 @@ fun WelcomeScreenProject(
             )
         )
     ) {
+        IconButton(
+            modifier = Modifier.align(Alignment.TopStart).padding(16.dp),
+            onClick = {
+                onAction(CreateProjectAction.OnBackClick)
+            },
+            content = {
+                Icon(
+                    imageVector = Icons.Filled.ArrowBackIosNew,
+                    contentDescription = null
+                )
+            }
+        )
         Column(
             modifier = Modifier
                 .align(Alignment.BottomCenter)

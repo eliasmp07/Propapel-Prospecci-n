@@ -48,6 +48,8 @@ kotlin {
         }
         commonMain.dependencies {
 
+            api("io.github.kevinnzou:compose-webview-multiplatform:1.9.40")
+
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material3)

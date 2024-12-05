@@ -74,7 +74,8 @@ fun ResultSearchScreen(
         // Add tabs for all of our pages
         tabList.forEachIndexed { index, title ->
             Tab(
-                text = { Text(title) },
+                text = { Text(title
+                ) },
                 selected = pagerState.currentPage == index,
                 onClick = {
                     coroutineScope.launch {

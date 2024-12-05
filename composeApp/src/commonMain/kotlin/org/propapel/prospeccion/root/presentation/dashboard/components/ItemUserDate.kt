@@ -28,6 +28,7 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.datetime.Instant
@@ -90,24 +91,31 @@ fun ItemUserDate(
                 // Right side with the date and schedule
                 Column(
                     modifier = Modifier
-                        .padding(16.dp)
+                        .padding(4.dp)
                         .weight(1f)
                         .fillMaxHeight(),
-                    verticalArrangement = Arrangement.Center
+                    verticalArrangement = Arrangement.Center,
                 ) {
                     Text(
-                        text = "Nombre: \n${reminder.customer.contactName}",
-                        fontWeight = FontWeight.Medium,
-                        lineHeight = 12.sp,
-                        fontSize = 14.sp
+                        text = "Nombre:",
+                        style = MaterialTheme.typography.titleMedium
                     )
                     Text(
-                        text = "Correo de contacto\n${reminder.customer.email}",
-                        lineHeight = 12.sp,
-                        fontWeight = FontWeight.Medium,
-                        fontSize = 14.sp
+                        text = reminder.customer.contactName,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = Color.Gray
                     )
-                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = "Correo de contacto",
+                        overflow = TextOverflow.Ellipsis,
+                        maxLines = 1,
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                    Text(
+                        text = reminder.customer.email,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = Color.Gray
+                    )
                 }
                 Text(text = "${reminderDate.hour}: ${reminderDate.minute} ${typeHour(reminderDate.hour)}", style = MaterialTheme.typography.titleSmall)
                 Box(

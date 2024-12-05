@@ -81,7 +81,7 @@ fun main(){
                             content = {
                                 RootGraph(
                                     isLogging = viewModel.state.isLoggedIn,
-                                    isManager = viewModel.state.isManager
+                                    isManager = viewModel.state.isManager,
                                 )
                             }
                         )

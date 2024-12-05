@@ -38,6 +38,7 @@ import org.propapel.prospeccion.root.presentation.updateCustomer.UpdateLeadScree
 import org.propapel.prospeccion.root.presentation.updateCustomer.UpdateLeadViewModel
 import org.propapel.prospeccion.root.presentation.updateProfile.UpdateProfileSMSScreenRoot
 import org.propapel.prospeccion.root.presentation.updateProfile.UpdateProfileSMViewModel
+import org.propapel.prospeccion.root.presentation.webView.WebViewScreen
 import org.propapel.prospeccion.selectSucursal.presentation.root.GerentePanelScreen
 
 fun NavGraphBuilder.proSales(
@@ -54,6 +55,9 @@ fun NavGraphBuilder.proSales(
             HomeScreen(
                 viewModel = viewModel,
                 state = state,
+                onWebViewClick = {
+                    navController.navigate(Destination.WebView(it))
+                },
                 onDarkTheme = {
 
                 },
@@ -84,6 +88,17 @@ fun NavGraphBuilder.proSales(
                 },
                 onUpdateLead = {
                     navController.navigate(Destination.UpdateLead(it))
+                }
+            )
+        }
+
+        composable<Destination.WebView> { navBackStackEntry ->
+            val url = navBackStackEntry.toRoute<Destination.WebView>().url
+
+            WebViewScreen(
+                url = url,
+                onBackClick = {
+                    navController.navigateUp()
                 }
             )
         }

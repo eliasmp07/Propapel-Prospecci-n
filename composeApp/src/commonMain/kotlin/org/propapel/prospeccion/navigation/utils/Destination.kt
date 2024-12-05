@@ -26,6 +26,9 @@ sealed interface Destination {
     data object DashBoard: Destination
 
     @Serializable
+    data class WebView(val url: String): Destination
+
+    @Serializable
     data class CompleteReminder(val reminderId: String): Destination
 
     @Serializable

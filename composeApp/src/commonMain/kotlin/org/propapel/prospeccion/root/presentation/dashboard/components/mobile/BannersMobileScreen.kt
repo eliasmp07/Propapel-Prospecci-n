@@ -35,17 +35,16 @@ import kotlinx.coroutines.launch
 
 data class Banner(
     val description: String = "",
-    val discountPercentage: Double? = null,
-    val endDate: String = "",
     val id: Int = 0,
+    val url: String = "",
     val imageUrl: String = "",
-    val startDate: String = "",
     val type: String = ""
 )
 
 @Composable
 fun BannerPaggerWindows(
     modifier: Modifier = Modifier,
+    onClickBanner: (String) -> Unit = {},
     items: List<Pair<Banner?, @Composable () -> Unit>> // Permite que el Banner sea nulo
 ) {
 
@@ -73,7 +72,10 @@ fun BannerPaggerWindows(
                     // Si hay un banner, mostramos el BannerItemMobileScreen
                     BannerItemMobileScreen(
                         modifier = Modifier.fillMaxWidth().height(500.dp),
-                        banner = banner
+                        banner = banner,
+                        onClickBanner = {
+                            onClickBanner(it)
+                        }
                     )
                 } else {
                     // Si no hay banner, mostramos el composable correspondiente
@@ -143,7 +145,8 @@ fun BannerPaggerWindows(
 @Composable
 fun BannerPager(
     modifier: Modifier = Modifier,
-    items: List<Pair<Banner?, @Composable () -> Unit>> // Permite que el Banner sea nulo
+    items: List<Pair<Banner?, @Composable () -> Unit>>,// Permite que el Banner sea nulo
+    onClickBanner: (String) -> Unit
 ) {
     val pagerState = rememberPagerState(pageCount = { items.size })
 
@@ -163,7 +166,9 @@ fun BannerPager(
             val (banner, content) = items[page]
             if (banner != null) {
                 // Si hay un banner, mostramos el BannerItemMobileScreen
-                BannerItemMobileScreen(banner = banner)
+                BannerItemMobileScreen(banner = banner, onClickBanner = {
+                    onClickBanner(it)
+                })
             } else {
                 // Si no hay banner, mostramos el composable correspondiente
                 content()

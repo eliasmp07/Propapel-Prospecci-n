@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -18,6 +17,8 @@ import org.propapel.prospeccion.root.data.dto.customer.TypeOfClient
 import org.propapel.prospeccion.root.presentation.leads.GenericContentLoading
 import org.propapel.prospeccion.selectSucursal.presentation.dashboard.DashboardGerenteAction
 import org.propapel.prospeccion.selectSucursal.presentation.dashboard.DashboardGerenteState
+import prospeccion.composeapp.generated.resources.Res
+import prospeccion.composeapp.generated.resources.calendar_date
 
 @Composable
 fun DashboardGerenteDesktop(
@@ -31,15 +32,19 @@ fun DashboardGerenteDesktop(
         Row(
             modifier = Modifier.fillMaxWidth().padding(16.dp),
             horizontalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
+        ){
+            CardSucursalDesktop(
+                modifier = Modifier.weight(1f),
+                sucursalId = 10
+            )
             GenericContentLoading(
-                modifier = Modifier.height(200.dp).weight(1f),
+                modifier = Modifier.height(150.dp).weight(0.3f),
                 data = state.customersUser,
                 success = {
-                    CardGenericInfoDesktop(
-                        modifier = Modifier.height(200.dp),
-                        customers = it,
-                        title = "Total de clientes"
+                    CardInfoDesktop(
+                        title = "Citas",
+                        value = 19,
+                        imageTypeCard = Res.drawable.calendar_date
                     )
                 },
                 retry = {
@@ -47,17 +52,13 @@ fun DashboardGerenteDesktop(
                 }
             )
             GenericContentLoading(
-                modifier = Modifier.height(200.dp).weight(1f),
+                modifier = Modifier.height(150.dp).weight(0.3f),
                 data = state.customersUser,
                 success = {
-                    val filterNews = it.filter { client ->
-                        client.typeOfClient == TypeOfClient.NUEVO.name
-                    }
-                    CardGenericInfoDesktop(
-                        modifier = Modifier.height(200.dp),
-                        colorCustomer = SuccessGreen,
-                        customers = filterNews,
-                        title = "Clientes Nuevos"
+                    CardInfoDesktop(
+                        title = "Proyectos",
+                        value = 19,
+                        imageTypeCard = Res.drawable.calendar_date
                     )
                 },
                 retry = {
@@ -65,17 +66,13 @@ fun DashboardGerenteDesktop(
                 }
             )
             GenericContentLoading(
-                modifier = Modifier.height(200.dp).weight(1f),
+                modifier = Modifier.height(150.dp).weight(0.3f),
                 data = state.customersUser,
                 success = {
-                    val filterDesarrolllo = it.filter { client ->
-                        client.typeOfClient == TypeOfClient.DESARROLLO.name
-                    }
-                    CardGenericInfoDesktop(
-                        modifier = Modifier.height(200.dp),
-                        colorCustomer = Color(0xFFFF9800),
-                        customers = filterDesarrolllo,
-                        title = "Clientes en desarrollo"
+                    CardInfoDesktop(
+                        title = "Clientes",
+                        value = 19,
+                        imageTypeCard = Res.drawable.calendar_date
                     )
                 },
                 retry = {
@@ -83,17 +80,13 @@ fun DashboardGerenteDesktop(
                 }
             )
             GenericContentLoading(
-                modifier = Modifier.height(200.dp).weight(1f),
+                modifier = Modifier.height(150.dp).weight(0.3f),
                 data = state.customersUser,
                 success = {
-                    val filterRecuperacion = it.filter { client ->
-                        client.typeOfClient == TypeOfClient.RECUPERACIÓN.name
-                    }
-                    CardGenericInfoDesktop(
-                        modifier = Modifier.height(200.dp),
-                        colorCustomer = Color.Red.copy(alpha = 0.4f),
-                        customers = filterRecuperacion,
-                        title = "Clientes en recuperación"
+                    CardInfoDesktop(
+                        title = "Venta perdidas",
+                        value = 19,
+                        imageTypeCard = Res.drawable.calendar_date
                     )
                 },
                 retry = {

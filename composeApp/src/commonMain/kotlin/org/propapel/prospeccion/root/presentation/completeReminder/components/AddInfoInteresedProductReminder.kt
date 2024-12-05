@@ -109,7 +109,7 @@ fun AddInfoInteresedProductsReminder(
                     colors = Color.White,
                     content = {
                         DropdownMenuItem(
-                            text = { androidx.compose.material.Text(text = it.name) },
+                            text = { androidx.compose.material.Text(text = it.toString()) },
                             onClick = {
                                 expandedProducts = !expandedProducts
                                 onAction(CompleteReminderAction.OnProductInterestChange(it.name))

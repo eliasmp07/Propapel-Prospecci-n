@@ -52,6 +52,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import org.koin.compose.viewmodel.koinViewModel
@@ -80,6 +81,7 @@ fun HomeScreen(
     onDetailLead: (String) -> Unit,
     state: HomeSMRootState,
     onLogout: () -> Unit,
+    onWebViewClick : (String) -> Unit,
     onSearchLead: () -> Unit,
     onDetailReminderCustomer: (String) -> Unit,
     onCreateReminder: () -> Unit,
@@ -195,7 +197,7 @@ fun HomeScreen(
                                 },
                                 label = {
                                     if (selectedItemIndex == index) {
-                                        Text(item.title)
+                                        Text(item.title, overflow = TextOverflow.Ellipsis)
                                     }
                                 }
                             )
@@ -244,6 +246,9 @@ fun HomeScreen(
                             },
                             onCreateReminder = {
                                 onCreateReminder()
+                            },
+                            onWebView = {
+                                onWebViewClick(it)
                             }
                         )
                     }

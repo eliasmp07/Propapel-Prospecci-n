@@ -178,20 +178,15 @@ fun UpdateReminderDialog(
     )
     if (showDatePicker) {
         WheelDateTimePickerView(
+            doneLabel = "Aceptar",
             startDate = date,
             title = "Fecha y hora de la cita",
-            modifier = Modifier.padding(top = 18.dp, bottom = 10.dp).fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth(),
             showDatePicker = showDatePicker,
-            titleStyle = TextStyle(
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color(0xFF333333),
-            ),
+            titleStyle = MaterialTheme.typography.titleMedium,
             timeFormat = TimeFormat.AM_PM,
-            doneLabelStyle = TextStyle(
-                fontSize = 16.sp,
-                fontWeight = FontWeight(600),
-                color = Color(0xFF007AFF),
+            doneLabelStyle = MaterialTheme.typography.titleMedium.copy(
+                color = MaterialTheme.colorScheme.primary
             ),
             minDate = date,
             selectorProperties = WheelPickerDefaults.selectorProperties(
@@ -200,15 +195,13 @@ fun UpdateReminderDialog(
             dateTextColor = Color(0xff007AFF),
             rowCount = 5,
             height = 170.dp,
-            dateTextStyle = TextStyle(
-                fontWeight = FontWeight(600),
-            ),
+            dateTextStyle = MaterialTheme.typography.titleSmall,
             onDoneClick = {
                 onAction(DetailLeadAction.OnDateNextReminder(localDateTimeToLong(it)))
                 selectedDate = dateTimeToString(it, "dd-MM-yyyy hh:mm a")
                 showDatePicker = false
             },
-            dateTimePickerView = DateTimePickerView.DIALOG_VIEW,
+            dateTimePickerView = DateTimePickerView.BOTTOM_SHEET_VIEW,
             onDismiss = {
                 showDatePicker = false
             }

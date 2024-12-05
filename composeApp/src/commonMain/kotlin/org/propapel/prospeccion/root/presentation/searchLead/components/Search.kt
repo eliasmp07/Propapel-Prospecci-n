@@ -41,6 +41,7 @@ fun SearchBar(
     onSearchFocusChange: (Boolean) -> Unit,
     onClearQuery: () -> Unit,
     onBack: () -> Unit,
+    onBackScreen :() -> Unit,
     searching: Boolean,
     focused: Boolean,
     modifier: Modifier = Modifier
@@ -57,18 +58,24 @@ fun SearchBar(
         verticalAlignment = Alignment.CenterVertically
     ) {
 
-        AnimatedVisibility(visible = focused) {
+        AnimatedVisibility(visible = true) {
             // Back button
             IconButton(
                 modifier = Modifier.padding(start = 2.dp),
                 onClick = {
                     focusManager.clearFocus()
                     keyboardController?.hide()
-                    onBack()
+                    if (focused){
+                        onBack()
+                    }else{
+                        onBackScreen()
+                    }
                 }) {
                 Icon(imageVector = Icons.Default.ArrowBack, contentDescription = null)
             }
         }
+
+
 
         SearchTextField(
             query,
@@ -108,7 +115,7 @@ fun SearchTextField(
                     .padding(
                         top = 8.dp,
                         bottom = 8.dp,
-                        start = if (!focused) 16.dp else 0.dp,
+                        start = if (!focused) 0.dp else 0.dp,
                         end = 16.dp
                     )
             ),

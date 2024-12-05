@@ -13,6 +13,7 @@ import androidx.compose.material.icons.filled.ArrowDropUp
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.Color
 import org.propapel.prospeccion.core.presentation.designsystem.components.ProSalesTextField
 
@@ -32,6 +33,7 @@ fun <T>ExposedDropdownMenuGereric(
     modifier: Modifier = Modifier,
     state: Boolean = false,
     error: String? = null,
+    otherClick: () -> Unit = {},
     title: String,
     colors: Color = Color.White,
     onDimiss: () -> Unit,
@@ -77,6 +79,19 @@ fun <T>ExposedDropdownMenuGereric(
             listOptions.forEach { option ->
                 content(option)
             }
+            /*
+            DropdownMenuItem(
+                text = {
+                    Text(
+                        text = "Otro"
+                    )
+                },
+                onClick = {
+                   otherClick()
+                }
+            )
+             */
+
         }
     }
 }

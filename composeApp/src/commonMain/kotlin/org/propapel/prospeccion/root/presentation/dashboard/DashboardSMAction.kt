@@ -3,6 +3,7 @@ package org.propapel.prospeccion.root.presentation.dashboard
 import kotlinx.datetime.LocalDate
 
 sealed interface DashboardSMAction {
+    data class OnWebViewClick(val url: String): DashboardSMAction
     data object OnRetryCustomer: DashboardSMAction
     data object OnRetryReminders: DashboardSMAction
     data class OnDateChange(val date: LocalDate): DashboardSMAction

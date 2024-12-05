@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -37,6 +38,10 @@ import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -49,6 +54,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import com.multiplatform.webview.web.WebView
+import com.multiplatform.webview.web.rememberWebViewState
 import org.jetbrains.compose.resources.painterResource
 import org.propapel.prospeccion.core.domain.AuthInfo
 import org.propapel.prospeccion.core.presentation.designsystem.PrimaryYellowLight
@@ -78,7 +85,6 @@ fun DashboardScreenMobile(
         rememberPullRefreshState(
             state.isRefreshing,
             { onAction(DashboardSMAction.OnRefresh) })
-
 
 
     Box(
@@ -290,43 +296,48 @@ fun DashboardScreenMobile(
                     modifier = Modifier.fillMaxWidth().padding(8.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    BannerPager(
-                        items = listOf(
-                            Pair(
-                                null
-                            ) {
-                                GoalCard(
-                                    title = "Mi objetivo",
-                                    currentValue = state.totalRemindersMoth.toFloat(),
-                                    goalValue = 10f,
-                                    icon = Icons.Filled.Flag,
-                                    background = SuccessGreen
-                                )
-                            },
-                            Pair(
-                                Banner(
-                                    id = 2,
-                                    description = "Oferta especial",
-                                    imageUrl = "https://firebasestorage.googleapis.com/v0/b/prosales-c49e5.appspot.com/o/SAI%20(2)-1200x400.jpg?alt=media&token=8b021601-63fc-4c9b-872e-0687c2610da0"
-                                )
-                            ) {},
-                            Pair(
-                                Banner(
-                                    id = 3,
-                                    description = "Otro descuento especial",
-                                    imageUrl = "https://firebasestorage.googleapis.com/v0/b/prosales-c49e5.appspot.com/o/banner_prueba.jpg?alt=media&token=ebc7287c-5c11-48ca-a354-e89f0864d2ae"
-                                )
-                            ) {
-                            },
-                        )
+                    GenericContentLoading(
+                        modifier = Modifier.aspectRatio(16/7f),
+                        data = state.banners,
+                        retry = {
+
+                        },
+                        success = {
+                            val banners: List<Banner> = it
+                            val items : List<Pair<Banner?, @Composable () -> Unit>> = banners.map { banner ->
+                                Pair(banner) {
+
+                                }
+                            }
+                            /*
+                             Pair(
+                                        null
+                                    ) {
+                                        GoalCard(
+                                            title = "Mi objetivo",
+                                            currentValue = state.totalRemindersMoth.toFloat(),
+                                            goalValue = 10f,
+                                            icon = Icons.Filled.Flag,
+                                            background = SuccessGreen
+                                        )
+                                    },
+                             */
+                            BannerPager(
+                                onClickBanner = {
+                                    if (it.contains("https:")){
+                                        onAction(DashboardSMAction.OnWebViewClick(it))
+                                    }
+                                },
+                                items = items
+                            )
+                        }
                     )
+
                 }
             }
             item {
                 GenericContentLoading(
-                    modifier = Modifier.height(
-                        530.dp
-                    ),
+                    modifier = Modifier,
                     data = state.myCustomer,
                     retry = {
                         onAction(DashboardSMAction.OnRefresh)
@@ -378,6 +389,8 @@ fun DashboardScreenMobile(
             modifier = Modifier.align(Alignment.TopCenter)
         )
     }
+
+
 
 
 }

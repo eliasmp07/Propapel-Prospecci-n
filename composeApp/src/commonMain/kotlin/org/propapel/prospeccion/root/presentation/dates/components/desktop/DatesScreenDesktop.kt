@@ -65,7 +65,7 @@ fun DatesScreenDesktop(
                     startFromSunday = true
                 )
 
-                CalendarView(
+                CalendarViewDesktop(
                     datesReminder = state.datesReminders,
                     month = currentMonth,
                     date = dates,

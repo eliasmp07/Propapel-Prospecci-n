@@ -178,8 +178,9 @@ fun CreateReminderDialog(
     )
     if (showDatePicker) {
         WheelDateTimePickerView(
+            doneLabel = "Aceptar",
             title = "Fecha y hora de la cita",
-            modifier = Modifier.padding(top = 18.dp, bottom = 10.dp).fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth(),
             showDatePicker = showDatePicker,
             titleStyle = TextStyle(
                 fontSize = 18.sp,
@@ -198,14 +199,12 @@ fun CreateReminderDialog(
             dateTextColor = Color(0xff007AFF),
             rowCount = 5,
             height = 170.dp,
-            dateTextStyle = TextStyle(
-                fontWeight = FontWeight(600),
-            ),
+            dateTextStyle = MaterialTheme.typography.bodyMedium,
             onDoneClick = {
                 onAction(DetailLeadAction.OnDateNextReminder(localDateTimeToLong(it)))
                 showDatePicker = false
             },
-            dateTimePickerView = DateTimePickerView.DIALOG_VIEW,
+            dateTimePickerView = DateTimePickerView.BOTTOM_SHEET_VIEW,
             onDismiss = {
                 showDatePicker = false
             }

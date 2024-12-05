@@ -21,7 +21,8 @@ class MainDesktopViewModel (
             state = state.copy(isCheckingAuth = true)
             state = state.copy(
                 isLoggedIn = sessionStorage.get() != null,
-                isManager = sessionStorage.get()?.roles?.contains("Gerente Regional") ?: false && (sessionStorage.get()?.sucursales?.size ?: 0) > 1
+                isManager = sessionStorage.get()?.roles?.contains("Gerente") ?: false && (sessionStorage.get()?.sucursales?.size ?: 0) > 1,
+                isRegional = sessionStorage.get()?.roles?.contains("Gerente Regional") ?: false
             )
             state = state.copy(isCheckingAuth = false)
         }

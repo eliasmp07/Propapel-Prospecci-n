@@ -25,7 +25,7 @@ import androidx.compose.ui.unit.dp
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.isoDayNumber
 
-private fun LocalDate.formatToCalendarDay(): String = this.dayOfMonth.toString()
+fun LocalDate.formatToCalendarDay(): String = this.dayOfMonth.toString()
 
 @Composable
 fun CalendarCell(
@@ -68,8 +68,11 @@ fun CalendarCell(
     }
 }
 
+/**
+ * Determina el dia por la semana el letra
+ */
 fun Int.getDayOfWeek3Letters(): String {
-    val daysOfWeek = listOf("Lun", "Mart", "Mier", "Jueves", "Viernes", "Sab", "Dom")
+    val daysOfWeek = listOf("L", "M", "M", "J", "V", "S", "D")
     val dayIndex = (this % 7)
     return daysOfWeek.getOrNull(dayIndex) ?: ""
 }

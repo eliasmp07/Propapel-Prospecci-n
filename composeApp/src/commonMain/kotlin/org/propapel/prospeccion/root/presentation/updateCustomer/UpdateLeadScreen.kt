@@ -1,6 +1,7 @@
 package org.propapel.prospeccion.root.presentation.updateCustomer
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
@@ -19,8 +20,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material.icons.filled.Business
@@ -61,6 +64,7 @@ import org.propapel.prospeccion.core.presentation.designsystem.components.Loadin
 import org.propapel.prospeccion.core.presentation.designsystem.components.ProSalesActionButtonOutline
 import org.propapel.prospeccion.core.presentation.designsystem.components.ProSalesTextField
 import org.propapel.prospeccion.core.presentation.designsystem.components.handleResultView
+import org.propapel.prospeccion.core.presentation.designsystem.components.util.rememberImeState
 import org.propapel.prospeccion.root.data.dto.customer.TypeOfClient
 import org.propapel.prospeccion.root.presentation.addlead.components.utils.ExpisedDropdownMenuTypeClient
 import org.propapel.prospeccion.root.presentation.addlead.components.utils.KottieAnimationUtil
@@ -106,6 +110,15 @@ private fun UpdateLeadScreen(
     }
     val focusManager = LocalFocusManager.current
 
+    val imeState = rememberImeState()
+    val scrollState = rememberScrollState()
+
+    LaunchedEffect(key1 = imeState.value) {
+        if (imeState.value){
+            scrollState.animateScrollTo(scrollState.maxValue, tween(300))
+        }
+    }
+
     Scaffold(
         topBar = {
             Row(
@@ -141,6 +154,7 @@ private fun UpdateLeadScreen(
             },
             error = state.error,
             errorContent = {
+
                 Column(
                     modifier = Modifier.fillMaxSize().padding(16.dp),
                     verticalArrangement = Arrangement.Center,
@@ -189,7 +203,7 @@ private fun UpdateLeadScreen(
                             0.6f to SoporteSaiBlue30,
                             1f to MaterialTheme.colorScheme.primary
                         )
-                    ).padding(16.dp)
+                    ).padding(16.dp).verticalScroll(scrollState)
                 ) {
                     Spacer(
                         Modifier.padding(top = innerPadding.calculateTopPadding())

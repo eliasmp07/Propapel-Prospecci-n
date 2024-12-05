@@ -101,7 +101,7 @@ fun GoalCard(
                         height = 9.dp
                     )
                     Spacer(modifier = Modifier.height(8.dp))
-                    Text(text = "$formattedPercentage%", fontSize = 14.sp, color = Color.White)
+                    Text(text = "$formattedPercentage%", fontSize = 12.sp, color = Color.White)
                 }
             }
         }

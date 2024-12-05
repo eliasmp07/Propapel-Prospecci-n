@@ -24,13 +24,13 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.number
 import kotlinx.datetime.toLocalDateTime
 import org.propapel.prospeccion.root.domain.models.Customer
+import org.propapel.prospeccion.root.domain.models.Interaction
 
 @Composable
 fun DonutChartInteractions(
     modifier: Modifier = Modifier,
-    customers: List<Customer> = listOf()
+    reminders: List<Interaction> = listOf()
 ) {
-    val reminders = customers.flatMap { it.interactions }
 
     // Obtener el mes actual y el mes anterior
     val currentDate = Clock.System.now().toLocalDateTime(TimeZone.UTC).date

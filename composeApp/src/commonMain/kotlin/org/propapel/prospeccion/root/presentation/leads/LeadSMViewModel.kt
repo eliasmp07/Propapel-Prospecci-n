@@ -136,11 +136,14 @@ class LeadSMViewModel(
                     val purchases = newList.flatMap {
                         it.purchase
                     }
+                    val reminders = newList.flatMap {
+                        it.interactions
+                    }
                     _state.update {
                         it.copy(
+                            remindersList = reminders.toState(),
                             productInteres = purchases.toState(),
                             customers = newList.toState(),
-
                         )
                     }
                 }

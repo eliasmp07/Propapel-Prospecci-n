@@ -171,7 +171,7 @@ private fun LoginScreen(
                     )
                     Spacer(Modifier.height(16.dp))
                     ProSalesActionButton(
-                        text = "Iniciar sessión",
+                        text = "Iniciar sesión",
                         isLoading = state.isLogging,
                         onClick = {
                             focusManager.clearFocus()

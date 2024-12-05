@@ -130,6 +130,9 @@ private fun SearchLeadSMScreen(
                     onBack = { stateSearch.query = TextFieldValue("") },
                     searching = stateSearch.searching,
                     focused = stateSearch.focused,
+                    onBackScreen = {
+                        onAction(SearchLeadSMAction.OnBack)
+                    },
                     modifier = Modifier
                 )
 

@@ -321,13 +321,13 @@ fun LeadScreenMobile(
             item {
                 GenericContentLoading(
                     modifier = Modifier.height(400.dp),
-                    data = state.customers,
+                    data = state.remindersList,
                     retry = {
                         onAction(LeadAction.OnRetryCustomer)
                     },
                     success = {
                         DonutChartInteractions(
-                            customers = it
+                            reminders = it
                         )
                     }
                 )
