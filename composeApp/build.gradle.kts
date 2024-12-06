@@ -75,6 +75,8 @@ kotlin {
 
             implementation(libs.coil.compose)
             implementation(libs.coil.network.ktor)
+            implementation(libs.coil.compose.core)
+            implementation(libs.coil.mp)
 
             implementation("dev.chrisbanes.material3:material3-window-size-class-multiplatform:0.5.0")
 
@@ -87,7 +89,6 @@ kotlin {
             implementation(libs.androidx.sqlite.bundled)
 
             //Time picker
-
             implementation("network.chaintech:kmp-date-time-picker:1.0.6")
 
             //FILE PICKER
@@ -117,6 +118,7 @@ kotlin {
         }
 
         desktopMain.dependencies {
+            implementation("io.ktor:ktor-client-cio:3.0.0")
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutines.swing)
         }

@@ -1,6 +1,5 @@
 package org.propapel.prospeccion.root.presentation.createInteraction
 
-import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
@@ -14,12 +13,8 @@ import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import org.propapel.prospeccion.core.domain.ResultExt
-import org.propapel.prospeccion.core.presentation.designsystem.SuccessGreen
-import org.propapel.prospeccion.core.presentation.ui.TimeUtils
-import org.propapel.prospeccion.core.presentation.ui.UiText
 import org.propapel.prospeccion.root.domain.models.Interaction
 import org.propapel.prospeccion.root.domain.models.PurchaseRequest
-import org.propapel.prospeccion.root.domain.models.Reminder
 import org.propapel.prospeccion.root.domain.repository.InteractionRepository
 import org.propapel.prospeccion.root.domain.repository.ReminderRepository
 import org.propapel.prospeccion.root.presentation.createReminder.convertLocalDate

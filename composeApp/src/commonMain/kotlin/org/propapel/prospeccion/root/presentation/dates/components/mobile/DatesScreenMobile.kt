@@ -36,7 +36,6 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import org.propapel.prospeccion.core.presentation.designsystem.PrimaryYellowLight
 import org.propapel.prospeccion.core.presentation.designsystem.SoporteSaiBlue30
-import org.propapel.prospeccion.root.presentation.dashboard.DashboardSMAction
 import org.propapel.prospeccion.root.presentation.dates.CalendarView
 import org.propapel.prospeccion.root.presentation.dates.DatesAction
 import org.propapel.prospeccion.root.presentation.dates.DatesSMState

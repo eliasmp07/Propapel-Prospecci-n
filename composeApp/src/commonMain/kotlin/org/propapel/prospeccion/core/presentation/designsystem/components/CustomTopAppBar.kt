@@ -28,6 +28,7 @@ import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.LightMode
+import androidx.compose.material.icons.outlined.Menu
 import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material3.Badge
@@ -82,6 +83,7 @@ fun CustomTopAppBar(
     windowSizeClass: WindowSizeClass,
     user: AuthInfo,
     reminders: List<Reminder>,
+    onMenu: () -> Unit = {},
     totalNotifications: Int,
     onLogout: () -> Unit = {},
     onSearch: () -> Unit,
@@ -333,6 +335,17 @@ fun CustomTopAppBar(
                 horizontalArrangement = Arrangement.Start,
                 verticalAlignment = Alignment.CenterVertically
             ) {
+                IconButton(
+                    onClick ={
+                        onMenu()
+                    },
+                    content = {
+                        Icon(
+                            imageVector = Icons.Outlined.Menu,
+                            contentDescription = null
+                        )
+                    }
+                )
                 Spacer(modifier = Modifier.width(12.dp))
                 Image(
                     painter = painterResource(Res.drawable.logo),

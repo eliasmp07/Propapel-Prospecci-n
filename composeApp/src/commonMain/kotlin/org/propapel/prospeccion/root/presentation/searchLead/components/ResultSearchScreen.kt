@@ -35,7 +35,6 @@ import org.propapel.prospeccion.core.presentation.designsystem.PrimaryYellowLigh
 import org.propapel.prospeccion.root.data.dto.customer.TypeOfClient
 import org.propapel.prospeccion.root.domain.models.Customer
 import org.propapel.prospeccion.root.presentation.leads.components.mobile.ItemLead
-import org.propapel.prospeccion.root.presentation.searchLead.SearchLeadSMAction
 
 
 internal val tabList = listOf("Nuevos", "En desarrollo", "En recuperación")

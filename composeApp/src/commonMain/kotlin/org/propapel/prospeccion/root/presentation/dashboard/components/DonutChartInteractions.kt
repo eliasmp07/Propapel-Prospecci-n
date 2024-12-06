@@ -23,7 +23,6 @@ import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.number
 import kotlinx.datetime.toLocalDateTime
-import org.propapel.prospeccion.root.domain.models.Customer
 import org.propapel.prospeccion.root.domain.models.Interaction
 
 @Composable

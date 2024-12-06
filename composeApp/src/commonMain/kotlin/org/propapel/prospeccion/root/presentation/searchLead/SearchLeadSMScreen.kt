@@ -23,12 +23,9 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBackIosNew
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Update
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -37,34 +34,25 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 import org.propapel.prospeccion.core.presentation.designsystem.PrimaryYellowLight
 import org.propapel.prospeccion.core.presentation.designsystem.SoporteSaiBlue30
 import org.propapel.prospeccion.core.presentation.designsystem.components.LoadingPropapel
-import org.propapel.prospeccion.core.presentation.designsystem.components.ProSalesActionButtonOutline
-import org.propapel.prospeccion.core.presentation.designsystem.components.handleResultView
 import org.propapel.prospeccion.root.presentation.leads.GenericContentLoading
 import org.propapel.prospeccion.root.presentation.leads.components.mobile.ItemLead
 import org.propapel.prospeccion.root.presentation.searchLead.components.ResultSearchScreen
 import org.propapel.prospeccion.root.presentation.searchLead.components.SearchBar
 import org.propapel.prospeccion.root.presentation.searchLead.components.SearchDisplay
-import org.propapel.prospeccion.root.presentation.searchLead.components.SearchTextField
 import org.propapel.prospeccion.root.presentation.searchLead.components.StaggeredGrid
 import org.propapel.prospeccion.root.presentation.searchLead.components.rememberSearchState
 import prospeccion.composeapp.generated.resources.Res
 import prospeccion.composeapp.generated.resources.empty_info
-import prospeccion.composeapp.generated.resources.no_internet
 
 @Composable
 fun SearchLeadSMScreenRoot(

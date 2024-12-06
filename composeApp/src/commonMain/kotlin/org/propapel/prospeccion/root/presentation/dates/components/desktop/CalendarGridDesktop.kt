@@ -3,12 +3,7 @@ package org.propapel.prospeccion.root.presentation.dates.components.desktop
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.Layout
-import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
 import kotlinx.datetime.LocalDate
-import org.propapel.prospeccion.root.presentation.dates.components.mobile.CalendarCell
 import org.propapel.prospeccion.root.presentation.dates.components.mobile.CalendarCustomLayout
 import org.propapel.prospeccion.root.presentation.dates.components.mobile.WeekdayCell
 import org.propapel.prospeccion.root.presentation.dates.components.mobile.dayOfWeekIso

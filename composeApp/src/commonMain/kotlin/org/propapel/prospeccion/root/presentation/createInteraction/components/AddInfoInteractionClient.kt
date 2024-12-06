@@ -29,10 +29,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import kotlinx.datetime.Clock
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.number
-import kotlinx.datetime.toLocalDateTime
 import org.propapel.prospeccion.core.presentation.designsystem.PrimaryViolet
 import org.propapel.prospeccion.core.presentation.designsystem.PrimaryVioletDark
 import org.propapel.prospeccion.core.presentation.designsystem.components.ProSalesActionButton

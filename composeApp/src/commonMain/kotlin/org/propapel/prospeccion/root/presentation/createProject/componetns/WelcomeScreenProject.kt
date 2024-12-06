@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBackIosNew
@@ -35,10 +34,7 @@ import org.propapel.prospeccion.root.presentation.createProject.CreateProjectAct
 import org.propapel.prospeccion.root.presentation.createProject.CreateProjectScreenState
 import org.propapel.prospeccion.root.presentation.createProject.CreateProjectState
 import prospeccion.composeapp.generated.resources.Res
-import prospeccion.composeapp.generated.resources.background_intro
-import prospeccion.composeapp.generated.resources.create_project
 import prospeccion.composeapp.generated.resources.create_project_img
-import prospeccion.composeapp.generated.resources.project_confirm
 
 @Composable
 fun WelcomeScreenProject(

@@ -5,7 +5,6 @@
 package org.propapel.prospeccion.root.presentation.leads.components.mobile
 
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -18,7 +17,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
@@ -36,7 +34,6 @@ import androidx.compose.material.icons.filled.Update
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
-import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
@@ -55,11 +52,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import org.jetbrains.compose.resources.painterResource
 import org.propapel.prospeccion.core.presentation.designsystem.PrimaryYellowLight
 import org.propapel.prospeccion.core.presentation.designsystem.SoporteSaiBlue30
 import org.propapel.prospeccion.core.presentation.designsystem.SuccessGreen
@@ -76,12 +70,6 @@ import org.propapel.prospeccion.root.presentation.leads.LeadSMState
 import org.propapel.prospeccion.root.presentation.leads.UiState
 import org.propapel.prospeccion.root.presentation.leads.components.ActionIcon
 import org.propapel.prospeccion.root.presentation.leads.components.SwipeableItemWithActions
-import org.propapel.prospeccion.selectSucursal.presentation.dashboard.getImageSucursal
-import prospeccion.composeapp.generated.resources.Res
-import prospeccion.composeapp.generated.resources.customer_person
-import prospeccion.composeapp.generated.resources.img_no_data
-import prospeccion.composeapp.generated.resources.mid_reference
-import prospeccion.composeapp.generated.resources.papeleria_backgrounds_lead
 
 @Composable
 fun LeadScreenMobile(

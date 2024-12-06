@@ -24,7 +24,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.Flag
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Search
@@ -38,10 +37,6 @@ import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -54,8 +49,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
-import com.multiplatform.webview.web.WebView
-import com.multiplatform.webview.web.rememberWebViewState
 import org.jetbrains.compose.resources.painterResource
 import org.propapel.prospeccion.core.domain.AuthInfo
 import org.propapel.prospeccion.core.presentation.designsystem.PrimaryYellowLight
@@ -309,26 +302,27 @@ fun DashboardScreenMobile(
 
                                 }
                             }
-                            /*
-                             Pair(
-                                        null
-                                    ) {
-                                        GoalCard(
-                                            title = "Mi objetivo",
-                                            currentValue = state.totalRemindersMoth.toFloat(),
-                                            goalValue = 10f,
-                                            icon = Icons.Filled.Flag,
-                                            background = SuccessGreen
-                                        )
-                                    },
-                             */
+                            val itemsMutable = items.toMutableList()
+                            itemsMutable.add(
+                                Pair(
+                                    null
+                                ) {
+                                    GoalCard(
+                                        title = "Mi objetivo",
+                                        currentValue = state.totalRemindersMoth.toFloat(),
+                                        goalValue = 10f,
+                                        icon = Icons.Filled.Flag,
+                                        background = SuccessGreen
+                                    )
+                                },
+                            )
                             BannerPager(
                                 onClickBanner = {
                                     if (it.contains("https:")){
                                         onAction(DashboardSMAction.OnWebViewClick(it))
                                     }
                                 },
-                                items = items
+                                items = itemsMutable
                             )
                         }
                     )

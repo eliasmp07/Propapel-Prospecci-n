@@ -31,21 +31,15 @@ import androidx.compose.ui.unit.sp
 import com.aay.compose.barChart.BarChart
 import com.aay.compose.barChart.model.BarParameters
 import kotlinx.datetime.Clock
-import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import org.jetbrains.compose.resources.vectorResource
 import org.propapel.prospeccion.core.presentation.ui.extensions.previousMoth
-import org.propapel.prospeccion.core.presentation.ui.extensions.previousYear
 import org.propapel.prospeccion.root.domain.models.Project
-import org.propapel.prospeccion.root.presentation.createReminder.convertLocalDate
 import org.propapel.prospeccion.root.presentation.dashboard.components.monthGet
-import org.propapel.prospeccion.selectSucursal.domain.model.ProjectUser
 import org.propapel.prospeccion.selectSucursal.presentation.dashboard.components.ContentValidateLastMoth
 import org.propapel.prospeccion.selectSucursal.presentation.dashboard.components.calculoPorcentual
-import org.propapel.prospeccion.selectSucursal.presentation.dashboard.components.infoValidateProjects
 import prospeccion.composeapp.generated.resources.Res
-import prospeccion.composeapp.generated.resources.ic_product_otline
 import prospeccion.composeapp.generated.resources.projects_ic_dra
 
 

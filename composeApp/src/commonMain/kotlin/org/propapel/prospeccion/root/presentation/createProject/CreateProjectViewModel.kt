@@ -10,7 +10,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
-import org.propapel.prospeccion.auth.domain.validator.UserValidator
 import org.propapel.prospeccion.core.domain.ResultExt
 import org.propapel.prospeccion.root.domain.models.Customer
 import org.propapel.prospeccion.root.domain.models.Purchase

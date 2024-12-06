@@ -2,15 +2,11 @@
 
 package org.propapel.prospeccion.root.presentation.webView
 
-import androidx.compose.animation.Animatable
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,23 +16,17 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material.icons.filled.ArrowLeft
 import androidx.compose.material.icons.filled.ArrowRight
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.CopyAll
 import androidx.compose.material.icons.filled.Link
 import androidx.compose.material.icons.filled.MoreHoriz
-import androidx.compose.material.icons.filled.OpenInBrowser
 import androidx.compose.material.icons.filled.Refresh
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.TravelExplore
 import androidx.compose.material.icons.rounded.Check
-import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
@@ -47,10 +37,8 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberBottomSheetScaffoldState
@@ -64,7 +52,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalClipboardManager
@@ -79,12 +66,9 @@ import com.multiplatform.webview.web.rememberWebViewNavigator
 import com.multiplatform.webview.web.rememberWebViewState
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import org.propapel.prospeccion.auth.presentation.login.LoginAction
 import org.propapel.prospeccion.core.presentation.designsystem.SoporteSaiBlue
 import org.propapel.prospeccion.core.presentation.designsystem.SuccessGreen
-import org.propapel.prospeccion.core.presentation.designsystem.components.LoadingPropapel
 import org.propapel.prospeccion.root.presentation.createProject.componetns.isVisibleBottomSheet
-import org.propapel.prospeccion.root.presentation.leads.components.mobile.loadProgress
 
 @Composable
 fun WebViewScreen(
@@ -93,8 +77,6 @@ fun WebViewScreen(
 ) {
     val webState = rememberWebViewState(url)
     val loading = webState.loadingState
-
-
     val scope = rememberCoroutineScope()
 
     val scaffoldState = rememberBottomSheetScaffoldState(

@@ -35,17 +35,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
-import kotlinx.datetime.Clock
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toLocalDateTime
 import network.chaintech.kmp_date_time_picker.ui.datetimepicker.WheelDateTimePickerView
 import network.chaintech.kmp_date_time_picker.utils.DateTimePickerView
 import network.chaintech.kmp_date_time_picker.utils.TimeFormat
 import network.chaintech.kmp_date_time_picker.utils.WheelPickerDefaults
-import network.chaintech.kmp_date_time_picker.utils.dateTimeToString
 import org.propapel.prospeccion.core.presentation.designsystem.components.ProSalesActionButtonOutline
 import org.propapel.prospeccion.core.presentation.designsystem.components.ProSalesTextField
-import org.propapel.prospeccion.core.presentation.ui.typeHour
 import org.propapel.prospeccion.root.presentation.addlead.components.localDateTimeToLong
 import org.propapel.prospeccion.root.presentation.createProject.componetns.ExposedDropdownMenuGereric
 import org.propapel.prospeccion.root.presentation.createReminder.components.utils.provideTypeOfAppointment

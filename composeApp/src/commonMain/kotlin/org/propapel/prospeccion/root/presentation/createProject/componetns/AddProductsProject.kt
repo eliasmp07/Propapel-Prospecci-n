@@ -58,7 +58,6 @@ import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.vectorResource
 import org.propapel.prospeccion.core.presentation.designsystem.SuccessGreen
 import org.propapel.prospeccion.core.presentation.designsystem.components.ProSalesActionButton
-import org.propapel.prospeccion.core.presentation.designsystem.components.ProSalesTextField
 import org.propapel.prospeccion.core.presentation.designsystem.components.util.animateEnterRight
 import org.propapel.prospeccion.root.domain.models.Purchase
 import org.propapel.prospeccion.root.presentation.addlead.components.utils.ProSalesPriceTextField
@@ -67,7 +66,6 @@ import org.propapel.prospeccion.root.presentation.createProject.CreateProjectScr
 import org.propapel.prospeccion.root.presentation.createProject.CreateProjectState
 import prospeccion.composeapp.generated.resources.Res
 import prospeccion.composeapp.generated.resources.ic_product_otline
-import prospeccion.composeapp.generated.resources.products
 
 val BottomSheetScaffoldState.isVisibleBottomSheet: Boolean get() = bottomSheetState.currentValue == SheetValue.Expanded
 

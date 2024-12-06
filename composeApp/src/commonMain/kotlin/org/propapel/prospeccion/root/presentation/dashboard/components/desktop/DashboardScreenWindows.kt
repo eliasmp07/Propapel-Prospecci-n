@@ -55,6 +55,7 @@ import org.propapel.prospeccion.root.presentation.dashboard.DashboardSMState
 import org.propapel.prospeccion.root.presentation.dashboard.components.mobile.Banner
 import org.propapel.prospeccion.root.presentation.dashboard.components.mobile.BannerPaggerWindows
 import org.propapel.prospeccion.root.presentation.dashboard.components.mobile.GoalCard
+import org.propapel.prospeccion.root.presentation.leads.GenericContentLoading
 import org.propapel.prospeccion.root.presentation.leads.UiState
 import prospeccion.composeapp.generated.resources.Res
 import prospeccion.composeapp.generated.resources.calendar_date
@@ -223,40 +224,46 @@ fun DashboardScreenWindows(
             modifier = Modifier.weight(1f).fillMaxWidth().padding(16.dp),
             columns = StaggeredGridCells.Fixed(2),
         ){
-            item(
-                span = StaggeredGridItemSpan.FullLine
-            ){
-                BannerPaggerWindows(
-                    items = listOf(
-                        Pair(
-                            null
-                        ) {
-                            GoalCard(
-                                modifier = Modifier.fillMaxWidth().height(500.dp),
-                                title = "Mi objetivo",
-                                currentValue = state.totalRemindersMoth.toFloat(),
-                                goalValue = 10f,
-                                icon = Icons.Filled.Flag,
-                                background = SuccessGreen
-                            )
+            if(state.banners  is UiState.Success) {
+                item(
+                    span = StaggeredGridItemSpan.FullLine
+                ) {
+                    GenericContentLoading(
+                        modifier = Modifier.fillMaxWidth().height(500.dp),
+                        data = state.banners,
+                        retry = {
+
                         },
-                        Pair(
-                            Banner(
-                                id = 2,
-                                description = "Oferta especial",
-                                imageUrl = "https://firebasestorage.googleapis.com/v0/b/prosales-c49e5.appspot.com/o/SAI%20(2)-1200x400.jpg?alt=media&token=8b021601-63fc-4c9b-872e-0687c2610da0"
+                        success = {
+                            val banners: List<Banner> = it
+                            val items: List<Pair<Banner?, @Composable () -> Unit>> = banners.map { banner ->
+                                Pair(banner) {
+
+                                }
+                            }
+                            val itemsMutable = items.toMutableList()
+                            itemsMutable.add(
+                                Pair(
+                                    null
+                                ) {
+                                    GoalCard(
+                                        title = "Mi objetivo",
+                                        currentValue = state.totalRemindersMoth.toFloat(),
+                                        goalValue = 10f,
+                                        icon = Icons.Filled.Flag,
+                                        background = SuccessGreen
+                                    )
+                                },
                             )
-                        ) {},
-                        Pair(
-                            Banner(
-                                id = 3,
-                                description = "Otro descuento especial",
-                                imageUrl = "https://firebasestorage.googleapis.com/v0/b/prosales-c49e5.appspot.com/o/banner_prueba.jpg?alt=media&token=ebc7287c-5c11-48ca-a354-e89f0864d2ae"
+                            BannerPaggerWindows(
+                                onClickBanner = {
+                                    onAction(DashboardSMAction.OnWebViewClick(it))
+                                },
+                                items = itemsMutable
                             )
-                        ) {
-                        },
+                        }
                     )
-                )
+                }
             }
             item(
                 span = StaggeredGridItemSpan.FullLine

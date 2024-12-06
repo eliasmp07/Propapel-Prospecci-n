@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
+
 package org.propapel.prospeccion.root.presentation.createReminder
 
 import androidx.compose.animation.core.tween
@@ -25,6 +27,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
+import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -65,7 +69,9 @@ import org.propapel.prospeccion.root.presentation.addlead.components.utils.Kotti
 import org.propapel.prospeccion.root.presentation.createProject.componetns.ExposedDropdownMenuGereric
 import org.propapel.prospeccion.root.presentation.createReminder.components.DialogCreateSuccess
 import org.propapel.prospeccion.root.presentation.createReminder.components.DialogDayNoAvailable
+import org.propapel.prospeccion.root.presentation.createReminder.components.desktop.CreateReminderDesktopScreen
 import org.propapel.prospeccion.root.presentation.createReminder.components.utils.provideTypeOfAppointment
+import org.propapel.prospeccion.root.presentation.dashboard.isMobile
 import prospeccion.composeapp.generated.resources.Res
 import prospeccion.composeapp.generated.resources.empty_info
 import prospeccion.composeapp.generated.resources.no_internet
@@ -94,7 +100,7 @@ private fun CreateReminderScreen(
     onAction: (CreateReminderAction) -> Unit
 ) {
     val focusManager = LocalFocusManager.current
-
+    val windowSizeClass = calculateWindowSizeClass()
     val date = Clock.System.now().toLocalDateTime(TimeZone.UTC)
     var selectedDate by remember { mutableStateOf("${date.dayOfMonth}-${date.monthNumber}-${date.year} ${date.hour}:${date.minute} ${typeHour(date.hour)}") }
     val imeState = rememberImeState()
@@ -230,6 +236,8 @@ private fun CreateReminderScreen(
     )
 
     if (result) {
+
+        if (windowSizeClass.isMobile){
         Column(
             modifier = Modifier.fillMaxSize().background(
                 Brush.verticalGradient(
@@ -341,6 +349,12 @@ private fun CreateReminderScreen(
             )
             Spacer(
                 modifier = Modifier.height(8.dp)
+            )
+        }}
+        else{
+            CreateReminderDesktopScreen(
+                state = state,
+                onAction = onAction
             )
         }
         if (state.showDatePicker) {

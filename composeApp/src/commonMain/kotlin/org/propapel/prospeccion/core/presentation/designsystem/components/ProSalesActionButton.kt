@@ -24,7 +24,10 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.input.pointer.PointerIcon
+import androidx.compose.ui.input.pointer.pointerHoverIcon
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -46,7 +49,7 @@ fun ProSalesActionButton(
 ) {
     Button(
         modifier = modifier
-            .height(IntrinsicSize.Min),
+            .height(IntrinsicSize.Min).pointerHoverIcon(PointerIcon.Hand),
         enabled = enabled,
         border = BorderStroke(2.dp, textColor),
         shape = shape,
@@ -76,6 +79,8 @@ fun ProSalesActionButton(
                 }
                 Text(
                     text = text,
+                    overflow = TextOverflow.Ellipsis,
+                    maxLines = 1,
                     modifier = Modifier
                         .padding(start = 10.dp)
                         .alpha(if (isLoading) 0f else 1f),
@@ -111,7 +116,7 @@ fun ProSalesActionButtonOutline(
         ),
         shape = shape,
         modifier = modifier
-            .height(IntrinsicSize.Min)
+            .height(IntrinsicSize.Min).pointerHoverIcon(PointerIcon.Hand)
     ) {
         Box(
             modifier = Modifier

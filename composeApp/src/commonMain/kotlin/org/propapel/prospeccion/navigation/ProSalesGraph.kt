@@ -51,10 +51,8 @@ fun NavGraphBuilder.proSales(
 
             val viewModel = koinViewModel<HomeRootViewModel>()
 
-            val state by viewModel.state.collectAsState()
             HomeScreen(
                 viewModel = viewModel,
-                state = state,
                 onWebViewClick = {
                     navController.navigate(Destination.WebView(it))
                 },

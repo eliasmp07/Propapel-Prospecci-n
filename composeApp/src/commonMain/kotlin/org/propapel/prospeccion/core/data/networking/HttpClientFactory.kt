@@ -21,7 +21,7 @@ class HttpClientFactory(
     fun build(): HttpClient {
         return HttpClient(CIO) {
             install(HttpTimeout) {
-                requestTimeoutMillis = 5000
+                requestTimeoutMillis = 10000
             }
             install(ContentNegotiation) {
                 json(

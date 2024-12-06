@@ -33,9 +33,9 @@ class DashboardSMViewModel(
     val state: StateFlow<DashboardSMState> get() = _state.asStateFlow()
 
     init {
+        getAllBanners()
         getAllMyReminders()
         getMyCustomer()
-        getAllBanners()
     }
 
 
