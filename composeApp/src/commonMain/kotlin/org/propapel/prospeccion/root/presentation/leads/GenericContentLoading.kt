@@ -20,6 +20,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -27,6 +28,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.PointerIcon
+import androidx.compose.ui.input.pointer.pointerHoverIcon
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.resources.DrawableResource
@@ -78,7 +81,7 @@ fun <T> GenericContentLoading(
                 is UiState.Loading -> retry()
                 else -> Unit
             }
-        },
+        }.pointerHoverIcon(PointerIcon.Hand),
         label = "Animated Content"
     ) { targetState ->
         when (targetState) {
@@ -119,14 +122,15 @@ object GenericContentLoading {
     fun GenericLoadingContent(
         modifier: Modifier = Modifier
     ) {
-        Card(
+        ElevatedCard(
             shape = RoundedCornerShape(8.dp),
             modifier = modifier
                 .fillMaxWidth()
                 .padding(
                     16.dp
                 ),
-            colors = CardDefaults.cardColors(containerColor = Color(0xFFf1f4f9)),
+            colors = CardDefaults.cardColors(containerColor = Color.White),
+            elevation = CardDefaults.elevatedCardElevation(20.dp)
         ) {
             Column(
                 modifier = Modifier.fillMaxSize(),
@@ -146,14 +150,15 @@ object GenericContentLoading {
         modifier: Modifier = Modifier,
         text: String = ""
     ) {
-        Card(
+        ElevatedCard(
             shape = RoundedCornerShape(8.dp),
             modifier = modifier
                 .fillMaxWidth()
                 .padding(
                     16.dp
                 ),
-            colors = CardDefaults.cardColors(containerColor = Color(0xFFf1f4f9)),
+            colors = CardDefaults.cardColors(containerColor = Color.White),
+            elevation = CardDefaults.elevatedCardElevation(20.dp)
         ) {
             Column(
                 modifier = Modifier.fillMaxSize(),
@@ -172,6 +177,7 @@ object GenericContentLoading {
                     text = text,
                     style = MaterialTheme.typography.titleSmall
                 )
+                Spacer(modifier = Modifier.height(16.dp))
             }
         }
     }
@@ -184,14 +190,15 @@ object GenericContentLoading {
         modifier: Modifier = Modifier,
         error: Pair<UiText, DrawableResource>
     ) {
-        Card(
+        ElevatedCard(
             shape = RoundedCornerShape(8.dp),
             modifier = modifier
                 .fillMaxWidth()
                 .padding(
                     16.dp
                 ),
-            colors = CardDefaults.cardColors(containerColor = Color(0xFFf1f4f9)),
+            colors = CardDefaults.cardColors(containerColor = Color.White),
+            elevation = CardDefaults.elevatedCardElevation(20.dp)
         ) {
             Column(
                 modifier = Modifier.fillMaxSize(),

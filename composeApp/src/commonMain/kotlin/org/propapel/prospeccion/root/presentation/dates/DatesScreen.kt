@@ -1,6 +1,7 @@
 package org.propapel.prospeccion.root.presentation.dates
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -31,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import kotlinx.datetime.LocalDate
 import network.chaintech.kmp_date_time_picker.utils.withDayOfMonth
 import org.jetbrains.compose.resources.painterResource
+import org.propapel.prospeccion.core.presentation.ui.extensions.formatToMonthString
 import org.propapel.prospeccion.root.domain.models.Reminder
 import org.propapel.prospeccion.root.presentation.createReminder.convertLocalDate
 import org.propapel.prospeccion.root.presentation.dashboard.components.ItemUserDate
@@ -49,70 +51,21 @@ fun DateScreenRoot(
     val state by viewModel.state.collectAsState()
     DateScreen(
         windowWidthSizeClass,
-        state = state
+        state = state,
+        onAction = viewModel::onAction
     )
-}
-
-fun LocalDate.plusMonths(months: Int): LocalDate {
-    var newMonth = this.monthNumber + months
-    var newYear = this.year
-
-    // Ajustar el año y el mes si es necesario
-    if (newMonth > 12) {
-        newYear += newMonth / 12
-        newMonth %= 12
-    } else if (newMonth < 1) {
-        newYear += (newMonth - 12) / 12
-        newMonth = 12 + newMonth % 12
-    }
-
-    // Asegurarse de que el día sea válido
-    val daysInNewMonth = getDaysInMonth(
-        newYear,
-        newMonth
-    )
-    val newDay = this.dayOfMonth.coerceAtMost(daysInNewMonth)
-
-    return LocalDate(
-        newYear,
-        newMonth,
-        newDay
-    )
-}
-
-fun LocalDate.minusMonths(months: Int): LocalDate {
-    return this.plusMonths(-months)
-}
-
-private fun getDaysInMonth(
-    year: Int,
-    month: Int
-): Int {
-    return when (month) {
-        1 -> if (year % 4 == 0 && (year % 100 != 0 || year % 400 == 0)) 29 else 28 // Enero
-        2 -> 31 // Febrero
-        3 -> 31 // Marzo
-        4 -> 30 // Abril
-        5 -> 31 // Mayo
-        6 -> 30 // Junio
-        7 -> 31 // Julio
-        8 -> 31 // Agosto
-        9 -> 30 // Septiembre
-        10 -> 31 // Octubre
-        11 -> 30 // Noviembre
-        12 -> 31 // Diciembre
-        else -> 0 // Si el mes no es válido
-    }
 }
 
 @Composable
 private fun DateScreen(
     windowWidthSizeClass: WindowSizeClass,
-    state: DatesSMState
+    state: DatesSMState,
+    onAction: (DatesAction) -> Unit
 ){
     if (windowWidthSizeClass.isMobile){
         DatesScreenMobile(
-            state = state
+            state = state,
+            onAction = onAction
         )
     } else {
         DatesScreenDesktop(
@@ -132,7 +85,6 @@ fun DisplayAppointments(
 
     val appointmentsReminder = reminders.filter { convertLocalDate(it.reminderDate.toLong()).date == date }
 
-
     Column(
         modifier = Modifier.padding(16.dp).fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -140,9 +92,9 @@ fun DisplayAppointments(
         Text(
             "Citas para ${date.dayOfMonth} de ${date.formatToMonthString()}:",
             fontWeight = FontWeight.Bold,
-            style = MaterialTheme.typography.titleMedium,
+            style = typography.titleMedium,
             textAlign = TextAlign.Center,
-            color = Color.White
+            color = colorScheme.onPrimaryContainer,
         )
         Spacer(
             modifier = Modifier.height(8.dp)
@@ -161,9 +113,9 @@ fun DisplayAppointments(
             )
             Text(
                 text = "No tienes ningun cita programada para este día",
-                style = MaterialTheme.typography.titleMedium,
+                style = typography.titleMedium,
                 textAlign = TextAlign.Center,
-                color = Color.White
+                color = colorScheme.onPrimaryContainer,
             )
 
         } else {
@@ -177,66 +129,6 @@ fun DisplayAppointments(
             }
         }
     }
-}
-
-
-fun generateDatesForMonth(
-    month: LocalDate,
-    startFromSunday: Boolean
-): List<Pair<LocalDate, Boolean>> {
-    val firstDayOfMonth = month.withDayOfMonth(1)
-    val daysInMonth = getDaysInMonth(
-        firstDayOfMonth.year,
-        firstDayOfMonth.monthNumber
-    )
-
-    // Obtener el día de la semana del primer día del mes (0 = Lunes, 6 = Domingo)
-    val firstDayOfWeek = firstDayOfMonth.dayOfWeek.ordinal
-
-    // Crea una lista mutable para las fechas
-    val dates = mutableListOf<Pair<LocalDate, Boolean>>()
-
-    // Calcular cuántos días agregar del mes anterior
-    val previousMonth = firstDayOfMonth.minusMonths(1)
-    val daysInPreviousMonth = getDaysInMonth(
-        previousMonth.year,
-        previousMonth.monthNumber
-    )
-
-    // Determina el índice inicial para la lista de días
-    val startIndex = if (startFromSunday) {
-        if (firstDayOfWeek == 0) 6 else firstDayOfWeek - 1 // Ajuste para domingo
-    } else {
-        firstDayOfWeek // Comenzar desde lunes
-    }
-
-    // Agregar días del mes anterior
-    for (i in startIndex downTo 1) {
-        val date = previousMonth.withDayOfMonth(daysInPreviousMonth - i + 1)
-        dates.add(date to false)
-    }
-
-    // Agregar días del mes actual
-    for (day in 1..daysInMonth) {
-        // Verificar si el día es 29 de febrero y si el año es bisiesto
-        if (firstDayOfMonth.monthNumber == 2 && day == 29 && !isLeapYear(firstDayOfMonth.year)) {
-            // Si no es bisiesto, no agregues la fecha 29
-            continue
-        }
-        val date = LocalDate(
-            firstDayOfMonth.year,
-            firstDayOfMonth.monthNumber,
-            day
-        )
-        dates.add(date to false)
-    }
-
-    // Devolver la lista de fechas
-    return dates
-}
-
-fun isLeapYear(year: Int): Boolean {
-    return (year % 4 == 0 && year % 100 != 0) || (year % 400 == 0)
 }
 
 
@@ -278,7 +170,7 @@ fun CalendarView(
                     },
                 )
             Text(
-                text = month.formatToMonthString(),
+                text = "${month.formatToMonthString()} ${month.year}",
                 style = typography.headlineMedium,
                 color = colorScheme.onPrimaryContainer,
                 modifier = Modifier.align(Alignment.Center),
@@ -298,22 +190,4 @@ fun CalendarView(
             )
         }
     }
-}
-
-fun LocalDate.formatToMonthString(): String {
-    val monthNames = listOf(
-        "January",
-        "February",
-        "March",
-        "April",
-        "May",
-        "June",
-        "July",
-        "August",
-        "September",
-        "October",
-        "November",
-        "December"
-    )
-    return monthNames[this.month.ordinal].replaceFirstChar { it.uppercase() }
 }

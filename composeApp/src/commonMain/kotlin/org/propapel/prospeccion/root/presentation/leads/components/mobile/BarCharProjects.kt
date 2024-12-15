@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -31,16 +32,15 @@ import androidx.compose.ui.unit.sp
 import com.aay.compose.barChart.BarChart
 import com.aay.compose.barChart.model.BarParameters
 import kotlinx.datetime.Clock
-import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import org.jetbrains.compose.resources.vectorResource
 import org.propapel.prospeccion.core.presentation.ui.extensions.previousMoth
-import org.propapel.prospeccion.core.presentation.ui.extensions.previousYear
 import org.propapel.prospeccion.root.domain.models.Project
 import org.propapel.prospeccion.root.presentation.dashboard.components.monthGet
+import org.propapel.prospeccion.selectSucursal.presentation.dashboard.components.ContentValidateLastMoth
+import org.propapel.prospeccion.selectSucursal.presentation.dashboard.components.calculoPorcentual
 import prospeccion.composeapp.generated.resources.Res
-import prospeccion.composeapp.generated.resources.ic_product_otline
 import prospeccion.composeapp.generated.resources.projects_ic_dra
 
 
@@ -54,6 +54,13 @@ fun BarCharProjects(
     // Fechas actuales y del mes anterior
     val currentDate = Clock.System.now().toLocalDateTime(TimeZone.UTC)
     val previousMonthDate = currentDate.previousMoth()
+
+
+    val (isLow, diffence) = infoValidateProject(
+        projects = projects,
+        currentMoth = currentDate.monthNumber,
+        mothLast = previousMonthDate
+    )
 
 
     // Calcular los conteos
@@ -114,12 +121,13 @@ fun BarCharProjects(
         ),
         label = "color"
     )
-    Card(
+    ElevatedCard(
         shape = RoundedCornerShape(8.dp),
         modifier = modifier
             .fillMaxWidth()
             .padding(16.dp),
-        colors = CardDefaults.cardColors(containerColor = Color(0xFFf1f4f9))
+        colors = CardDefaults.cardColors(containerColor = Color.White),
+        elevation = CardDefaults.elevatedCardElevation(20.dp)
     ) {
         Column(
             modifier = Modifier.padding(16.dp),
@@ -138,6 +146,13 @@ fun BarCharProjects(
                     text = "Proyectos",
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold
+                )
+                Spacer(
+                    modifier = Modifier.weight(1f)
+                )
+                ContentValidateLastMoth(
+                    isLow = !isLow,
+                    diffence
                 )
             }
             Text(
@@ -199,5 +214,49 @@ fun calculateCounts(
         cierre,
         negociacion,
         perdido
+    )
+}
+
+
+private fun infoValidateProject(
+    projects: List<Project>,
+    mothLast: Int,
+    currentMoth: Int
+): Pair<Boolean, String> {
+    var infoDiference = ""
+    var mothLastCount = 0
+    var mothCurrentCount = 0
+    var isImproveThisCount = false
+
+
+    projects.forEach {
+        when (it.created.monthNumber) {
+            mothLast -> mothLastCount++
+            currentMoth -> mothCurrentCount++
+        }
+    }
+
+    if (mothLastCount > mothCurrentCount) {
+        isImproveThisCount = false
+        infoDiference = "-${
+            calculoPorcentual(
+                mothLastCount,
+                mothCurrentCount
+            )
+        }%"
+
+    } else {
+        isImproveThisCount = true
+        infoDiference = "+${
+            calculoPorcentual(
+                mothLastCount,
+                mothCurrentCount
+            )
+        }%"
+    }
+
+    return Pair(
+        isImproveThisCount,
+        infoDiference
     )
 }

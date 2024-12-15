@@ -46,6 +46,7 @@ fun AddInfoProject(
         ProSalesTextField(
             title = "Nombre del proyecto",
             state = state.nameProject,
+            error = state.nameProjectError,
             onTextChange = {
                 onAction(CreateProjectAction.OnChangeNameProject(it))
             },

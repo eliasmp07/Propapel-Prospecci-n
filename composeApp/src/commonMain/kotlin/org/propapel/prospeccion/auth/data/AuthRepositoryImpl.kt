@@ -29,6 +29,7 @@ class AuthRepositoryImpl(
             sessionStorage.set(
                 AuthInfo(
                     accessTokenExpirationTimestamp = result.data.accessTokenExpirationTimestamp,
+                    puesto = result.data.puesto,
                     image = result.data.image ?: "",
                     sucursales = result.data.sucursales ?: emptyList(),
                     name = result.data.name,

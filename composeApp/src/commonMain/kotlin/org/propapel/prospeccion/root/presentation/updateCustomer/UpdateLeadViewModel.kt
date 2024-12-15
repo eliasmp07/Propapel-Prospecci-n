@@ -22,7 +22,9 @@ class UpdateLeadViewModel(
     val state: StateFlow<UpdateLeadState> get() = _state.asStateFlow()
 
     fun getLead(leadId: String){
-        viewModelScope.launch {
+        viewModelScope.launch(
+            Dispatchers.IO
+        ) {
             _state.update {
                 it.copy(
                     customerId = leadId,

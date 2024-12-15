@@ -5,7 +5,6 @@
 package org.propapel.prospeccion.root.presentation.leads.components.mobile
 
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -18,7 +17,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
@@ -36,7 +34,6 @@ import androidx.compose.material.icons.filled.Update
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
-import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
@@ -57,8 +54,6 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import org.jetbrains.compose.resources.painterResource
 import org.propapel.prospeccion.core.presentation.designsystem.PrimaryYellowLight
 import org.propapel.prospeccion.core.presentation.designsystem.SoporteSaiBlue30
 import org.propapel.prospeccion.core.presentation.designsystem.SuccessGreen
@@ -75,9 +70,6 @@ import org.propapel.prospeccion.root.presentation.leads.LeadSMState
 import org.propapel.prospeccion.root.presentation.leads.UiState
 import org.propapel.prospeccion.root.presentation.leads.components.ActionIcon
 import org.propapel.prospeccion.root.presentation.leads.components.SwipeableItemWithActions
-import prospeccion.composeapp.generated.resources.Res
-import prospeccion.composeapp.generated.resources.customer_person
-import prospeccion.composeapp.generated.resources.img_no_data
 
 @Composable
 fun LeadScreenMobile(
@@ -139,11 +131,6 @@ fun LeadScreenMobile(
                                 color = Color.Black
                             )
                         }
-                        Image(
-                            modifier = Modifier.size(100.dp).align(Alignment.BottomEnd),
-                            painter = painterResource(Res.drawable.customer_person),
-                            contentDescription = null
-                        )
                     }
                     Box(
                         modifier = Modifier
@@ -212,38 +199,10 @@ fun LeadScreenMobile(
 
             if (state.customers is UiState.Empty) {
                 item {
-                    Card(
-                        shape = RoundedCornerShape(30.dp),
-                        modifier = Modifier
-                            .padding(16.dp)
-                            .fillMaxWidth(),
-                        colors = CardDefaults.cardColors(containerColor = Color(0xFFf1f4f9))
-                    ) {
-                        Column(
-                            modifier = Modifier.fillParentMaxWidth().padding(16.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            Text(
-                                text = "Leads",
-                                fontSize = 20.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = Color(0xFF007BFF)
-                            )
-                            Image(
-                                painter = painterResource(Res.drawable.img_no_data),
-                                contentDescription = null,
-                                modifier = Modifier.size(150.dp).align(Alignment.CenterHorizontally)
-                            )
-                            Spacer(
-                                modifier = Modifier.height(8.dp)
-                            )
-                            Text(
-                                "No tienes leads registrados",
-                                style = MaterialTheme.typography.bodyMedium
-                            )
-
-                        }
-                    }
+                    GenericContentLoading.GenericEmptyContent(
+                        modifier = Modifier.fillMaxWidth().height(300.dp),
+                        text = "No tienes leads agregados"
+                    )
                 }
             } else if (state.customers is UiState.Success) {
                 val pageSize = 5
@@ -350,20 +309,19 @@ fun LeadScreenMobile(
             item {
                 GenericContentLoading(
                     modifier = Modifier.height(400.dp),
-                    data = state.customers,
+                    data = state.remindersList,
                     retry = {
                         onAction(LeadAction.OnRetryCustomer)
                     },
                     success = {
                         DonutChartInteractions(
-                            customers = it
+                            reminders = it
                         )
                     }
                 )
             }
             item {
                 GenericContentLoading(
-                    modifier = Modifier.height(500.dp),
                     data = state.customers,
                     retry = {
                         onAction(LeadAction.OnRetryCustomer)

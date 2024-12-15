@@ -51,8 +51,6 @@ fun GoalCard(
 ) {
     val percentage = (currentValue / goalValue).coerceIn(0f, 1f)  // Calcular el porcentaje de avance
     val formattedPercentage = (percentage * 100).toInt()          // Formatear a porcentaje entero
-    val windowClass = calculateWindowSizeClass()
-    val showNavigationRail = windowClass.widthSizeClass != WindowWidthSizeClass.Compact
 
     Box(modifier = Modifier) {  // Asegúrate de que el modificador se pase
         ElevatedCard(
@@ -101,7 +99,7 @@ fun GoalCard(
                         height = 9.dp
                     )
                     Spacer(modifier = Modifier.height(8.dp))
-                    Text(text = "$formattedPercentage%", fontSize = 14.sp, color = Color.White)
+                    Text(text = "$formattedPercentage%", fontSize = 12.sp, color = Color.White)
                 }
             }
         }

@@ -11,6 +11,7 @@ pluginManagement {
             }
         }
         maven("https://jogamp.org/deployment/maven")
+        maven("https://maven.pkg.jetbrains.space/kotlin/p/wasm/experimental")
         mavenCentral()
         gradlePluginPortal()
     }
@@ -25,6 +26,8 @@ dependencyResolutionManagement {
                 includeGroupAndSubgroups("com.google")
             }
         }
+
+        maven("https://maven.pkg.jetbrains.space/kotlin/p/wasm/experimental")
         maven("https://jogamp.org/deployment/maven")
         mavenCentral()
     }

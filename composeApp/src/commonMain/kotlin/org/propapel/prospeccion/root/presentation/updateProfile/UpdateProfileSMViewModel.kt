@@ -21,6 +21,7 @@ class UpdateProfileSMViewModel(
 ): ViewModel() {
     private var _state = MutableStateFlow(UpdateProfileSMState())
     val state: StateFlow<UpdateProfileSMState> get() = _state.asStateFlow()
+
     init {
         viewModelScope.launch(Dispatchers.IO){
             _state.update {

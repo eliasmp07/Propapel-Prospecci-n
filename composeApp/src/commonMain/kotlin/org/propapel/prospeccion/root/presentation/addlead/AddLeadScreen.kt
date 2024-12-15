@@ -151,7 +151,6 @@ private fun AddLeadScreen(
                 ContainerState.HE_IS_INTERESTED_IN_A_PRODUCT -> {
                     HeIsInterestedInAProduct(
                         onAction = onAction,
-                        state = state
                     )
                 }
                 ContainerState.FINISH -> {

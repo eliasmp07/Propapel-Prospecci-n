@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -27,9 +26,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
@@ -92,24 +89,37 @@ fun ItemCustomerReminder(
                 // Right side with the date and schedule
                 Column(
                     modifier = Modifier
-                        .padding(16.dp)
+                        .padding(8.dp)
                         .weight(1f)
                         .fillMaxHeight(),
                     verticalArrangement = Arrangement.Center
                 ) {
-                    Text(
-                        text = "Mes: \n${monthGet(reminderDate.monthNumber)}",
-                        fontWeight = FontWeight.Medium,
-                        lineHeight = 12.sp,
-                        fontSize = 14.sp
-                    )
-                    Text(
-                        text = "Dia\n${reminderDate.date.dayOfWeekSpanish()}",
-                        lineHeight = 12.sp,
-                        fontWeight = FontWeight.Medium,
-                        fontSize = 14.sp
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = "Mes: ",
+                            style = MaterialTheme.typography.titleMedium
+                        )
+                        Text(
+                            text = monthGet(reminderDate.monthNumber),
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = Color.Gray
+                        )
+                    }
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = "Dia: ",
+                            style = MaterialTheme.typography.titleMedium
+                        )
+                        Text(
+                            text = reminderDate.date.dayOfWeekSpanish(),
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = Color.Gray
+                        )
+                    }
                 }
                 Text(text = "${reminderDate.hour}: ${reminderDate.minute} ${typeHour(reminderDate.hour)}", style = MaterialTheme.typography.titleSmall)
                 Box(

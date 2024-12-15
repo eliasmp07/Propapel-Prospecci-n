@@ -17,6 +17,7 @@ fun DashBoardScreenRoot(
     viewModel: DashboardSMViewModel,
     onDetailReminderCustomer: (String) -> Unit,
     onMoveLeadScreen: () -> Unit,
+    onWebView : (String) -> Unit,
     onCreateReminder: () -> Unit,
     onSearchLead: () -> Unit,
     user: AuthInfo,
@@ -29,6 +30,7 @@ fun DashBoardScreenRoot(
         windowSizeClass = windowSizeClass,
         onAction = { action ->
             when (action) {
+                is DashboardSMAction.OnWebViewClick -> onWebView(action.url)
                 DashboardSMAction.OnCreateReminderClick -> onCreateReminder()
                 is DashboardSMAction.OnDetailReminderCustomer -> {
                     onDetailReminderCustomer(action.idReminder)

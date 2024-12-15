@@ -88,3 +88,71 @@ fun PhotoProfileUpdate(
         }
     }
 }
+
+@Composable
+fun PhotoProfileUpdateWindows(
+    modifier: Modifier = Modifier,
+    size: Dp = 100.dp,
+    profile: String = "",
+    isClickeable: Boolean = true,
+    onClick: () -> Unit = {},
+    image: ByteArray = ByteArray(0),
+) {
+    Box(modifier = modifier) {
+        Box(
+            modifier = Modifier
+                .size(size)
+                .clip(CircleShape)
+                .border(
+                    BorderStroke(
+                        2.dp,
+                        MaterialTheme.colorScheme.onBackground
+                    ),
+                    CircleShape
+                )
+                .clickable(
+                    enabled = isClickeable
+                ) {
+                    onClick()
+                }
+        ) {
+            if (image.isEmpty()){
+                AsyncImage(
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                        .size(size - 20.dp)
+                        .clip(CircleShape)
+                        .background(MaterialTheme.colorScheme.background),
+                    contentScale = ContentScale.Crop,
+                    model = profile ,
+                    contentDescription = null
+                )
+            }else{
+                AsyncImage(
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                        .size(size - 20.dp)
+                        .clip(CircleShape)
+                        .background(MaterialTheme.colorScheme.background),
+                    contentScale = ContentScale.Crop,
+                    model = image ,
+                    contentDescription = null
+                )
+            }
+        }
+        Box(
+            modifier = Modifier
+                .padding(10.dp)
+                .size(size - 70.dp)
+                .clip(CircleShape)
+                .background(MaterialTheme.colorScheme.background)
+                .align(Alignment.BottomEnd),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                imageVector = Icons.Rounded.CameraAlt,
+                contentDescription = null,
+            )
+        }
+    }
+}

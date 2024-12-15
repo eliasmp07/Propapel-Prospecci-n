@@ -1,13 +1,18 @@
+@file:OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
+
 package org.propapel.prospeccion.root.presentation.addlead.components
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
@@ -19,6 +24,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
+import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -35,6 +42,7 @@ import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.number
 import kotlinx.datetime.toLocalDateTime
+import org.jetbrains.compose.resources.painterResource
 import org.propapel.prospeccion.core.presentation.designsystem.PrimaryViolet
 import org.propapel.prospeccion.core.presentation.designsystem.PrimaryVioletDark
 import org.propapel.prospeccion.core.presentation.designsystem.components.ProSalesActionButton
@@ -43,7 +51,11 @@ import org.propapel.prospeccion.root.data.dto.customer.InteractionType
 import org.propapel.prospeccion.root.presentation.addlead.AddLeadAction
 import org.propapel.prospeccion.root.presentation.addlead.AddLeadState
 import org.propapel.prospeccion.root.presentation.addlead.ContainerState
+import org.propapel.prospeccion.root.presentation.addlead.GenericContentWindowsSize
 import org.propapel.prospeccion.root.presentation.addlead.components.utils.KottieAnimationUtil
+import org.propapel.prospeccion.root.presentation.dashboard.isMobile
+import prospeccion.composeapp.generated.resources.Res
+import prospeccion.composeapp.generated.resources.calendar_date
 
 @Composable
 fun AddNewDateClientScreen(
@@ -54,10 +66,6 @@ fun AddNewDateClientScreen(
 
     val focusManager = LocalFocusManager.current
 
-    var showDatePicker by remember {
-        mutableStateOf(false)
-    }
-
     val currentDateTime = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
 
     // Extraer el mes actual y el año
@@ -67,6 +75,123 @@ fun AddNewDateClientScreen(
     var date by remember {
         mutableStateOf("${currentDateTime.dayOfMonth} / ${currentMonth.number} / $currentYear\"")
     }
+
+    val windowSizeClass = calculateWindowSizeClass()
+
+    if (windowSizeClass.isMobile){
+        AddNewDateClientScreenMobile(
+            state = state,
+            onAction = onAction
+        )
+    }else{
+        GenericContentWindowsSize(
+            content1 = {
+                Image(
+                    modifier = Modifier.weight(0.5f).aspectRatio(3f),
+                    painter = painterResource(
+                        Res.drawable.calendar_date
+                    ),
+                    contentDescription = null
+                )
+            },
+            brush =  Brush.verticalGradient(
+                0f to PrimaryViolet,
+                1f to PrimaryVioletDark
+            ) ,
+            onCloseScreen = {
+                onAction(AddLeadAction.OnBackClick)
+            },
+            content2 = {
+                Text(
+                    modifier = Modifier.align(Alignment.CenterHorizontally),
+                    text = "Informacion de la interacion",
+                    fontWeight = FontWeight.ExtraBold,
+                    style = MaterialTheme.typography.headlineSmall,
+                    color = Color.White
+                )
+                Spacer(
+                    modifier = Modifier.height(32.dp)
+                )
+                ProSalesTextField(
+                    title = "Fecha de la visita del dia de hoy",
+                    readOnly = true,
+                    colors = Color.White,
+                    state = "${currentDateTime.dayOfMonth}/${currentMonth.number}/$currentYear",
+                    onTextChange = {
+
+                    },
+                    startIcon = Icons.Filled.DateRange,
+                    maxLines = 104
+                )
+                Spacer(
+                    modifier = Modifier.height(8.dp)
+                )
+                ExposedDropdownMenuTypeAppointment(
+                    title = "Tipo de interaccion",
+                    listOptions = listOf(
+                        InteractionType.EMAIL, InteractionType.LLAMADA, InteractionType.REUNION_REMOTA, InteractionType.PRESENCIAL
+                    ),
+                    optionSelectable = state.typeDate,
+                    optionSelectableClick = {
+                        onAction(AddLeadAction.OnTypeDateChange(it))
+                    }
+                )
+                Spacer(
+                    modifier = Modifier.height(8.dp)
+                )
+                ProSalesTextField(
+                    title = "Comentarios sobre la cita",
+                    colors = Color.White,
+                    state = state.notes,
+                    onTextChange = {
+                        onAction(AddLeadAction.OnNoteChange(it))
+                    },
+                    startIcon = Icons.AutoMirrored.Filled.Notes,
+                    maxLines = 104,
+                    keyboardOptions = KeyboardOptions(
+                        imeAction = androidx.compose.ui.text.input.ImeAction.Done,
+                        keyboardType = androidx.compose.ui.text.input.KeyboardType.Text
+                    ),
+                    keyboardActions = KeyboardActions(
+                        onDone = {
+                            focusManager.clearFocus()
+                        }
+                    )
+                )
+                Spacer(
+                    modifier = Modifier.height(32.dp)
+                )
+                ProSalesActionButton(
+                    text = "Guardar",
+                    textColor = Color.White,
+                    shape = RoundedCornerShape(21.dp),
+                    isLoading = false,
+                    onClick = {
+                        onAction(AddLeadAction.OnNextScreenClick(ContainerState.HE_IS_INTERESTED_IN_A_PRODUCT))
+                    }
+                )
+                Spacer(
+                    modifier = Modifier.height(8.dp)
+                )
+            }
+        )
+    }
+}
+
+@Composable
+fun AddNewDateClientScreenMobile(
+    modifier: Modifier = Modifier,
+    state: AddLeadState,
+    onAction: (AddLeadAction) -> Unit
+){
+    val focusManager = LocalFocusManager.current
+
+    val currentDateTime = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
+
+    // Extraer el mes actual y el año
+    val currentMonth = currentDateTime.month
+    val currentYear = currentDateTime.year
+
 
     Column(
         modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()).background(
@@ -161,15 +286,6 @@ fun AddNewDateClientScreen(
         )
         Spacer(
             modifier = Modifier.height(8.dp)
-        )
-    }
-    if (showDatePicker) {
-        DatePickerDialog(
-            onDateSelected = { date = it },
-            onDateSelectedChange = {
-
-            },
-            onDismiss = { showDatePicker = false }
         )
     }
 }

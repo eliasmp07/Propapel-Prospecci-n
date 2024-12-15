@@ -55,7 +55,10 @@ import org.propapel.prospeccion.root.presentation.dashboard.DashboardSMState
 import org.propapel.prospeccion.root.presentation.dashboard.components.mobile.Banner
 import org.propapel.prospeccion.root.presentation.dashboard.components.mobile.BannerPaggerWindows
 import org.propapel.prospeccion.root.presentation.dashboard.components.mobile.GoalCard
+import org.propapel.prospeccion.root.presentation.leads.GenericContentLoading
 import org.propapel.prospeccion.root.presentation.leads.UiState
+import org.propapel.prospeccion.selectSucursal.presentation.dashboard.components.CardInfoDesktop
+import org.propapel.prospeccion.selectSucursal.presentation.dashboard.components.LeadSixMothProjects
 import prospeccion.composeapp.generated.resources.Res
 import prospeccion.composeapp.generated.resources.calendar_date
 import prospeccion.composeapp.generated.resources.customer_person
@@ -77,10 +80,12 @@ private fun providesItemsScreen(
                 val customerRecuperacion = state.myCustomer.value.filter { it.typeClient == TypeOfClient.RECUPERACIÓN.name }
 
                 ElevatedCard(
-                    shape = RoundedCornerShape(20.dp),
+                    shape = RoundedCornerShape(12.dp),
                     modifier = Modifier
-                        .fillMaxWidth(),
-                    elevation = CardDefaults.elevatedCardElevation(15.dp)
+                        .fillMaxWidth().height(500.dp),
+                    elevation = CardDefaults.elevatedCardElevation(15.dp),
+                    colors = CardDefaults.cardColors(containerColor = Color.White),
+
                 ) {
                     val testPieChartData: List<PieChartData> = listOf(
                         PieChartData(
@@ -114,89 +119,18 @@ private fun providesItemsScreen(
                             modifier = Modifier.height(8.dp)
                         )
                         PieChart(
-                            modifier = Modifier.size(300.dp).padding(top = 8.dp).align(Alignment.CenterHorizontally),
+                            modifier = Modifier.fillMaxSize().padding(top = 8.dp).align(Alignment.CenterHorizontally),
                             legendPosition = LegendPosition.DISAPPEAR,
                             pieChartData = testPieChartData,
                             descriptionStyle = TextStyle(fontSize = 12.sp),
                             ratioLineColor = Color.Black,
-                            textRatioStyle = TextStyle(
-                                color = Color.Black,
-                                fontSize = 12.sp
-                            ),
+                            textRatioStyle = MaterialTheme.typography.titleMedium,
                         )}}
             }
         },
         ItemScreen {
-            Row(
-                modifier = Modifier.fillMaxWidth().padding(start = 8.dp)
-            ){
-                ElevatedCard(
-                    modifier = Modifier.weight(0.5f).pointerHoverIcon(PointerIcon.Hand),
-                    shape = RoundedCornerShape(
-                        30.dp
-                    ),
-                    onClick = {
-                        onAction(DashboardSMAction.OnMoveLeadScreenClick)
-                    }
-                ) {
-                    Box{
-                        Column(
-                            modifier = Modifier.fillMaxWidth().height(200.dp).padding(16.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.Center
-                        ) {
-                            Text(
-                                text = "Agregar lead",
-                                style = MaterialTheme.typography.titleMedium,
-
-                            )
-                        }
-                        Image(
-                            modifier = Modifier.size(
-                                100.dp
-                            ).align(Alignment.BottomEnd),
-                            painter = painterResource(Res.drawable.customer_person),
-                            contentDescription = "customer_person",
-                        )
-                    }
-                }
-                Spacer(
-                    modifier = Modifier.width(16.dp)
-                )
-                ElevatedCard(
-                    modifier = Modifier.weight(0.5f).pointerHoverIcon(PointerIcon.Hand),
-                    shape = RoundedCornerShape(
-                        30.dp
-                    ),
-                    onClick = {
-                        onAction(DashboardSMAction.OnCreateReminderClick)
-                    }
-                ) {
-                    Box{
-                        Column(
-                            modifier = Modifier.fillMaxWidth().height(200.dp).padding(16.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.Center
-                        ) {
-                            Text(
-                                text = "Crear cita",
-                                style = MaterialTheme.typography.titleMedium,
-                            )
-                        }
-                        Image(
-                            modifier = Modifier.size(
-                                100.dp
-                            ).align(Alignment.BottomEnd),
-                            painter = painterResource(Res.drawable.calendar_date),
-                            contentDescription = "customer_person",
-                        )
-                    }
-                }
-            }
-        },
-        ItemScreen {
             CalendarDatesCard(
-                modifier = Modifier.padding(8.dp),
+                modifier = Modifier,
                 state = state,
                 onAction = onAction
             )
@@ -223,40 +157,47 @@ fun DashboardScreenWindows(
             modifier = Modifier.weight(1f).fillMaxWidth().padding(16.dp),
             columns = StaggeredGridCells.Fixed(2),
         ){
-            item(
-                span = StaggeredGridItemSpan.FullLine
-            ){
-                BannerPaggerWindows(
-                    items = listOf(
-                        Pair(
-                            null
-                        ) {
-                            GoalCard(
-                                modifier = Modifier.fillMaxWidth().height(500.dp),
-                                title = "Mi objetivo",
-                                currentValue = state.totalRemindersMoth.toFloat(),
-                                goalValue = 10f,
-                                icon = Icons.Filled.Flag,
-                                background = SuccessGreen
-                            )
+            if(state.banners  is UiState.Success) {
+                item(
+                    span = StaggeredGridItemSpan.FullLine
+                ) {
+                    GenericContentLoading(
+                        modifier = Modifier.fillMaxWidth().height(500.dp),
+                        data = state.banners,
+                        retry = {
+
                         },
-                        Pair(
-                            Banner(
-                                id = 2,
-                                description = "Oferta especial",
-                                imageUrl = "https://firebasestorage.googleapis.com/v0/b/prosales-c49e5.appspot.com/o/SAI%20(2)-1200x400.jpg?alt=media&token=8b021601-63fc-4c9b-872e-0687c2610da0"
+                        success = {
+                            val banners: List<Banner> = it
+                            val items: List<Pair<Banner?, @Composable () -> Unit>> = banners.map { banner ->
+                                Pair(banner) {
+
+                                }
+                            }
+                            val itemsMutable = items.toMutableList()
+                            itemsMutable.add(
+                                Pair(
+                                    null
+                                ) {
+                                    GoalCard(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        title = "Mi objetivo",
+                                        currentValue = state.totalRemindersMoth.toFloat(),
+                                        goalValue = 10f,
+                                        icon = Icons.Filled.Flag,
+                                        background = SuccessGreen
+                                    )
+                                },
                             )
-                        ) {},
-                        Pair(
-                            Banner(
-                                id = 3,
-                                description = "Otro descuento especial",
-                                imageUrl = "https://firebasestorage.googleapis.com/v0/b/prosales-c49e5.appspot.com/o/banner_prueba.jpg?alt=media&token=ebc7287c-5c11-48ca-a354-e89f0864d2ae"
+                            BannerPaggerWindows(
+                                onClickBanner = {
+                                    onAction(DashboardSMAction.OnWebViewClick(it))
+                                },
+                                items = itemsMutable
                             )
-                        ) {
-                        },
+                        }
                     )
-                )
+                }
             }
             item(
                 span = StaggeredGridItemSpan.FullLine
@@ -273,6 +214,7 @@ fun DashboardScreenWindows(
                         val customerNew = listCustomer.value.filter { it.typeClient == TypeOfClient.NUEVO.name }
                         val customerDesarrollo = listCustomer.value.filter { it.typeClient == TypeOfClient.DESARROLLO.name }
                         val customerRecuperacion = listCustomer.value.filter { it.typeClient == TypeOfClient.RECUPERACIÓN.name }
+
 
                         DashboardCard(
                             title = "Clientes Totales",

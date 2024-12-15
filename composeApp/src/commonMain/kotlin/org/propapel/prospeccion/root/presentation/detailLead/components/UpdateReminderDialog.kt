@@ -27,13 +27,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import network.chaintech.kmp_date_time_picker.ui.datetimepicker.WheelDateTimePickerView
 import network.chaintech.kmp_date_time_picker.utils.DateTimePickerView
@@ -178,20 +176,15 @@ fun UpdateReminderDialog(
     )
     if (showDatePicker) {
         WheelDateTimePickerView(
+            doneLabel = "Aceptar",
             startDate = date,
             title = "Fecha y hora de la cita",
-            modifier = Modifier.padding(top = 18.dp, bottom = 10.dp).fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth(),
             showDatePicker = showDatePicker,
-            titleStyle = TextStyle(
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color(0xFF333333),
-            ),
+            titleStyle = MaterialTheme.typography.titleMedium,
             timeFormat = TimeFormat.AM_PM,
-            doneLabelStyle = TextStyle(
-                fontSize = 16.sp,
-                fontWeight = FontWeight(600),
-                color = Color(0xFF007AFF),
+            doneLabelStyle = MaterialTheme.typography.titleMedium.copy(
+                color = MaterialTheme.colorScheme.primary
             ),
             minDate = date,
             selectorProperties = WheelPickerDefaults.selectorProperties(
@@ -200,15 +193,13 @@ fun UpdateReminderDialog(
             dateTextColor = Color(0xff007AFF),
             rowCount = 5,
             height = 170.dp,
-            dateTextStyle = TextStyle(
-                fontWeight = FontWeight(600),
-            ),
+            dateTextStyle = MaterialTheme.typography.titleSmall,
             onDoneClick = {
                 onAction(DetailLeadAction.OnDateNextReminder(localDateTimeToLong(it)))
                 selectedDate = dateTimeToString(it, "dd-MM-yyyy hh:mm a")
                 showDatePicker = false
             },
-            dateTimePickerView = DateTimePickerView.DIALOG_VIEW,
+            dateTimePickerView = DateTimePickerView.BOTTOM_SHEET_VIEW,
             onDismiss = {
                 showDatePicker = false
             }

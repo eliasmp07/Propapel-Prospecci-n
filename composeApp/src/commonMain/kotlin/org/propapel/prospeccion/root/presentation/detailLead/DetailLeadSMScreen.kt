@@ -79,7 +79,7 @@ fun DetailCustomerSMScreenRoot(
     viewModel: DetailLeadViewModel,
     onUpdateCustomer: (String) -> Unit,
     onCreateProject: (String) -> Unit,
-    onAddInteractions: (String) -> Unit,
+    onAddInteractions: (String, String, Long) -> Unit,
     onDetailReminderLead: (String) -> Unit,
     onBack: () -> Unit
 ) {
@@ -90,7 +90,11 @@ fun DetailCustomerSMScreenRoot(
             when (action) {
                 is DetailLeadAction.OnCreateProject -> onCreateProject(action.customerId)
                 is DetailLeadAction.OnDetailReminderCustomer -> onDetailReminderLead(action.idReminder)
-                is DetailLeadAction.AddInteractionsClick -> onAddInteractions(action.idCustomer)
+                is DetailLeadAction.AddInteractionsClick -> onAddInteractions(
+                    action.idCustomer,
+                    action.reminderId,
+                    action.date
+                )
                 is DetailLeadAction.OnUpdateCustomerClick -> onUpdateCustomer(action.idCustomer)
                 DetailLeadAction.OnBackClick -> onBack()
                 else -> Unit
@@ -109,7 +113,10 @@ fun DetailCustomerSMScreen(
 ) {
 
     val sheetState = rememberModalBottomSheetState()
+
     val sheetStateProject = rememberModalBottomSheetState()
+
+
     val sheetStateCloseAppointment = rememberModalBottomSheetState()
 
     val scope = rememberCoroutineScope()
@@ -297,8 +304,6 @@ fun DetailCustomerSMScreen(
                                 }
                             )
                         }
-
-
                     }
                 }
                 if (state.showCancelNotification) {
@@ -380,6 +385,9 @@ fun DetailCustomerSMScreen(
                 }
             }
         }
+    }
+    if (state.isDeletingProject){
+        LoadingPropapel()
     }
     if (showBottomSheet) {
         ModalBottomSheetDeleteProject(

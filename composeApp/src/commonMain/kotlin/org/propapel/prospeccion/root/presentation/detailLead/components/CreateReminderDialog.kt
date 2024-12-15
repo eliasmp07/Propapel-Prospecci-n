@@ -35,20 +35,16 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
-import kotlinx.datetime.Clock
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toLocalDateTime
 import network.chaintech.kmp_date_time_picker.ui.datetimepicker.WheelDateTimePickerView
 import network.chaintech.kmp_date_time_picker.utils.DateTimePickerView
 import network.chaintech.kmp_date_time_picker.utils.TimeFormat
 import network.chaintech.kmp_date_time_picker.utils.WheelPickerDefaults
-import network.chaintech.kmp_date_time_picker.utils.dateTimeToString
 import org.propapel.prospeccion.core.presentation.designsystem.components.ProSalesActionButtonOutline
 import org.propapel.prospeccion.core.presentation.designsystem.components.ProSalesTextField
-import org.propapel.prospeccion.core.presentation.ui.typeHour
 import org.propapel.prospeccion.root.presentation.addlead.components.localDateTimeToLong
 import org.propapel.prospeccion.root.presentation.createProject.componetns.ExposedDropdownMenuGereric
 import org.propapel.prospeccion.root.presentation.createReminder.components.utils.provideTypeOfAppointment
+import org.propapel.prospeccion.root.presentation.dashboard.components.monthGet
 import org.propapel.prospeccion.root.presentation.detailLead.DetailLeadAction
 import org.propapel.prospeccion.root.presentation.detailLead.DetailLeadSMState
 
@@ -62,9 +58,6 @@ fun CreateReminderDialog(
     var showDatePicker by remember {
         mutableStateOf(false)
     }
-
-    val date = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
-    var selectedDate by remember { mutableStateOf("${date.dayOfMonth}-${date.monthNumber}-${date.year} ${date.hour}:${date.minute} ${typeHour(date.hour)}") }
 
     val focusManager = LocalFocusManager.current
     Dialog(
@@ -111,7 +104,7 @@ fun CreateReminderDialog(
                             showDatePicker = true
                         },
                         colors = Color.Black,
-                        state = selectedDate,
+                        state = "${state.date.dayOfMonth}/${monthGet(state.date.monthNumber)}/${state.date.year}",
                         onTextChange = {
 
                         },
@@ -180,8 +173,9 @@ fun CreateReminderDialog(
     )
     if (showDatePicker) {
         WheelDateTimePickerView(
+            doneLabel = "Aceptar",
             title = "Fecha y hora de la cita",
-            modifier = Modifier.padding(top = 18.dp, bottom = 10.dp).fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth(),
             showDatePicker = showDatePicker,
             titleStyle = TextStyle(
                 fontSize = 18.sp,
@@ -200,15 +194,12 @@ fun CreateReminderDialog(
             dateTextColor = Color(0xff007AFF),
             rowCount = 5,
             height = 170.dp,
-            dateTextStyle = TextStyle(
-                fontWeight = FontWeight(600),
-            ),
+            dateTextStyle = MaterialTheme.typography.bodyMedium,
             onDoneClick = {
                 onAction(DetailLeadAction.OnDateNextReminder(localDateTimeToLong(it)))
-                selectedDate = dateTimeToString(it, "dd-MM-yyyy hh:mm a")
                 showDatePicker = false
             },
-            dateTimePickerView = DateTimePickerView.DIALOG_VIEW,
+            dateTimePickerView = DateTimePickerView.BOTTOM_SHEET_VIEW,
             onDismiss = {
                 showDatePicker = false
             }

@@ -1,4 +1,7 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
+@file:OptIn(
+    ExperimentalMaterial3Api::class,
+    ExperimentalMaterial3WindowSizeClassApi::class
+)
 
 package org.propapel.prospeccion.root.presentation.addlead.components
 
@@ -12,6 +15,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
@@ -25,6 +29,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
+import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -58,9 +64,11 @@ import org.propapel.prospeccion.core.presentation.ui.typeHour
 import org.propapel.prospeccion.root.presentation.addlead.AddLeadAction
 import org.propapel.prospeccion.root.presentation.addlead.AddLeadState
 import org.propapel.prospeccion.root.presentation.addlead.ContainerState
+import org.propapel.prospeccion.root.presentation.addlead.GenericContentWindowsSize
 import org.propapel.prospeccion.root.presentation.addlead.components.utils.KottieAnimationUtil
 import org.propapel.prospeccion.root.presentation.createProject.componetns.ExposedDropdownMenuGereric
 import org.propapel.prospeccion.root.presentation.createReminder.components.utils.provideTypeOfAppointment
+import org.propapel.prospeccion.root.presentation.dashboard.isMobile
 
 @Composable
 fun AddInfoRemiderAppointmentScreen(
@@ -77,8 +85,180 @@ fun AddInfoRemiderAppointmentScreen(
     var selectedDate by remember { mutableStateOf("${date.dayOfMonth}-${date.monthNumber}-${date.year} ${date.hour}:${date.minute} ${typeHour(date.hour)}") }
 
 
+    val windowSizeClass = calculateWindowSizeClass()
+
+    if (windowSizeClass.isMobile) {
+        AddInfoReminderAppointmentMobileScreen(
+            state = state,
+            onAction = onAction,
+            selectedDate = selectedDate,
+            focusManager = focusManager,
+            onShowDatePicker = {
+                showDatePicker = true
+            }
+        )
+    } else {
+        GenericContentWindowsSize(
+            onCloseScreen = {
+
+            },
+            brush = Brush.verticalGradient(
+                colors = listOf(
+                    Color(0xFF00BCD4),
+                    Color(0xFF009688),
+                    Color(0xFF00796B)
+                )
+            ),
+            content1 = {
+                KottieAnimationUtil(
+                    modifier = Modifier.weight(0.5f).padding(12.dp).aspectRatio(3f),
+                    fileRoute = "files/anim_add_info_reminder.json"
+                )
+            },
+            content2 = {
+                Text(
+                    modifier = Modifier.align(Alignment.CenterHorizontally),
+                    text = "Informacion de la siguiente interaccion",
+                    textAlign = TextAlign.Center,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White,
+                    style = MaterialTheme.typography.headlineSmall,
+                )
+                Spacer(
+                    modifier = Modifier.height(32.dp)
+                )
+                ProSalesTextField(
+                    title = "Fecha y hora:",
+                    readOnly = true,
+                    modifierTextField = Modifier.clickable {
+                        showDatePicker = true
+                    },
+                    colors = Color.White,
+                    state = selectedDate,
+                    onTextChange = {
+
+                    },
+                    startIcon = Icons.Filled.DateRange,
+                    maxLines = 104
+                )
+                Spacer(
+                    modifier = Modifier.height(8.dp)
+                )
+                var expandedProducts by remember {
+                    mutableStateOf(false)
+                }
+                ExposedDropdownMenuGereric(
+                    title = "Tipo de cita",
+                    state = expandedProducts,
+                    optionSelectable = state.typeAppointment,
+                    colors = Color.White,
+                    listOptions = provideTypeOfAppointment(),
+                    onDimiss = {
+                        expandedProducts = !expandedProducts
+                    },
+                    content = {
+                        DropdownMenuItem(
+                            text = { androidx.compose.material.Text(text = it.toString()) },
+                            onClick = {
+                                expandedProducts = !expandedProducts
+                                onAction(AddLeadAction.OnTypeAppointmentChange(it.name))
+                            }
+                        )
+                    }
+                )
+                Spacer(
+                    modifier = Modifier.height(8.dp)
+                )
+                ProSalesTextField(
+                    title = "Notas para la proxima cita",
+                    state = state.descriptionNextAppointment,
+                    onTextChange = {
+                        onAction(AddLeadAction.OnDescriptionNextReminderChange(it))
+                    },
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Text,
+                        imeAction = ImeAction.Done
+                    ),
+                    keyboardActions = KeyboardActions(
+                        onNext = {
+                            focusManager.clearFocus()
+                        }
+                    ),
+                    colors = Color.White,
+                    startIcon = Icons.AutoMirrored.Filled.Notes,
+                    maxLines = 104
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                ProSalesActionButton(
+                    text = "Guardar",
+                    shape = RoundedCornerShape(12.dp),
+                    textColor = Color.White,
+                    isLoading = false,
+                    onClick = {
+                        onAction(AddLeadAction.OnNextScreenClick(ContainerState.FINISH))
+                    }
+                )
+            }
+        )
+    }
+
+    if (showDatePicker) {
+        WheelDateTimePickerView(
+            title = "Fecha y hora de la cita",
+            modifier = Modifier.padding(
+                top = 18.dp,
+                bottom = 10.dp
+            ).fillMaxWidth(),
+            showDatePicker = showDatePicker,
+            titleStyle = TextStyle(
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color(0xFF333333),
+            ),
+            doneLabel = "Seleccionar",
+            doneLabelStyle = TextStyle(
+                fontSize = 16.sp,
+                fontWeight = FontWeight(600),
+                color = Color(0xFF007AFF),
+            ),
+            selectorProperties = WheelPickerDefaults.selectorProperties(
+                borderColor = Color.LightGray,
+            ),
+            timeFormat = TimeFormat.AM_PM,
+            dateTextColor = Color(0xff007AFF),
+            rowCount = 5,
+            height = 170.dp,
+            dateTextStyle = TextStyle(
+                fontWeight = FontWeight(600),
+            ),
+            onDoneClick = {
+                onAction(AddLeadAction.OnDateNextReminder(localDateTimeToLong(it)))
+                if (state.isDateAvailable) {
+                    selectedDate = dateTimeToString(
+                        it,
+                        "dd-MM-yyyy hh:mm a"
+                    )
+                    showDatePicker = false
+                }
+            },
+            dateTimePickerView = DateTimePickerView.DIALOG_VIEW,
+            onDismiss = {
+                showDatePicker = false
+            }
+        )
+    }
+}
+
+@Composable
+fun AddInfoReminderAppointmentMobileScreen(
+    state: AddLeadState,
+    selectedDate: String,
+    focusManager: FocusManager,
+    onAction: (AddLeadAction) -> Unit,
+    onShowDatePicker: () -> Unit,
+) {
     Column(
-        modifier = modifier.background(
+        modifier = Modifier.background(
             Brush.verticalGradient(
                 colors = listOf(
                     Color(0xFF00BCD4), // Cian claro
@@ -117,7 +297,7 @@ fun AddInfoRemiderAppointmentScreen(
             title = "Fecha y hora:",
             readOnly = true,
             modifierTextField = Modifier.clickable {
-                showDatePicker = true
+                onShowDatePicker()
             },
             colors = Color.White,
             state = selectedDate,
@@ -140,7 +320,7 @@ fun AddInfoRemiderAppointmentScreen(
             colors = Color.White,
             listOptions = provideTypeOfAppointment(),
             onDimiss = {
-               expandedProducts = !expandedProducts
+                expandedProducts = !expandedProducts
             },
             content = {
                 DropdownMenuItem(
@@ -189,54 +369,7 @@ fun AddInfoRemiderAppointmentScreen(
             modifier = Modifier.height(8.dp)
         )
     }
-    if (showDatePicker) {
-        WheelDateTimePickerView(
-            title = "Fecha y hora de la cita",
-            modifier = Modifier.padding(
-                top = 18.dp,
-                bottom = 10.dp
-            ).fillMaxWidth(),
-            showDatePicker = showDatePicker,
-            titleStyle = TextStyle(
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color(0xFF333333),
-            ),
-            doneLabel = "Seleccionar",
-            doneLabelStyle = TextStyle(
-                fontSize = 16.sp,
-                fontWeight = FontWeight(600),
-                color = Color(0xFF007AFF),
-            ),
-            selectorProperties = WheelPickerDefaults.selectorProperties(
-                borderColor = Color.LightGray,
-            ),
-            timeFormat = TimeFormat.AM_PM,
-            dateTextColor = Color(0xff007AFF),
-            rowCount = 5,
-            height = 170.dp,
-            dateTextStyle = TextStyle(
-                fontWeight = FontWeight(600),
-            ),
-            onDoneClick = {
-                onAction(AddLeadAction.OnDateNextReminder(localDateTimeToLong(it)))
-                if (state.isDateAvailable) {
-                    selectedDate = dateTimeToString(
-                        it,
-                        "dd-MM-yyyy hh:mm a"
-                    )
-                    showDatePicker = false
-                }
-            },
-            dateTimePickerView = DateTimePickerView.DIALOG_VIEW,
-            onDismiss = {
-                showDatePicker = false
-            }
-        )
-    }
-
 }
-
 
 /**
  * Funcion que convierte el locaslDateTime a Long

@@ -5,6 +5,7 @@ data class Customer(
     val idCustomer: Int = 0,
     val companyName: String = "",
     val contactName: String = "",
+    val tags: List<String> = listOf(),
     val email: String = "",
     val progressLead: Double = 0.0,
     val typeClient: String = "",

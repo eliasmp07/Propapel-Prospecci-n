@@ -128,8 +128,8 @@ suspend inline fun <reified T> responseToResult(response: HttpResponse): ResultE
 
 fun constructRoute(route: String): String {
     return when {
-        route.contains(URLBackend.detectMode(false)) -> route
-        route.startsWith("/") -> URLBackend.detectMode(false) + route
-        else -> URLBackend.detectMode(false) + "/$route"
+        route.contains(URLBackend.detectMode(true)) -> route
+        route.startsWith("/") -> URLBackend.detectMode(true) + route
+        else -> URLBackend.detectMode(true) + "/$route"
     }
 }

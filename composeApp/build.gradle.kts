@@ -48,6 +48,8 @@ kotlin {
         }
         commonMain.dependencies {
 
+            api("io.github.kevinnzou:compose-webview-multiplatform:1.9.40")
+
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material3)
@@ -73,6 +75,8 @@ kotlin {
 
             implementation(libs.coil.compose)
             implementation(libs.coil.network.ktor)
+            implementation(libs.coil.compose.core)
+            implementation(libs.coil.mp)
 
             implementation("dev.chrisbanes.material3:material3-window-size-class-multiplatform:0.5.0")
 
@@ -85,7 +89,6 @@ kotlin {
             implementation(libs.androidx.sqlite.bundled)
 
             //Time picker
-
             implementation("network.chaintech:kmp-date-time-picker:1.0.6")
 
             //FILE PICKER
@@ -117,6 +120,9 @@ kotlin {
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutines.swing)
+            implementation(libs.ktor.client.java)
+            implementation( "org.apache.logging.log4j:log4j-slf4j2-impl:2.20.0")
+
         }
     }
 }
@@ -151,7 +157,9 @@ android {
     }
 }
 dependencies {
-    debugImplementation(libs.androidx.ui.tooling)
+    implementation(compose.desktop.currentOs)
+    implementation(libs.kotlinx.coroutines.swing)
+    implementation(libs.ktor.client.java)
 }
 
 
@@ -161,8 +169,30 @@ compose.desktop {
 
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = "org.propapel.prospeccion"
+            packageName = "Elias"
             packageVersion = "1.0.0"
+            description = "Aplicacion de prospeccion"
+            copyright = "© 2020 Propapel. Todos los derechos reservados."
+            vendor = "Propapel"
+            includeAllModules = true//Parametro necesario para que la aplicacino ejecute el guardado de sesion
+            windows{
+                iconFile.set(project.file("icon.ico"))
+                perUserInstall = true
+                console = false
+                shortcut = true
+                packageVersion = "1.0.0"
+                msiPackageVersion = "1.0.0"
+                exePackageVersion = "1.0.0"
+                packageName = "Prospeccion"
+            }
+        }
+
+        jvmArgs("--add-opens", "java.desktop/sun.awt=ALL-UNNAMED")
+        jvmArgs("--add-opens", "java.desktop/java.awt.peer=ALL-UNNAMED") // recommended but not necessary
+
+        if (System.getProperty("os.name").contains("Mac")) {
+            jvmArgs("--add-opens", "java.desktop/sun.lwawt=ALL-UNNAMED")
+            jvmArgs("--add-opens", "java.desktop/sun.lwawt.macosx=ALL-UNNAMED")
         }
     }
 }

@@ -7,6 +7,7 @@ import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
@@ -17,6 +18,7 @@ import org.propapel.prospeccion.core.domain.AuthInfo
 import org.propapel.prospeccion.core.domain.ResultExt
 import org.propapel.prospeccion.core.domain.SessionStorage
 import org.propapel.prospeccion.root.domain.repository.ReminderRepository
+import org.propapel.prospeccion.selectSucursal.domain.model.User
 
 class HomeRootViewModel(
     private val sessionStorage: SessionStorage,
@@ -26,14 +28,19 @@ class HomeRootViewModel(
 
     private var _state = MutableStateFlow(HomeSMRootState())
     val state: StateFlow<HomeSMRootState> get() = _state.asStateFlow()
+
+
     init {
         getAllMyReminders()
         viewModelScope.launch(Dispatchers.IO) {
-            _state.update {
-                it.copy(
-                    user = sessionStorage.get() ?: AuthInfo()
-                )
+            sessionStorage.getUserFlow().collectLatest { user ->
+                _state.update {
+                    it.copy(
+                        user = user?:AuthInfo()
+                    )
+                }
             }
+
         }
     }
 

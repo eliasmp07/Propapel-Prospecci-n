@@ -3,6 +3,9 @@ package org.propapel.prospeccion.root.presentation.detailLead
 import androidx.compose.runtime.Stable
 import androidx.compose.ui.graphics.Color
 import kotlinx.datetime.Clock
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import org.propapel.prospeccion.core.presentation.designsystem.SuccessGreen
 import org.propapel.prospeccion.core.presentation.ui.UiText
 import org.propapel.prospeccion.root.domain.models.Customer
@@ -16,6 +19,7 @@ data class DetailLeadSMState(
     val reminderClose: Reminder = Reminder(),
     val productsInterest: List<PurchaseRequest> = listOf(),
     val productInterest: String = "Seleccione una opción",
+    val date: LocalDateTime = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()),
     val congratulationsCloseProject: Boolean = false,
     val errorColor: Color = SuccessGreen,
     val isLoading: Boolean = false,

@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalMaterialApi::class)
+
 package org.propapel.prospeccion.root.presentation.dates.components.mobile
 
 import androidx.compose.foundation.background
@@ -12,6 +14,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.pullrefresh.PullRefreshIndicator
+import androidx.compose.material.pullrefresh.pullRefresh
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -30,16 +36,18 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import org.propapel.prospeccion.core.presentation.designsystem.PrimaryYellowLight
 import org.propapel.prospeccion.core.presentation.designsystem.SoporteSaiBlue30
+import org.propapel.prospeccion.core.presentation.ui.extensions.minusMonths
+import org.propapel.prospeccion.core.presentation.ui.extensions.plusMonths
+import org.propapel.prospeccion.core.presentation.ui.utils.generateDatesForMonth
 import org.propapel.prospeccion.root.presentation.dates.CalendarView
+import org.propapel.prospeccion.root.presentation.dates.DatesAction
 import org.propapel.prospeccion.root.presentation.dates.DatesSMState
 import org.propapel.prospeccion.root.presentation.dates.DisplayAppointments
-import org.propapel.prospeccion.root.presentation.dates.generateDatesForMonth
-import org.propapel.prospeccion.root.presentation.dates.minusMonths
-import org.propapel.prospeccion.root.presentation.dates.plusMonths
 
 @Composable
 fun DatesScreenMobile(
-    state: DatesSMState
+    state: DatesSMState,
+    onAction: (DatesAction) -> Unit
 ) {
     val currentDateTime = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
     var currentMonth by remember { mutableStateOf(currentDateTime.date) }
@@ -47,8 +55,15 @@ fun DatesScreenMobile(
     // Estado para almacenar la fecha seleccionada
     var selectedDate by remember { mutableStateOf<LocalDate?>(null) }
 
+
+    val pullRefreshState =
+        rememberPullRefreshState(
+            state.isRefreshing,
+            { onAction(DatesAction.OnRefresh) })
+
+
     Box(
-        modifier = Modifier.fillMaxSize().background(
+        modifier = Modifier.fillMaxSize() .pullRefresh(pullRefreshState).background(
             Brush.verticalGradient(
                 0f to PrimaryYellowLight,
                 0.6f to SoporteSaiBlue30,
@@ -132,5 +147,11 @@ fun DatesScreenMobile(
                 }
             }
         }
+        PullRefreshIndicator(
+            refreshing = state.isRefreshing,
+            state = pullRefreshState,
+            modifier = Modifier.align(Alignment.TopCenter)
+        )
     }
 }
+

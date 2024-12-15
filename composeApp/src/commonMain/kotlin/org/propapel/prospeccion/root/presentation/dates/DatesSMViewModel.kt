@@ -47,4 +47,36 @@ class DatesSMViewModel(
             }
         }
     }
+
+    fun onAction(
+        action: DatesAction
+    ){
+        when(action){
+            DatesAction.OnRefresh -> {
+                viewModelScope.launch(Dispatchers.IO) {
+                    val result = reminderRepository.getAllMyReminders()
+                    when(result){
+                        is ResultExt.Error ->{
+                            _state.update {
+                                it.copy(
+                                    datesReminders = listOf()
+                                )
+                            }
+                        }
+                        is ResultExt.Success -> {
+                            _state.update {
+                                val dates = result.data.map {
+                                    Instant.fromEpochMilliseconds(it.reminderDate.toLong()).toLocalDateTime(TimeZone.UTC).date
+                                }
+                                it.copy(
+                                    reminders = result.data,
+                                    datesReminders = dates
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 }

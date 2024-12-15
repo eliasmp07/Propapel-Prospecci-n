@@ -15,6 +15,7 @@ import kotlinx.datetime.toLocalDateTime
 import org.propapel.prospeccion.core.domain.ResultExt
 import org.propapel.prospeccion.core.presentation.ui.TimeUtils
 import org.propapel.prospeccion.core.presentation.ui.toImageAndTextError
+import org.propapel.prospeccion.root.domain.repository.BannerRepository
 import org.propapel.prospeccion.root.domain.repository.CustomerRepository
 import org.propapel.prospeccion.root.domain.repository.InteractionRepository
 import org.propapel.prospeccion.root.domain.repository.ReminderRepository
@@ -24,6 +25,7 @@ import org.propapel.prospeccion.root.presentation.leads.toState
 class DashboardSMViewModel(
     private val reminderRepository: ReminderRepository,
     private val customerRepository: CustomerRepository,
+    private val bannerRepository: BannerRepository,
     private val interactionRepository: InteractionRepository
 ) : ViewModel() {
 
@@ -31,6 +33,7 @@ class DashboardSMViewModel(
     val state: StateFlow<DashboardSMState> get() = _state.asStateFlow()
 
     init {
+        getAllBanners()
         getAllMyReminders()
         getMyCustomer()
     }
@@ -52,6 +55,29 @@ class DashboardSMViewModel(
                 onRefresh() // Llama el método de refresco separado
             }
             else -> Unit
+        }
+    }
+
+    private fun getAllBanners(){
+        viewModelScope.launch(Dispatchers.IO){
+            val result = bannerRepository.getAllBanners()
+
+            when(result){
+                is ResultExt.Error -> {
+                    _state.update {
+                        it.copy(
+                            banners = UiState.Error(result.error.toImageAndTextError())
+                        )
+                    }
+                }
+                is ResultExt.Success -> {
+                    _state.update {
+                        it.copy(
+                            banners = result.data.toState()
+                        )
+                    }
+                }
+            }
         }
     }
 

@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
@@ -36,10 +35,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import kotlinx.datetime.Clock
 import kotlinx.datetime.toLocalDateTime
+import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
-import org.propapel.prospeccion.core.presentation.designsystem.SoporteSaiBlack
 import org.propapel.prospeccion.core.presentation.designsystem.SoporteSaiBlue
-import org.propapel.prospeccion.core.presentation.designsystem.SoporteSaiWhite
 import org.propapel.prospeccion.core.presentation.designsystem.SuccessGreen
 import org.propapel.prospeccion.core.presentation.ui.extensions.previousMoth
 import org.propapel.prospeccion.selectSucursal.domain.model.CustomerUser
@@ -47,9 +45,10 @@ import prospeccion.composeapp.generated.resources.Res
 import prospeccion.composeapp.generated.resources.customer_person
 
 @Composable
-fun CardGenericInfoDesktop(
+fun CardCustomerInfoDesktop(
     modifier: Modifier = Modifier,
     title: String,
+    image: DrawableResource= Res.drawable.customer_person,
     colorCustomer: Color = SoporteSaiBlue,
     customers: List<CustomerUser>,
 ) {
@@ -60,7 +59,7 @@ fun CardGenericInfoDesktop(
         Column(
             modifier = Modifier.fillMaxWidth().padding(16.dp),
         ){
-            Content(title = title, count = customers.size, color = colorCustomer)
+            Content(title = title, count = customers.size, color = colorCustomer, image = image )
             Spacer(
                 modifier = Modifier.height(16.dp)
             )
@@ -198,6 +197,7 @@ fun ContentValidateLastMoth(
 fun Content(
     title: String = "",
     count: Int,
+    image: DrawableResource,
     color: Color = SoporteSaiBlue,
     modifier: Modifier = Modifier
 ) {
@@ -229,7 +229,7 @@ fun Content(
             contentAlignment = Alignment.Center
         ) {
             Image(
-                painter = painterResource(Res.drawable.customer_person),
+                painter = painterResource(image),
                 contentDescription = null
             )
         }

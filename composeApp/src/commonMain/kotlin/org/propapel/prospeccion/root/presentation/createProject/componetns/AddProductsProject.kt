@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
@@ -20,6 +21,7 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Text
+import androidx.compose.material.TextButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
@@ -53,6 +55,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.vectorResource
 import org.propapel.prospeccion.core.presentation.designsystem.SuccessGreen
 import org.propapel.prospeccion.core.presentation.designsystem.components.ProSalesActionButton
 import org.propapel.prospeccion.core.presentation.designsystem.components.util.animateEnterRight
@@ -61,6 +64,8 @@ import org.propapel.prospeccion.root.presentation.addlead.components.utils.ProSa
 import org.propapel.prospeccion.root.presentation.createProject.CreateProjectAction
 import org.propapel.prospeccion.root.presentation.createProject.CreateProjectScreenState
 import org.propapel.prospeccion.root.presentation.createProject.CreateProjectState
+import prospeccion.composeapp.generated.resources.Res
+import prospeccion.composeapp.generated.resources.ic_product_otline
 
 val BottomSheetScaffoldState.isVisibleBottomSheet: Boolean get() = bottomSheetState.currentValue == SheetValue.Expanded
 
@@ -78,7 +83,7 @@ fun AddProductsProject(
         )
     )
 
-    LaunchedEffect(state.successCreateProduct){
+    LaunchedEffect(state.successCreateProduct) {
         if (scaffoldState.isVisibleBottomSheet) {
             scope.launch {
                 scaffoldState.bottomSheetState.hide()
@@ -94,11 +99,53 @@ fun AddProductsProject(
         mutableStateOf(false)
     }
 
+    var otherProduct by remember {
+        mutableStateOf(false)
+    }
+
 
     BottomSheetScaffold(
         modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()),
         sheetTonalElevation = 0.dp,
         sheetShadowElevation = 30.dp,
+        sheetDragHandle = {
+            Row(
+                modifier = Modifier.fillMaxWidth().padding(8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    imageVector = vectorResource(Res.drawable.ic_product_otline),
+                    contentDescription = null
+                )
+                Spacer(
+                    modifier = Modifier.width(8.dp)
+                )
+                Text(
+                    text = "Crear producto",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = Color.Black
+                )
+                Spacer(
+                    modifier = Modifier.weight(1f)
+                )
+                TextButton(
+                    onClick = {
+                        if (scaffoldState.isVisibleBottomSheet) {
+                            scope.launch {
+                                scaffoldState.bottomSheetState.hide()
+                            }
+                        }
+                    },
+                    content = {
+                        Text(
+                            text = "Cancelar",
+                            style = MaterialTheme.typography.titleMedium,
+                            color = MaterialTheme.colorScheme.error
+                        )
+                    }
+                )
+            }
+        },
         sheetPeekHeight = 0.dp,
         sheetContainerColor = Color.White,
         scaffoldState = scaffoldState,
@@ -107,29 +154,56 @@ fun AddProductsProject(
             val focusManager = LocalFocusManager.current
             Column(
                 modifier = Modifier.fillMaxSize().padding(16.dp).verticalScroll(rememberScrollState())
-            ){
-                ExposedDropdownMenuGereric(
-                    title = "Productos Propapel",
-                    state = expandedProducts2,
-                    listOptions = provideProductsPropapel(),
-                    onDimiss = {
-                        expandedProducts2 = !expandedProducts2
-                    },
-                    optionSelectable = state.productServiceName,
-                    colors = Color.Black,
-                    content = {
-                        DropdownMenuItem(
-                            text = { Text(text = it.name) },
-                            onClick = {
-                                expandedProducts2 = !expandedProducts2
-                                onAction(CreateProjectAction.OnProductNameChange(it.name))
-                            }
-                        )
-                    }
-                )
+            ) {
+                if (!otherProduct) {
+                    ExposedDropdownMenuGereric(
+                        title = "Productos Propapel",
+                        state = expandedProducts2,
+                        error = state.nameProductError,
+                        listOptions = provideProductsPropapel(),
+                        onDimiss = {
+                            expandedProducts2 = !expandedProducts2
+                        },
+                        optionSelectable = state.productServiceName,
+                        colors = Color.Black,
+                        content = {
+                            DropdownMenuItem(
+                                text = { Text(text = it.toString()) },
+                                onClick = {
+                                    expandedProducts2 = !expandedProducts2
+                                    onAction(CreateProjectAction.OnProductNameChange(it.name))
+                                }
+                            )
+                        },
+                        otherClick = {
+                            otherProduct = true
+                            expandedProducts2 = !expandedProducts2
+                            focusManager.moveFocus(FocusDirection.Down)
+                        }
+                    )
+                }
+                /*
+                  var otherProductText by remember {
+                    mutableStateOf("")
+                }
+                AnimatedVisibility(
+                    visible = otherProduct
+                ) {
+                    ProSalesTextField(
+                        title = "Otro producto: ",
+                        state = otherProductText,
+                        onTextChange = {
+                            otherProductText = it
+                            onAction(CreateProjectAction.OnProductNameChange(it))
+                        }
+                    )
+                }
+                 */
+
                 ProSalesPriceTextField(
                     title = "Valor de la venta: ",
                     state = state.amoutProduct,
+                    error = state.priceError,
                     onTextChange = {
                         onAction(
                             CreateProjectAction.OnPriceProductChange(it)
@@ -160,7 +234,7 @@ fun AddProductsProject(
             }
         }
     ) { paddingValues ->
-        Column (
+        Column(
             modifier = Modifier.fillMaxSize().padding(
                 16.dp
             )
@@ -244,7 +318,6 @@ fun AddProductsProject(
 }
 
 
-
 @Composable
 fun ItemProduct(
     modifier: Modifier = Modifier,
@@ -286,14 +359,20 @@ fun ItemProduct(
                         }
                     }
                 ) {
-                    Icon(imageVector = Icons.Filled.Edit, contentDescription = null)
+                    Icon(
+                        imageVector = Icons.Filled.Edit,
+                        contentDescription = null
+                    )
                 }
                 IconButton(
                     onClick = {
                         onRemove(purchase)
                     }
                 ) {
-                    Icon(imageVector = Icons.Filled.Delete, contentDescription = null)
+                    Icon(
+                        imageVector = Icons.Filled.Delete,
+                        contentDescription = null
+                    )
                 }
             }
             Row(
@@ -322,23 +401,26 @@ fun ItemProduct(
                     IconButton(
                         modifier = Modifier.weight(0.1f),
                         onClick = {
-                          if (valueUpdate.isNotEmpty()){
-                              rememberValueAmount = valueUpdate // Guardamos el nuevo valor
-                              resultValue(
-                                  Purchase(
-                                      purcheseId = purchase.purcheseId,
-                                      productServiceName = purchase.productServiceName,
-                                      amount = valueUpdate,
-                                      purchaseDate = purchase.purchaseDate,
-                                      isIntoProduct = purchase.isIntoProduct
-                                  )
-                              ) // Enviamos el valor actualizado
-                              showEditValue = false // Cerramos el modo edición
-                              focusManager.clearFocus()
-                          }
+                            if (valueUpdate.isNotEmpty()) {
+                                rememberValueAmount = valueUpdate // Guardamos el nuevo valor
+                                resultValue(
+                                    Purchase(
+                                        purcheseId = purchase.purcheseId,
+                                        productServiceName = purchase.productServiceName,
+                                        amount = valueUpdate,
+                                        purchaseDate = purchase.purchaseDate,
+                                        isIntoProduct = purchase.isIntoProduct
+                                    )
+                                ) // Enviamos el valor actualizado
+                                showEditValue = false // Cerramos el modo edición
+                                focusManager.clearFocus()
+                            }
                         }
                     ) {
-                        Icon(imageVector = Icons.Filled.Save, contentDescription = null)
+                        Icon(
+                            imageVector = Icons.Filled.Save,
+                            contentDescription = null
+                        )
                     }
                 }
             }
@@ -346,7 +428,7 @@ fun ItemProduct(
     }
 }
 
-fun provideProductsPropapel(): List<ProductPropapel>{
+fun provideProductsPropapel(): List<ProductPropapel> {
     return listOf(
         ProductPropapel(
             name = "Computo",
@@ -357,8 +439,12 @@ fun provideProductsPropapel(): List<ProductPropapel>{
             emoji = "📡"
         ),
         ProductPropapel(
+            name = "Consumibles",
+            emoji = "✂️"
+        ),
+        ProductPropapel(
             name = "Papeleria",
-            emoji = ""
+            emoji = "🖨️"
         ),
         ProductPropapel(
             name = "Empaque",

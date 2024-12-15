@@ -38,6 +38,7 @@ import org.propapel.prospeccion.root.presentation.updateCustomer.UpdateLeadScree
 import org.propapel.prospeccion.root.presentation.updateCustomer.UpdateLeadViewModel
 import org.propapel.prospeccion.root.presentation.updateProfile.UpdateProfileSMSScreenRoot
 import org.propapel.prospeccion.root.presentation.updateProfile.UpdateProfileSMViewModel
+import org.propapel.prospeccion.root.presentation.webView.WebViewScreen
 import org.propapel.prospeccion.selectSucursal.presentation.root.GerentePanelScreen
 
 fun NavGraphBuilder.proSales(
@@ -50,10 +51,11 @@ fun NavGraphBuilder.proSales(
 
             val viewModel = koinViewModel<HomeRootViewModel>()
 
-            val state by viewModel.state.collectAsState()
             HomeScreen(
                 viewModel = viewModel,
-                state = state,
+                onWebViewClick = {
+                    navController.navigate(Destination.WebView(it))
+                },
                 onDarkTheme = {
 
                 },
@@ -84,6 +86,17 @@ fun NavGraphBuilder.proSales(
                 },
                 onUpdateLead = {
                     navController.navigate(Destination.UpdateLead(it))
+                }
+            )
+        }
+
+        composable<Destination.WebView> { navBackStackEntry ->
+            val url = navBackStackEntry.toRoute<Destination.WebView>().url
+
+            WebViewScreen(
+                url = url,
+                onBackClick = {
+                    navController.navigateUp()
                 }
             )
         }
@@ -138,8 +151,14 @@ fun NavGraphBuilder.proSales(
                 onDetailReminderLead = {
                     navController.navigate(Destination.DetailReminderCustomer(it))
                 },
-                onAddInteractions = {
-                    navController.navigate(Destination.CreateInteraction(it))
+                onAddInteractions = { customerId, reminderId, date ->
+                    navController.navigate(
+                        Destination.CreateInteraction(
+                            reminderId = reminderId,
+                            customerId = customerId,
+                            date = date
+                        )
+                    )
                 },
                 onBack = {
                     navController.navigateUp()
@@ -225,9 +244,15 @@ fun NavGraphBuilder.proSales(
         composable<Destination.CreateInteraction> { navBackStackEntry ->
             val viewModel = koinViewModel<CreateInteractionViewModel>()
             val customerId = navBackStackEntry.toRoute<Destination.CreateInteraction>().customerId
+            val reminderId = navBackStackEntry.toRoute<Destination.CreateInteraction>().reminderId
+            val date = navBackStackEntry.toRoute<Destination.CreateInteraction>().date
 
             LaunchedEffect(Unit) {
-                viewModel.onChangeIdCustomer(customerId)
+                viewModel.onChangeIdCustomer(
+                    idCustomer = customerId,
+                    reminderId = reminderId.toInt(),
+                    date = date
+                )
             }
 
             CreateInteractionLeadScreeRoot(

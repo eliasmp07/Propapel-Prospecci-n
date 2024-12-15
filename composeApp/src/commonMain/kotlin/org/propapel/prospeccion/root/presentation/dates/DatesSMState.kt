@@ -5,6 +5,7 @@ import org.propapel.prospeccion.root.domain.models.Reminder
 
 data class DatesSMState(
     val reminders: List<Reminder> = listOf(),
+    val isRefreshing: Boolean = false,
     val datesReminders: List<LocalDate> = listOf(),
     val isSelectedDate: Boolean = false
 )

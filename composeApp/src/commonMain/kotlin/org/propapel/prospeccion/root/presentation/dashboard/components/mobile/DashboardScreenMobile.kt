@@ -1,4 +1,5 @@
-@file:OptIn(ExperimentalMaterialApi::class)
+@file:OptIn(ExperimentalMaterialApi::class,
+)
 
 package org.propapel.prospeccion.root.presentation.dashboard.components.mobile
 
@@ -12,6 +13,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -23,7 +25,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.Flag
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Search
@@ -78,7 +79,6 @@ fun DashboardScreenMobile(
         rememberPullRefreshState(
             state.isRefreshing,
             { onAction(DashboardSMAction.OnRefresh) })
-
 
 
     Box(
@@ -155,7 +155,7 @@ fun DashboardScreenMobile(
                             )
                             Column {
                                 Text(
-                                    text = "Bienvenido",
+                                    text = "Bienvenido:",
                                     style = MaterialTheme.typography.headlineMedium,
                                     fontWeight = FontWeight.Bold,
                                     color = Color.White
@@ -176,7 +176,7 @@ fun DashboardScreenMobile(
                             Spacer(
                                 modifier = Modifier.weight(1f)
                             )
-                            if (user.image.isNotBlank()) {
+                            if (user.image.isNotEmpty()) {
                                 AsyncImage(
                                     model = user.image,
                                     contentDescription = "Image",
@@ -252,6 +252,7 @@ fun DashboardScreenMobile(
                                         onAction(DashboardSMAction.OnMoveLeadScreenClick)
                                     }
                                 )
+                                /*
                                 ButtonItemDirectAccess(
                                     modifier = Modifier.padding(8.dp).weight(1f),
                                     text = "Crear cita",
@@ -263,7 +264,7 @@ fun DashboardScreenMobile(
                                     onClick = {
                                         onAction(DashboardSMAction.OnCreateReminderClick)
                                     }
-                                )
+                                )*/
                                 ButtonItemDirectAccess(
                                     modifier = Modifier.padding(8.dp).weight(1f),
                                     text = "Buscar Lead",
@@ -289,43 +290,49 @@ fun DashboardScreenMobile(
                     modifier = Modifier.fillMaxWidth().padding(8.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    BannerPager(
-                        items = listOf(
-                            Pair(
-                                null
-                            ) {
-                                GoalCard(
-                                    title = "Mi objetivo",
-                                    currentValue = state.totalRemindersMoth.toFloat(),
-                                    goalValue = 10f,
-                                    icon = Icons.Filled.Flag,
-                                    background = SuccessGreen
-                                )
-                            },
-                            Pair(
-                                Banner(
-                                    id = 2,
-                                    description = "Oferta especial",
-                                    imageUrl = "https://firebasestorage.googleapis.com/v0/b/prosales-c49e5.appspot.com/o/SAI%20(2)-1200x400.jpg?alt=media&token=8b021601-63fc-4c9b-872e-0687c2610da0"
-                                )
-                            ) {},
-                            Pair(
-                                Banner(
-                                    id = 3,
-                                    description = "Otro descuento especial",
-                                    imageUrl = "https://firebasestorage.googleapis.com/v0/b/prosales-c49e5.appspot.com/o/banner_prueba.jpg?alt=media&token=ebc7287c-5c11-48ca-a354-e89f0864d2ae"
-                                )
-                            ) {
-                            },
-                        )
+                    GenericContentLoading(
+                        modifier = Modifier.aspectRatio(16/7f),
+                        data = state.banners,
+                        retry = {
+
+                        },
+                        success = {
+                            val banners: List<Banner> = it
+                            val items : List<Pair<Banner?, @Composable () -> Unit>> = banners.map { banner ->
+                                Pair(banner) {
+
+                                }
+                            }
+                            val itemsMutable = items.toMutableList()
+                            itemsMutable.add(
+                                Pair(
+                                    null
+                                ) {
+                                    GoalCard(
+                                        title = "Mi objetivo",
+                                        currentValue = state.totalRemindersMoth.toFloat(),
+                                        goalValue = 10f,
+                                        icon = Icons.Filled.Flag,
+                                        background = SuccessGreen
+                                    )
+                                },
+                            )
+                            BannerPager(
+                                onClickBanner = {
+                                    if (it.contains("https:")){
+                                        onAction(DashboardSMAction.OnWebViewClick(it))
+                                    }
+                                },
+                                items = itemsMutable
+                            )
+                        }
                     )
+
                 }
             }
             item {
                 GenericContentLoading(
-                    modifier = Modifier.height(
-                        530.dp
-                    ),
+                    modifier = Modifier,
                     data = state.myCustomer,
                     retry = {
                         onAction(DashboardSMAction.OnRefresh)
@@ -377,6 +384,8 @@ fun DashboardScreenMobile(
             modifier = Modifier.align(Alignment.TopCenter)
         )
     }
+
+
 
 
 }
