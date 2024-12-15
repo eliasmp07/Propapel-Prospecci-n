@@ -44,6 +44,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.delay
 import org.jetbrains.compose.resources.painterResource
@@ -53,6 +54,7 @@ import org.propapel.prospeccion.core.presentation.designsystem.PrimaryYellowLigh
 import org.propapel.prospeccion.core.presentation.designsystem.SoporteSaiBlue30
 import org.propapel.prospeccion.core.presentation.designsystem.components.ProSalesActionButton
 import org.propapel.prospeccion.core.presentation.designsystem.components.ProSalesTextField
+import org.propapel.prospeccion.core.presentation.designsystem.components.ProspeccionTextFieldAnimation
 import prospeccion.composeapp.generated.resources.Res
 import prospeccion.composeapp.generated.resources.logo
 
@@ -65,6 +67,7 @@ fun LoginScreenRoot(
     val state by viewModel.state.collectAsState()
 
     LaunchedEffect(key1 = state.loginSuccess) {
+        delay(2000)
         if (state.loginSuccess) {
             onLoginSuccess(state.user)
         }
@@ -139,21 +142,20 @@ private fun LoginScreen(
                     )
                     Spacer(Modifier.height(16.dp))
                     ProSalesTextField(
-                        title = "Correo electronico",
+                        hint = "Correo electronico",
                         startIcon = Icons.Default.Email,
-                        keyboardOptions = KeyboardOptions(
-                            imeAction = ImeAction.Next
-                        ),
                         error = state.emailError,
                         state = state.email,
-                        hint = "example@propapel.com.mx",
+                        keyboardOptions = KeyboardOptions(
+                            imeAction = ImeAction.Next,
+                            keyboardType = KeyboardType.Email
+                        ),
                         onTextChange = {
                             onAction(LoginAction.OnEmailChange(it))
                         }
                     )
                     Spacer(Modifier.height(8.dp))
                     ProSalesTextField(
-                        title = "Contraseña",
                         state = state.password,
                         hint = "Contraseña",
                         isPassword = true,
@@ -165,9 +167,6 @@ private fun LoginScreen(
                         keyboardOptions = KeyboardOptions(
                             imeAction = ImeAction.Done
                         ),
-                        isClickableText = {
-                            toggleDialogForgotPassword = !toggleDialogForgotPassword
-                        },
                     )
                     Spacer(Modifier.height(16.dp))
                     ProSalesActionButton(

@@ -1,5 +1,7 @@
-@file:OptIn(ExperimentalMaterial3Api::class,
-            ExperimentalMaterial3Api::class
+@file:OptIn(
+    ExperimentalMaterial3Api::class,
+    ExperimentalMaterial3Api::class,
+    ExperimentalMaterial3WindowSizeClassApi::class
 )
 
 package org.propapel.prospeccion.root.presentation.updateProfile
@@ -31,6 +33,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
+import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -45,13 +49,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.mohamedrejeb.calf.io.readByteArray
 import com.mohamedrejeb.calf.picker.FilePickerFileType
+import com.mohamedrejeb.calf.picker.FilePickerLauncher
 import com.mohamedrejeb.calf.picker.FilePickerSelectionMode
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.propapel.prospeccion.core.presentation.designsystem.components.LoadingPropapel
 import org.propapel.prospeccion.core.presentation.designsystem.components.ProSalesActionButton
 import org.propapel.prospeccion.core.presentation.designsystem.components.ProSalesTextField
+import org.propapel.prospeccion.root.presentation.dashboard.isMobile
 import org.propapel.prospeccion.root.presentation.updateProfile.components.PhotoProfileUpdate
+import org.propapel.prospeccion.root.presentation.updateProfile.components.PhotoProfileUpdateWindows
 
 
 @Composable
@@ -62,8 +69,8 @@ fun UpdateProfileSMSScreenRoot(
     val state by viewModel.state.collectAsState()
     UpdateProfileSMSScreen(
         state = state,
-        onAction = {action ->
-            when(action){
+        onAction = { action ->
+            when (action) {
                 UpdateProfileSMAction.OnBackClick -> onBack()
                 else -> Unit
             }
@@ -75,7 +82,7 @@ fun UpdateProfileSMSScreenRoot(
 @Composable
 private fun UpdateProfileSMSScreen(
     state: UpdateProfileSMState,
-    onAction :(UpdateProfileSMAction) -> Unit
+    onAction: (UpdateProfileSMAction) -> Unit
 ) {
 
     val scope = rememberCoroutineScope()
@@ -100,8 +107,7 @@ private fun UpdateProfileSMSScreen(
     val filePicker = com.mohamedrejeb.calf.picker.rememberFilePickerLauncher(
         type = FilePickerFileType.Image,
         selectionMode = FilePickerSelectionMode.Single,
-        onResult = {
-            files ->
+        onResult = { files ->
             scope.launch {
                 files.firstOrNull()?.let {
                     byteArray = it.readByteArray(context = context)
@@ -131,18 +137,23 @@ private fun UpdateProfileSMSScreen(
                     )
                 },
                 title = {
-
+                    Text(
+                        text = "Actualizar perfil",
+                        style = MaterialTheme.typography.titleMedium,
+                        color = Color.White
+                    )
                 }
             )
         }
-    ) {innerPadding ->
+    ) { innerPadding ->
         Box(
             Modifier.padding(innerPadding)
-        ){
+        ) {
+
             Column(
                 modifier = Modifier.fillMaxSize().padding(16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
-            ){
+            ) {
                 PhotoProfileUpdate(
                     profile = state.user.image,
                     image = byteArray,
@@ -209,10 +220,10 @@ private fun UpdateProfileSMSScreen(
                     colors = CardDefaults.elevatedCardColors(
                         containerColor = MaterialTheme.colorScheme.error
                     )
-                ){
+                ) {
                     Row(
                         modifier = Modifier.fillMaxWidth().padding(10.dp)
-                    ){
+                    ) {
                         Icon(
                             imageVector = Icons.Rounded.Close,
                             contentDescription = null
@@ -241,10 +252,10 @@ private fun UpdateProfileSMSScreen(
                     colors = CardDefaults.elevatedCardColors(
                         containerColor = Color(0xFF46D19E)
                     )
-                ){
+                ) {
                     Row(
                         modifier = Modifier.fillMaxWidth().padding(10.dp)
-                    ){
+                    ) {
                         Icon(
                             imageVector = Icons.Rounded.Check,
                             contentDescription = null,
@@ -261,12 +272,84 @@ private fun UpdateProfileSMSScreen(
             }
         }
     }
-    if (state.isLoading){
+    if (state.isLoading) {
         LoadingPropapel(
             modifier = Modifier.fillMaxSize()
         )
     }
 }
+
+@Composable
+fun UpdateProfileDesktopScreen(
+    modifier: Modifier = Modifier,
+    state: UpdateProfileSMState,
+    byteArray: ByteArray,
+    filePicker: FilePickerLauncher,
+    onAction: (UpdateProfileSMAction) -> Unit
+) {
+    Row(
+        modifier = modifier.fillMaxSize(),
+    ) {
+        PhotoProfileUpdateWindows(
+            modifier = Modifier.weight(0.5f),
+            size = 200.dp,
+            profile = state.user.image,
+            image = byteArray,
+            onClick = {
+                filePicker.launch()
+            }
+        )
+        Column(
+            modifier = Modifier.weight(0.5f)
+        ) {
+            Spacer(
+                modifier = Modifier.height(8.dp)
+            )
+            ProSalesTextField(
+                title = "Nombre",
+                state = state.user.name,
+                onTextChange = {
+                    onAction(UpdateProfileSMAction.OnChangeName(it))
+                }
+            )
+            Spacer(
+                modifier = Modifier.height(8.dp)
+            )
+            ProSalesTextField(
+                title = "Apellidos",
+                state = state.user.lastname,
+                onTextChange = {
+                    onAction(UpdateProfileSMAction.OnChangeLastName(it))
+                }
+            )
+            /*
+            Spacer(
+                modifier = Modifier.height(8.dp)
+            )
+            ProSalesTextField(
+                title = "Numero de telefono",
+                state = state.user.,
+                onTextChange = {
+
+                }
+            )*/
+            Spacer(
+                modifier = Modifier.weight(1f)
+            )
+            ProSalesActionButton(
+                text = "Actualizar perfil",
+                onClick = {
+                    onAction(UpdateProfileSMAction.OnUpdateClick)
+                }
+            )
+            Spacer(
+                modifier = Modifier.height(16.dp)
+            )
+        }
+    }
+}
+
+
 fun byteArrayToBase64(byteArray: ByteArray): String {
     val base64Chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
     val output = StringBuilder()

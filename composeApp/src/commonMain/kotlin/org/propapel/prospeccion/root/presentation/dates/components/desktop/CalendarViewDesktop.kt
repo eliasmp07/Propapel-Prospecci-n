@@ -16,9 +16,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.PointerIcon
+import androidx.compose.ui.input.pointer.pointerHoverIcon
 import androidx.compose.ui.unit.dp
 import kotlinx.datetime.LocalDate
-import org.propapel.prospeccion.root.presentation.dates.formatToMonthString
+import org.propapel.prospeccion.core.presentation.ui.extensions.formatToMonthString
 
 @Composable
 fun CalendarViewDesktop(
@@ -38,7 +40,7 @@ fun CalendarViewDesktop(
             if (displayPrev)
                 IconButton(
                     onClick = onClickPrev,
-                    modifier = Modifier.align(Alignment.CenterStart),
+                    modifier = Modifier.align(Alignment.CenterStart).pointerHoverIcon(PointerIcon.Hand),
                     content = {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
@@ -49,7 +51,7 @@ fun CalendarViewDesktop(
             if (displayNext)
                 IconButton(
                     onClick = onClickNext,
-                    modifier = Modifier.align(Alignment.CenterEnd),
+                    modifier = Modifier.align(Alignment.CenterEnd).pointerHoverIcon(PointerIcon.Hand),
                     content = {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,

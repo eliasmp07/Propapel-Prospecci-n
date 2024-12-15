@@ -1,4 +1,5 @@
-@file:OptIn(ExperimentalMaterialApi::class)
+@file:OptIn(ExperimentalMaterialApi::class,
+)
 
 package org.propapel.prospeccion.root.presentation.dashboard.components.mobile
 

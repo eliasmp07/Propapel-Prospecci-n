@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -70,8 +71,8 @@ fun BannerPaggerWindows(
                 val (banner, content) = items[page]
                 if (banner != null) {
                     // Si hay un banner, mostramos el BannerItemMobileScreen
-                    BannerItemMobileScreen(
-                        modifier = Modifier.fillMaxWidth().height(500.dp),
+                    BannerItemDesktopScreen(
+                        modifier = Modifier.fillMaxSize(),
                         banner = banner,
                         onClickBanner = {
                             onClickBanner(it)

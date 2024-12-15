@@ -7,6 +7,7 @@ import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.propapel.prospeccion.core.domain.AuthInfo
@@ -15,14 +16,18 @@ import org.propapel.prospeccion.core.domain.SessionStorage
 class AccountSMViewModel(
     private val sessionStorage: SessionStorage
 ): ViewModel() {
+
     private var _state = MutableStateFlow(AccountSMState())
     val state: StateFlow<AccountSMState> get() = _state.asStateFlow()
+
     init {
         viewModelScope.launch(Dispatchers.IO){
-            _state.update {
-                it.copy(
-                    user = sessionStorage.get()?: AuthInfo()
-                )
+            sessionStorage.getUserFlow().collectLatest {userData ->
+                _state.update {
+                    it.copy(
+                        user = userData?: AuthInfo()
+                    )
+                }
             }
         }
     }

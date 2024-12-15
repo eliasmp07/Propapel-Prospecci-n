@@ -31,3 +31,27 @@ fun BannerItemMobileScreen(
         )
     }
 }
+
+@Composable
+fun BannerItemDesktopScreen(
+    modifier: Modifier = Modifier.aspectRatio(16f / 7f),
+    onClickBanner : (String) -> Unit,
+    banner: Banner,
+) {
+    ElevatedCard(
+        modifier = modifier,
+        shape = RoundedCornerShape(20.dp),
+        onClick = {
+            onClickBanner(banner.url)
+        }
+    ) {
+        AsyncImage(
+            model = banner.imageUrl,
+            contentDescription = null,
+            modifier = Modifier.fillMaxSize(),
+            contentScale = ContentScale.FillBounds,
+            onError = { error -> print("ImageLoadError Error loading image: ${error.result.throwable}") },
+            onLoading = { print("ImageLoad Loading image: ${banner.imageUrl}") }
+        )
+    }
+}

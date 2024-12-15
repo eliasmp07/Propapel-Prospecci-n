@@ -26,6 +26,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.pointerInput
@@ -62,6 +63,10 @@ fun SwipeableItemWithActions(
 
     Box(
         modifier = modifier
+            .shadow(
+                elevation = 10.dp,
+                shape = RoundedCornerShape(30.dp)
+            )
             .fillMaxWidth()
             .height(IntrinsicSize.Min).clip(RoundedCornerShape(30.dp)).padding(vertical = 8.dp)
     ) {

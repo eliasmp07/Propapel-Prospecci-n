@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.dp
 fun GenericContentWindowsSize(
     modifier: Modifier = Modifier,
     brush: Brush,
+    colorIcon: Color = Color.White,
     onCloseScreen :() -> Unit,
     content1: @Composable RowScope.() -> Unit,
     content2: @Composable ColumnScope.() -> Unit
@@ -51,7 +52,7 @@ fun GenericContentWindowsSize(
                 Icon(
                     imageVector = Icons.Filled.Close,
                     contentDescription = null,
-                    tint = Color.White
+                    tint = colorIcon
                 )
             }
         )

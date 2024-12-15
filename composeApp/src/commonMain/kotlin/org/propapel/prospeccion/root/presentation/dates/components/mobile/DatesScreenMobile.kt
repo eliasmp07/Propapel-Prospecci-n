@@ -36,13 +36,13 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import org.propapel.prospeccion.core.presentation.designsystem.PrimaryYellowLight
 import org.propapel.prospeccion.core.presentation.designsystem.SoporteSaiBlue30
+import org.propapel.prospeccion.core.presentation.ui.extensions.minusMonths
+import org.propapel.prospeccion.core.presentation.ui.extensions.plusMonths
+import org.propapel.prospeccion.core.presentation.ui.utils.generateDatesForMonth
 import org.propapel.prospeccion.root.presentation.dates.CalendarView
 import org.propapel.prospeccion.root.presentation.dates.DatesAction
 import org.propapel.prospeccion.root.presentation.dates.DatesSMState
 import org.propapel.prospeccion.root.presentation.dates.DisplayAppointments
-import org.propapel.prospeccion.root.presentation.dates.generateDatesForMonth
-import org.propapel.prospeccion.root.presentation.dates.minusMonths
-import org.propapel.prospeccion.root.presentation.dates.plusMonths
 
 @Composable
 fun DatesScreenMobile(

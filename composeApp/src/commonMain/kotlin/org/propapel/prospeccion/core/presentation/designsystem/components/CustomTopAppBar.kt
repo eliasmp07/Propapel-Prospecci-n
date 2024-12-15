@@ -27,6 +27,7 @@ import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.LightMode
 import androidx.compose.material.icons.outlined.Menu
 import androidx.compose.material.icons.outlined.Notifications
@@ -78,6 +79,7 @@ fun converteDate(date: Long): String {
     val dateConverte = Instant.fromEpochMilliseconds(date).toLocalDateTime(TimeZone.UTC).date
     return "${dateConverte.dayOfMonth}/${dateConverte.monthNumber}/${dateConverte.year}"
 }
+
 @Composable
 fun CustomTopAppBar(
     windowSizeClass: WindowSizeClass,
@@ -87,6 +89,7 @@ fun CustomTopAppBar(
     totalNotifications: Int,
     onLogout: () -> Unit = {},
     onSearch: () -> Unit,
+    onAddLead: () -> Unit = {},
     scrollBehavior: TopAppBarScrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(),
     editProfile: () -> Unit,
     isProfile: Boolean = false,
@@ -158,7 +161,7 @@ fun CustomTopAppBar(
                                         modifier = Modifier.fillMaxWidth().padding(8.dp),
                                         horizontalArrangement = Arrangement.Start,
                                         verticalAlignment = Alignment.CenterVertically
-                                    ){
+                                    ) {
                                         Image(
                                             modifier = Modifier.size(
                                                 50.dp
@@ -209,7 +212,7 @@ fun CustomTopAppBar(
                             },
                             contentAlignment = Alignment.Center
                         ) {
-                            if (profileImage.isNotBlank()) {
+                            if (profileImage.isNotEmpty()) {
                                 AsyncImage(
                                     model = profileImage,
                                     contentDescription = "Image",
@@ -336,7 +339,8 @@ fun CustomTopAppBar(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 IconButton(
-                    onClick ={
+                    modifier = Modifier.pointerHoverIcon(PointerIcon.Hand),
+                    onClick = {
                         onMenu()
                     },
                     content = {
@@ -354,7 +358,7 @@ fun CustomTopAppBar(
                 )
                 Spacer(modifier = Modifier.width(12.dp))
                 Text(
-                    text = "ProSales",
+                    text = "Propección",
                     color = Color(0xFF007BFF),
                     fontWeight = FontWeight.Bold,
                     fontSize = MaterialTheme.typography.headlineSmall.fontSize
@@ -363,8 +367,8 @@ fun CustomTopAppBar(
                     modifier = Modifier
                         .fillMaxWidth().padding(horizontal = 32.dp).weight(0.4f).pointerHoverIcon(PointerIcon.Hand)
                 ) {
-                   Card(
-                        shape = RoundedCornerShape(20.dp),
+                    Card(
+                        shape = RoundedCornerShape(12.dp),
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(50.dp),
@@ -422,30 +426,42 @@ fun CustomTopAppBar(
                         }
                     }
                 }
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth().padding(end = 16.dp).weight(0.1f).pointerHoverIcon(PointerIcon.Hand)
+                ) {
+                    Card(
+                        shape = RoundedCornerShape(12.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(50.dp),
+                        colors = CardDefaults.cardColors(
+                            containerColor = Color.White
+                        ),
+                        onClick = {
+                            onAddLead()
+                        },
+                        elevation = CardDefaults.elevatedCardElevation(15.dp)
+                    ) {
+                        Row(
+                            modifier = Modifier.fillMaxSize().padding(horizontal = 8.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Icon(
+                                imageVector = Icons.Outlined.Add,
+                                contentDescription = null
+                            )
+                            Text(
+                                text = "Agregar lead",
+                                style = MaterialTheme.typography.titleSmall
+                            )
+                        }
+                    }
+                }
                 Spacer(
                     modifier = Modifier.weight(0.2f)
                 )
-                Card(
-                    modifier = Modifier.size(40.dp),
-                    shape = RoundedCornerShape(8.dp),
-                    colors = CardDefaults.cardColors(
-                        containerColor = Color(0xFFe6f0f9)
-                    )
-                ) {
-                    Box(
-                        modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Icon(
-                            imageVector = Icons.Outlined.LightMode,
-                            contentDescription = "Light Mode",
-                            modifier = Modifier.pointerHoverIcon(PointerIcon.Hand).clickable {
-                                onDarkTheme()
-                            }
-                        )
-                    }
-                }
-                Spacer(modifier = Modifier.width(10.dp))
                 Card(
                     modifier = Modifier.size(40.dp),
                     shape = RoundedCornerShape(8.dp),
@@ -494,7 +510,7 @@ fun CustomTopAppBar(
                                             modifier = Modifier.fillMaxWidth().padding(8.dp),
                                             horizontalArrangement = Arrangement.Start,
                                             verticalAlignment = Alignment.CenterVertically
-                                        ){
+                                        ) {
                                             Image(
                                                 modifier = Modifier.size(
                                                     50.dp
@@ -526,11 +542,8 @@ fun CustomTopAppBar(
                                 }
                             }
                         }
-
                     }
-
                 }
-
                 Spacer(modifier = Modifier.width(20.dp))
                 AnimatedVisibility(
                     visible = !isProfile
@@ -580,7 +593,8 @@ fun CustomTopAppBar(
                         Spacer(modifier = Modifier.width(4.dp))
                         IconButton(onClick = { expanded = true }) {
                             Icon(
-                                Icons.Default.MoreVert,
+                                modifier = Modifier.pointerHoverIcon(PointerIcon.Hand),
+                                imageVector = Icons.Default.MoreVert,
                                 contentDescription = null
                             )
                         }
@@ -591,6 +605,7 @@ fun CustomTopAppBar(
                         expanded = expanded,
                         onDismissRequest = { expanded = false }) {
                         DropdownMenuItem(
+                            modifier = Modifier.pointerHoverIcon(PointerIcon.Hand),
                             text = { Text("Editar perfil") },
                             onClick = {
                                 expanded = false
@@ -604,6 +619,7 @@ fun CustomTopAppBar(
                             }
                         )
                         DropdownMenuItem(
+                            modifier = Modifier.pointerHoverIcon(PointerIcon.Hand),
                             text = { Text("Cerrar sesión") },
                             onClick = {
                                 expanded = false

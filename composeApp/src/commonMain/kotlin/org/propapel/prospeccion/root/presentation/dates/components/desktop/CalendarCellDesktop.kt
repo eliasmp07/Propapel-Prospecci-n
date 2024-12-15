@@ -16,6 +16,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.PointerIcon
+import androidx.compose.ui.input.pointer.pointerHoverIcon
 import androidx.compose.ui.unit.dp
 import kotlinx.datetime.LocalDate
 import org.propapel.prospeccion.root.presentation.dates.components.mobile.formatToCalendarDay
@@ -39,7 +41,7 @@ fun CalendarCellDesktop(
                 color = Color.White,
             )
             .clip(RoundedCornerShape(CornerSize(8.dp)))
-            .clickable(onClick = onClick)
+            .clickable(onClick = onClick).pointerHoverIcon(PointerIcon.Hand),
     ) {
         if (isBusy) {
             Box(

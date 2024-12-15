@@ -5,6 +5,11 @@
 
 package org.propapel.prospeccion.root.presentation.homeRoot
 
+import androidx.compose.animation.Crossfade
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -51,6 +56,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.PointerIcon
+import androidx.compose.ui.input.pointer.pointerHoverIcon
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.navigation.Navigation
@@ -109,12 +117,40 @@ fun HomeScreenSalesDesktop(
                 Box(
                     modifier = Modifier.align(Alignment.CenterHorizontally).size(200.dp).clip(CircleShape)
                 ){
-                    AsyncImage(
-                        modifier = Modifier.fillMaxSize(),
-                        model = state.user.image,
-                        contentDescription = null,
-                        contentScale = ContentScale.Crop
-                    )
+                    if (
+                        state.user.image.isEmpty()
+                    ){
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .clip(CircleShape)
+                                .border(
+                                    BorderStroke(
+                                        2.dp,
+                                        MaterialTheme.colorScheme.onBackground
+                                    ),
+                                    CircleShape
+                                ).background(Color.White)
+                        ) {
+                            Image(
+                                modifier = Modifier
+                                    .align(Alignment.Center)
+                                    .fillMaxSize()
+                                    .clip(CircleShape)
+                                    .background(MaterialTheme.colorScheme.background),
+                                contentScale = ContentScale.Crop,
+                                imageVector = Icons.Default.Person,
+                                contentDescription = null
+                            )
+                        }
+                    }else{
+                        AsyncImage(
+                            modifier = Modifier.fillMaxSize(),
+                            model = state.user.image,
+                            contentDescription = null,
+                            contentScale = ContentScale.Crop
+                        )
+                    }
                 }
                 Spacer(
                     modifier = Modifier.height(32.dp)
@@ -122,9 +158,11 @@ fun HomeScreenSalesDesktop(
                 items.forEachIndexed { index, item ->
                     NavigationDrawerItem(
                         colors = NavigationDrawerItemDefaults.colors(
-                            selectedContainerColor = MaterialTheme.colorScheme.primary
+                            selectedContainerColor = MaterialTheme.colorScheme.primary,
+                            selectedTextColor = Color.White,
+                            selectedIconColor = Color.White
                         ),
-                        modifier = Modifier.padding(horizontal = 12.dp),
+                        modifier = Modifier.padding(horizontal = 12.dp).pointerHoverIcon(PointerIcon.Hand),
                         icon = {
                             Icon(
                                 imageVector = if(index == selectedItemIndex) item.selectedIcon else item.unselectedIcon,
@@ -187,6 +225,7 @@ fun HomeScreenSalesDesktop(
                 CustomTopAppBar(
                     windowSizeClass = windowClass,
                     onLogout = onLogout,
+                    onAddLead = onAddLead,
                     onMenu = {
                         corrutine.launch {
                             if (drawerState.isOpen){
@@ -211,19 +250,6 @@ fun HomeScreenSalesDesktop(
                     .fillMaxSize()
                     .padding(top = innerPadding.calculateTopPadding())
             ) {
-                /*
-                SidebarMenu(
-                    items = items,
-                    selectedItemIndex = selectedItemIndex,
-                    onMenuItemClick = { index ->
-                        selectedItemIndex = index
-                        corrutine.launch {
-                            pagerState.animateScrollToPage(index)
-                        }
-                    },
-                    initialExpandedState = false
-                )*/
-
                 Box(
                     modifier = Modifier
                         .fillMaxSize()

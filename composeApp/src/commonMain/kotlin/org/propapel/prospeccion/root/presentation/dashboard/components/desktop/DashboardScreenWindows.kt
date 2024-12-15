@@ -57,6 +57,8 @@ import org.propapel.prospeccion.root.presentation.dashboard.components.mobile.Ba
 import org.propapel.prospeccion.root.presentation.dashboard.components.mobile.GoalCard
 import org.propapel.prospeccion.root.presentation.leads.GenericContentLoading
 import org.propapel.prospeccion.root.presentation.leads.UiState
+import org.propapel.prospeccion.selectSucursal.presentation.dashboard.components.CardInfoDesktop
+import org.propapel.prospeccion.selectSucursal.presentation.dashboard.components.LeadSixMothProjects
 import prospeccion.composeapp.generated.resources.Res
 import prospeccion.composeapp.generated.resources.calendar_date
 import prospeccion.composeapp.generated.resources.customer_person
@@ -78,10 +80,12 @@ private fun providesItemsScreen(
                 val customerRecuperacion = state.myCustomer.value.filter { it.typeClient == TypeOfClient.RECUPERACIÓN.name }
 
                 ElevatedCard(
-                    shape = RoundedCornerShape(20.dp),
+                    shape = RoundedCornerShape(12.dp),
                     modifier = Modifier
-                        .fillMaxWidth(),
-                    elevation = CardDefaults.elevatedCardElevation(15.dp)
+                        .fillMaxWidth().height(500.dp),
+                    elevation = CardDefaults.elevatedCardElevation(15.dp),
+                    colors = CardDefaults.cardColors(containerColor = Color.White),
+
                 ) {
                     val testPieChartData: List<PieChartData> = listOf(
                         PieChartData(
@@ -115,89 +119,18 @@ private fun providesItemsScreen(
                             modifier = Modifier.height(8.dp)
                         )
                         PieChart(
-                            modifier = Modifier.size(300.dp).padding(top = 8.dp).align(Alignment.CenterHorizontally),
+                            modifier = Modifier.fillMaxSize().padding(top = 8.dp).align(Alignment.CenterHorizontally),
                             legendPosition = LegendPosition.DISAPPEAR,
                             pieChartData = testPieChartData,
                             descriptionStyle = TextStyle(fontSize = 12.sp),
                             ratioLineColor = Color.Black,
-                            textRatioStyle = TextStyle(
-                                color = Color.Black,
-                                fontSize = 12.sp
-                            ),
+                            textRatioStyle = MaterialTheme.typography.titleMedium,
                         )}}
             }
         },
         ItemScreen {
-            Row(
-                modifier = Modifier.fillMaxWidth().padding(start = 8.dp)
-            ){
-                ElevatedCard(
-                    modifier = Modifier.weight(0.5f).pointerHoverIcon(PointerIcon.Hand),
-                    shape = RoundedCornerShape(
-                        30.dp
-                    ),
-                    onClick = {
-                        onAction(DashboardSMAction.OnMoveLeadScreenClick)
-                    }
-                ) {
-                    Box{
-                        Column(
-                            modifier = Modifier.fillMaxWidth().height(200.dp).padding(16.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.Center
-                        ) {
-                            Text(
-                                text = "Agregar lead",
-                                style = MaterialTheme.typography.titleMedium,
-
-                            )
-                        }
-                        Image(
-                            modifier = Modifier.size(
-                                100.dp
-                            ).align(Alignment.BottomEnd),
-                            painter = painterResource(Res.drawable.customer_person),
-                            contentDescription = "customer_person",
-                        )
-                    }
-                }
-                Spacer(
-                    modifier = Modifier.width(16.dp)
-                )
-                ElevatedCard(
-                    modifier = Modifier.weight(0.5f).pointerHoverIcon(PointerIcon.Hand),
-                    shape = RoundedCornerShape(
-                        30.dp
-                    ),
-                    onClick = {
-                        onAction(DashboardSMAction.OnCreateReminderClick)
-                    }
-                ) {
-                    Box{
-                        Column(
-                            modifier = Modifier.fillMaxWidth().height(200.dp).padding(16.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.Center
-                        ) {
-                            Text(
-                                text = "Crear cita",
-                                style = MaterialTheme.typography.titleMedium,
-                            )
-                        }
-                        Image(
-                            modifier = Modifier.size(
-                                100.dp
-                            ).align(Alignment.BottomEnd),
-                            painter = painterResource(Res.drawable.calendar_date),
-                            contentDescription = "customer_person",
-                        )
-                    }
-                }
-            }
-        },
-        ItemScreen {
             CalendarDatesCard(
-                modifier = Modifier.padding(8.dp),
+                modifier = Modifier,
                 state = state,
                 onAction = onAction
             )
@@ -247,6 +180,7 @@ fun DashboardScreenWindows(
                                     null
                                 ) {
                                     GoalCard(
+                                        modifier = Modifier.fillMaxWidth(),
                                         title = "Mi objetivo",
                                         currentValue = state.totalRemindersMoth.toFloat(),
                                         goalValue = 10f,
@@ -280,6 +214,7 @@ fun DashboardScreenWindows(
                         val customerNew = listCustomer.value.filter { it.typeClient == TypeOfClient.NUEVO.name }
                         val customerDesarrollo = listCustomer.value.filter { it.typeClient == TypeOfClient.DESARROLLO.name }
                         val customerRecuperacion = listCustomer.value.filter { it.typeClient == TypeOfClient.RECUPERACIÓN.name }
+
 
                         DashboardCard(
                             title = "Clientes Totales",

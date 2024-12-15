@@ -26,6 +26,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.PointerIcon
+import androidx.compose.ui.input.pointer.pointerHoverIcon
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -47,7 +49,7 @@ fun ItemUserDate(
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp)
-            .animateEnterRight()
+            .animateEnterRight().pointerHoverIcon(PointerIcon.Hand)
     ) {
         ElevatedCard(
             shape = RoundedCornerShape(20.dp),

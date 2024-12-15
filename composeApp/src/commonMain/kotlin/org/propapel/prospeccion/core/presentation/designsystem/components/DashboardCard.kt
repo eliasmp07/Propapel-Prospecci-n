@@ -5,6 +5,7 @@
 package org.propapel.prospeccion.core.presentation.designsystem.components
 
 import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -16,6 +17,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -26,6 +29,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
@@ -44,7 +48,10 @@ import androidx.compose.ui.input.pointer.pointerHoverIcon
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import org.jetbrains.compose.resources.painterResource
 import org.propapel.prospeccion.root.domain.models.Customer
+import prospeccion.composeapp.generated.resources.Res
+import prospeccion.composeapp.generated.resources.customer_person
 
 @Composable
 fun DashboardCard(
@@ -64,98 +71,112 @@ fun DashboardCard(
 
     if (showNavigationRail) {
         ElevatedCard(
-            shape = RoundedCornerShape(20.dp),
+            shape = RoundedCornerShape(8.dp),
             modifier = modifier
                 .padding(vertical = 8.dp)
                 .fillMaxWidth().animateContentSize(),
+            colors = CardDefaults.cardColors(containerColor = Color.White),
         ) {
-            Column(
-                modifier = Modifier.animateContentSize()
-            ){
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Start,
-                    verticalAlignment = Alignment.CenterVertically
+            Box {
+                Column(
+                    modifier = Modifier.animateContentSize()
                 ) {
-                    Column(
-                        modifier = Modifier.padding(16.dp),
-                        horizontalAlignment = Alignment.Start,
-                        verticalArrangement = Arrangement.Center
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Start,
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically
-                        ){
+                        Column(
+                            modifier = Modifier.padding(16.dp),
+                            horizontalAlignment = Alignment.Start,
+                            verticalArrangement = Arrangement.Center
+                        ) {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(
+                                    text = value,
+                                    style = MaterialTheme.typography.titleLarge,
+                                    color = Color.Black,
+                                    fontWeight = FontWeight.Bold
+                                )
+                                Spacer(
+                                    modifier = Modifier.weight(1f)
+                                )
+                                IconButton(
+                                    modifier = Modifier.pointerHoverIcon(PointerIcon.Hand),
+                                    onClick = {
+                                        showMoreInfo = !showMoreInfo
+                                    },
+                                    content = {
+                                        Icon(
+                                            imageVector = if (showMoreInfo) Icons.Outlined.ExpandLess else Icons.Outlined.ExpandMore,
+                                            contentDescription = null,
+                                        )
+                                    }
+                                )
+                            }
+                            Spacer(modifier = Modifier.height(8.dp))
                             Text(
-                                text = value,
-                                fontSize = 20.sp,
-                                color = Color.Black,
-                                fontWeight = FontWeight.Bold
+                                text = title,
+                                style = MaterialTheme.typography.titleMedium
                             )
-                            Spacer(
-                                modifier = Modifier.weight(1f)
-                            )
-                            IconButton(
-                                modifier = Modifier.pointerHoverIcon(PointerIcon.Hand),
-                                onClick = {
-                                    showMoreInfo = !showMoreInfo
-                                },
-                                content = {
-                                    Icon(
-                                        imageVector = if(showMoreInfo) Icons.Outlined.ExpandLess else Icons.Outlined.ExpandMore,
-                                        contentDescription = null,
-                                    )
-                                }
-                            )
+                            Spacer(modifier = Modifier.height(4.dp))
+                            Row {
+                                Text(
+                                    text = percentage,
+                                    fontSize = 14.sp,
+                                    color = background
+                                )
+                                Icon(
+                                    imageVector = Icons.Outlined.StackedLineChart,
+                                    contentDescription = null,
+                                    tint = background
+                                )
+                            }
                         }
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Text(
-                            text = title,
-                            fontSize = 14.sp
-                        )
-                        Spacer(modifier = Modifier.height(4.dp))
-                        Row {
-                            Text(
-                                text = percentage,
-                                fontSize = 14.sp,
-                                color = background
-                            )
+                        Spacer(modifier = Modifier.weight(1f))
+                        Box(
+                            modifier = Modifier
+                                .size(30.dp)
+                                .background(
+                                    color = background,
+                                    shape = CircleShape
+                                )
+                                .padding(3.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
                             Icon(
-                                imageVector = Icons.Outlined.StackedLineChart,
+                                imageVector = icon,
                                 contentDescription = null,
-                                tint = background
+                                tint = Color.White
                             )
                         }
+                        Spacer(modifier = Modifier.width(8.dp))
                     }
-                    Spacer(modifier = Modifier.weight(1f))
-                    Box(
-                        modifier = Modifier
-                            .size(30.dp)
-                            .background(
-                                color = background,
-                                shape = CircleShape
-                            )
-                            .padding(3.dp),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Icon(
-                            imageVector = icon,
-                            contentDescription = null,
-                            tint = Color.White
-                        )
-                    }
-                    Spacer(modifier = Modifier.width(8.dp))
-                }
-                if (showMoreInfo) {
-                    if (customers.isNotEmpty()) {
-                        customers.forEach {
-                            Text(
-                                text = it.companyName,
-                                fontSize = 14.sp,
-                                color = Color.Black,
-                            )
+                    if (showMoreInfo) {
+                        LazyRow(
+                            modifier = Modifier.fillMaxWidth().padding(end = 50.dp)
+                        ) {
+                            items(
+                                customers
+                            ){
+                                Text(
+                                    text = it.companyName,
+                                    fontSize = 14.sp,
+                                    color = Color.Black,
+                                )
+                            }
                         }
                     }
                 }
+                Image(
+                    modifier = Modifier.size(
+                        90.dp
+                    ).align(Alignment.BottomEnd),
+                    painter = painterResource(Res.drawable.customer_person),
+                    contentDescription = "customer_person",
+                )
             }
         }
     } else {

@@ -1,19 +1,25 @@
 package org.propapel.prospeccion.core.presentation.designsystem.components
 
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -22,11 +28,14 @@ import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.number
 import kotlinx.datetime.toLocalDateTime
+import org.jetbrains.compose.resources.painterResource
 import org.propapel.prospeccion.root.presentation.dashboard.DashboardSMAction
 import org.propapel.prospeccion.root.presentation.dashboard.DashboardSMState
 import org.propapel.prospeccion.root.presentation.dashboard.components.ItemUserDate
 import org.propapel.prospeccion.root.presentation.dashboard.components.monthGet
 import org.propapel.prospeccion.root.presentation.leads.GenericContentLoading
+import prospeccion.composeapp.generated.resources.Res
+import prospeccion.composeapp.generated.resources.empty_info
 
 @Composable
 fun CalendarDatesCard(
@@ -37,6 +46,39 @@ fun CalendarDatesCard(
     GenericContentLoading(
         modifier = modifier,
         data = state.reminders,
+        textContentEmpty = "No tienes ninguna cita para mostrar",
+        contentEmpty = {modifier, text ->
+            ElevatedCard(
+                shape = RoundedCornerShape(8.dp),
+                modifier = modifier
+                    .fillMaxWidth()
+                    .padding(
+                        horizontal = 16.dp
+                    ),
+                colors = CardDefaults.cardColors(containerColor = Color.White),
+                elevation = CardDefaults.elevatedCardElevation(20.dp)
+            ) {
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Image(
+                        modifier = Modifier.size(200.dp),
+                        painter = painterResource(Res.drawable.empty_info),
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Text(
+                        modifier = Modifier.align(Alignment.CenterHorizontally),
+                        text = text,
+                        style = MaterialTheme.typography.titleSmall
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+                }
+            }
+        },
         retry = {
 
         },

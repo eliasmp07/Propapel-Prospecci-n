@@ -6,6 +6,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -57,14 +58,16 @@ fun ImageProfile(
                         ).background(Color.White)
                 ) {
                     AsyncImage(
+                        model = profileImg,
+                        contentDescription = null,
                         modifier = Modifier
                             .align(Alignment.Center)
                             .size(100.dp)
                             .clip(CircleShape)
                             .background(MaterialTheme.colorScheme.background),
-                        contentScale = ContentScale.Crop,
-                        model = profileImg,
-                        contentDescription = null
+                        contentScale = ContentScale.FillBounds,
+                        onError = { error -> print("ImageLoadError Error loading image: ${error.result.throwable}") },
+                        onLoading = { print("ImageLoad Loading image: ${profileImg}") }
                     )
                 }
             }else{

@@ -8,12 +8,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.aay.compose.baseComponents.model.LegendPosition
 import com.aay.compose.donutChart.DonutChart
@@ -28,6 +30,7 @@ import org.propapel.prospeccion.root.domain.models.Interaction
 @Composable
 fun DonutChartInteractions(
     modifier: Modifier = Modifier,
+    heightChar: Dp = heightCharDefault,
     reminders: List<Interaction> = listOf()
 ) {
 
@@ -62,11 +65,12 @@ fun DonutChartInteractions(
         )
     )
 
-    Card(
+    ElevatedCard(
         shape = RoundedCornerShape(8.dp),
         modifier = modifier
             .fillMaxWidth().padding(16.dp),
-        colors = CardDefaults.cardColors(containerColor = Color(0xFFf1f4f9))
+        colors = CardDefaults.cardColors(containerColor = Color.White),
+        elevation = CardDefaults.elevatedCardElevation(20.dp)
     ) {
         Column(
             modifier = Modifier.padding(16.dp)
@@ -78,7 +82,7 @@ fun DonutChartInteractions(
             )
             Spacer(modifier = Modifier.height(8.dp))
             DonutChart(
-                modifier = Modifier.fillMaxWidth().height(300.dp),
+                modifier = Modifier.fillMaxWidth().height(heightChar),
                 pieChartData = testPieChartData,
                 centerTitle = "Citas",
                 legendPosition = LegendPosition.BOTTOM,
@@ -93,6 +97,8 @@ fun DonutChartInteractions(
     }
 
 }
+
+private val heightCharDefault = 300.dp
 
 fun monthGet(moth: Int): String {
     return when (moth) {

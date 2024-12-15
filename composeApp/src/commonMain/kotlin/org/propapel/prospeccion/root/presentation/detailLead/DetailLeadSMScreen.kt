@@ -113,7 +113,10 @@ fun DetailCustomerSMScreen(
 ) {
 
     val sheetState = rememberModalBottomSheetState()
+
     val sheetStateProject = rememberModalBottomSheetState()
+
+
     val sheetStateCloseAppointment = rememberModalBottomSheetState()
 
     val scope = rememberCoroutineScope()
