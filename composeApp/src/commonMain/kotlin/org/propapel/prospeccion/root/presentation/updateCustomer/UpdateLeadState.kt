@@ -17,6 +17,6 @@ data class UpdateLeadState(
     val email: String = "",
     val phone: String = "",
     val address: String = "",
-    val typeOfClient: TypeOfClient = TypeOfClient.NUEVO
-
-    )
+    val typeOfClient: TypeOfClient = TypeOfClient.NUEVO,
+    val emailError: String? = null
+)

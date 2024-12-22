@@ -253,6 +253,7 @@ fun UpdateCustomerMobileScreen(
                     ProSalesTextField(
                         title = "Correo electronico",
                         colors = Color.Black,
+                        error = state.emailError,
                         keyboardOptions = KeyboardOptions(
                             keyboardType = KeyboardType.Email,
                             imeAction = ImeAction.Next

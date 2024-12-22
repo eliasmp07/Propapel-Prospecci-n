@@ -428,7 +428,7 @@ fun CustomTopAppBar(
                 }
                 Box(
                     modifier = Modifier
-                        .fillMaxWidth().padding(end = 16.dp).weight(0.1f).pointerHoverIcon(PointerIcon.Hand)
+                        .fillMaxWidth().padding(end = 16.dp).weight(0.12f).pointerHoverIcon(PointerIcon.Hand)
                 ) {
                     Card(
                         shape = RoundedCornerShape(12.dp),

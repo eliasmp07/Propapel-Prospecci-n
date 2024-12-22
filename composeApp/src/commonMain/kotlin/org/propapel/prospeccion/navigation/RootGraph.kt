@@ -60,7 +60,7 @@ fun RootGraph(
     ) {
         NavHost(
             navController = mainNavigation,
-            startDestination = if (isLogging && isManager) Destination.Gerente else if (isLogging) Destination.ProSales else Destination.AuthGraph
+            startDestination = if (isManager) Destination.Gerente else if (isLogging) Destination.ProSales else Destination.AuthGraph
         ) {
             auth(
                 navController = mainNavigation,

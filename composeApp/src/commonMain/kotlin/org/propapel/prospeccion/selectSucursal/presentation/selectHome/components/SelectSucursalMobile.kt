@@ -33,12 +33,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.util.lerp
+import coil3.compose.AsyncImage
 import org.jetbrains.compose.resources.painterResource
 import org.propapel.prospeccion.core.presentation.designsystem.PrimaryYellowLight
 import org.propapel.prospeccion.core.presentation.designsystem.SoporteSaiBlue30
+import org.propapel.prospeccion.selectSucursal.domain.model.Sucursale
 import org.propapel.prospeccion.selectSucursal.presentation.selectHome.SelectSucursalAction
 import org.propapel.prospeccion.selectSucursal.presentation.selectHome.SelectSucursalState
-import org.propapel.prospeccion.selectSucursal.presentation.selectHome.Sucusales
 import org.propapel.prospeccion.selectSucursal.presentation.selectHome.getImageSucursalSelected
 import prospeccion.composeapp.generated.resources.Res
 import prospeccion.composeapp.generated.resources.logo
@@ -84,7 +85,7 @@ fun SelectSucursalMobile(
 @Composable
 fun LayeredCardDesign(
     modifier: Modifier,
-    sucusales: Sucusales,
+    sucusales: Sucursale,
     onSucursalSelected: (Int) -> Unit,
     offsetY: Float
 ) {
@@ -155,22 +156,19 @@ fun LayeredCardDesign(
                     color = Color.White,
                 )
                 Text(
-                    text = sucusales.sucursal.replace(
-                        "Propapel ",
-                        ""
-                    ),
+                    text = sucusales.nombre,
                     fontSize = 47.sp,
                     textAlign = TextAlign.Center,
                     color = Color.White.copy(alpha = 0.5f),
                 )
             }
-            Image(
+            AsyncImage(
                 modifier = Modifier.align(Alignment.BottomStart).fillMaxWidth()
                     .height(150.dp)
                     .padding(8.dp).clip(RoundedCornerShape(16.dp)),
+                contentDescription =null,
                 contentScale = androidx.compose.ui.layout.ContentScale.FillBounds,
-                painter = painterResource(getImageSucursalSelected(sucusal = sucusales.sucursal) ?: Res.drawable.merida),
-                contentDescription = null
+                model = sucusales.image ?: Res.drawable.merida
             )
         }
     }

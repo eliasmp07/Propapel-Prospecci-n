@@ -13,6 +13,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
@@ -35,6 +36,7 @@ fun ProSalesActionButton(
     text: String,
     isLoading: Boolean = false,
     modifier: Modifier = Modifier,
+    border: BorderStroke? = null,
     textColor: Color = Color.Black,
     shape: Shape = RoundedCornerShape(100f),
     enabled: Boolean = true,
@@ -47,11 +49,11 @@ fun ProSalesActionButton(
     icon: ImageVector? = null,
     onClick: () -> Unit,
 ) {
-    Button(
+    ElevatedButton(
         modifier = modifier
             .height(IntrinsicSize.Min).pointerHoverIcon(PointerIcon.Hand),
         enabled = enabled,
-        border = BorderStroke(2.dp, textColor),
+        border = border,
         shape = shape,
         colors =colors,
         onClick = onClick,

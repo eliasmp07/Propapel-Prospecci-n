@@ -142,6 +142,9 @@ fun DatesScreenMobile(
                     DisplayAppointments(
                         date,
                         state.datesReminders,
+                        onDetailReminderCustomer = {
+                            onAction(DatesAction.OnDetailReminder(it))
+                        },
                         state.reminders
                     )
                 }

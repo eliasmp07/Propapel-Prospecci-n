@@ -77,6 +77,7 @@ class DatesSMViewModel(
                     }
                 }
             }
+            else -> Unit
         }
     }
 }

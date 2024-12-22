@@ -41,6 +41,7 @@ fun NavGraphBuilder.gerente(
         composable<Destination.GerenteDashboard> { navBackStackEntry ->
 
             val viewModel = koinViewModel<HomeRootViewModel>()
+
             val sucursalId = navBackStackEntry.toRoute<Destination.GerenteDashboard>()
 
             LaunchedEffect(Unit){

@@ -47,6 +47,7 @@ fun SucursaleDto.mapToDomain(): Sucursale{
         createdAt = createdAt,
         direccion = direccion,
         id = id,
+        image = image?:"",
         nombre = nombre,
         updatedAt = updatedAt
     )
@@ -140,7 +141,7 @@ fun UserDto.mapToDomain(): User {
         updatedAt = updatedAt,
         id = id,
         name = name,
-        image = image,
+        image = image?:"",
         refreshToken = refreshToken,
         phone = phone,
         email = email,

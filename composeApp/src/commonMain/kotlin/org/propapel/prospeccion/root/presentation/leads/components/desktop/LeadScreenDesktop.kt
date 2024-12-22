@@ -99,28 +99,6 @@ fun LeadScreenDesktop(
             modifier = Modifier.fillMaxSize(),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            // Sidebar o menú lateral
-            /*
-            Box(
-                modifier = Modifier
-                    .fillMaxHeight()
-                    .width(250.dp)
-                    .background(MaterialTheme.colorScheme.primaryContainer)
-            ) {
-                Column(modifier = Modifier.padding(16.dp)) {
-                    Text(
-                        text = "Menú",
-                        style = MaterialTheme.typography.headlineMedium,
-                        color = MaterialTheme.colorScheme.onPrimaryContainer
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
-                    // Agrega ítems de navegación
-                    Text(text = "Clientes")
-                    Text(text = "Gráficos")
-                }
-            }
-
-             */
 
             LazyColumn(
                 modifier = Modifier

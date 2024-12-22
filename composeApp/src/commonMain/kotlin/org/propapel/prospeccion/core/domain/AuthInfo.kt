@@ -12,4 +12,12 @@ data class AuthInfo(
     val email: String = "",
     val accessTokenExpirationTimestamp: Long = 0L,
     val image: String = ""
-)
+){
+    fun isManagerRegional(): Boolean{
+        return this.roles.contains("Gerente Regional")
+    }
+
+    fun isManager(): Boolean{
+        return puesto.uppercase().contains("gerente")
+    }
+}

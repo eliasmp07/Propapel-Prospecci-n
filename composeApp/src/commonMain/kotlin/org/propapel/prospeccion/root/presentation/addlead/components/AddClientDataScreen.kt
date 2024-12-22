@@ -120,7 +120,7 @@ private fun AddClientDataDesktopScreen(
                 fileRoute = "files/anim_customer.json"
             )
             Column(
-                modifier = Modifier.weight(0.5f)
+                modifier = Modifier.weight(0.5f).verticalScroll(rememberScrollState())
             ) {
                 Text(
                     modifier = Modifier.align(Alignment.CenterHorizontally),

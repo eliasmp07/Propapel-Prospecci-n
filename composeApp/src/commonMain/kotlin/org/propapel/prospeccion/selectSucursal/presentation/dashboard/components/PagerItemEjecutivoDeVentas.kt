@@ -406,7 +406,7 @@ fun PagerItemEjecutivoDeVentasDesktop(
                             scope.launch {
                                 val nextPage = pagerState.currentPage + 1
                                 if (nextPage < pagerState.pageCount) {
-                                    pagerState.animateScrollToPage(nextPage)
+                                    pagerState.animateScrollToPage((pagerState.currentPage + 1) % it.size)
                                 }
                             }
                         },

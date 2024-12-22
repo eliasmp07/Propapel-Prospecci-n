@@ -15,5 +15,6 @@ data class SucursaleDto(
     @SerialName("nombre")
     val nombre: String,
     @SerialName("updated_at")
-    val updatedAt: String
+    val updatedAt: String,
+    val image: String?,
 )

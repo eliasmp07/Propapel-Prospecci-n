@@ -45,16 +45,20 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.delay
 import org.jetbrains.compose.resources.painterResource
 import org.propapel.prospeccion.auth.presentation.login.components.ForgotPasswordDialog
+import org.propapel.prospeccion.auth.presentation.login.components.LoginDesktopScreen
+import org.propapel.prospeccion.auth.presentation.login.components.mobile.LoginMobileScreen
 import org.propapel.prospeccion.core.domain.AuthInfo
 import org.propapel.prospeccion.core.presentation.designsystem.PrimaryYellowLight
 import org.propapel.prospeccion.core.presentation.designsystem.SoporteSaiBlue30
 import org.propapel.prospeccion.core.presentation.designsystem.components.ProSalesActionButton
 import org.propapel.prospeccion.core.presentation.designsystem.components.ProSalesTextField
 import org.propapel.prospeccion.core.presentation.designsystem.components.ProspeccionTextFieldAnimation
+import org.propapel.prospeccion.root.presentation.dashboard.isMobile
 import prospeccion.composeapp.generated.resources.Res
 import prospeccion.composeapp.generated.resources.logo
 
@@ -109,87 +113,15 @@ private fun LoginScreen(
             )
         )
     ) {
-        Column(
-            modifier = Modifier.fillMaxSize()
-        ) {
-            Spacer(
-                modifier = Modifier.weight(0.2f)
-            )
-            Image(
-                painter = painterResource(Res.drawable.logo),
-                contentDescription = null,
-                modifier = Modifier.padding(16.dp).align(Alignment.CenterHorizontally)
-            )
-            Spacer(
-                modifier = Modifier.weight(0.2f)
-            )
-            ElevatedCard(
-                modifier = Modifier.width(500.dp).padding(16.dp)
-                    .align(Alignment.CenterHorizontally),
-                elevation = CardDefaults.elevatedCardElevation(20.dp)
-            ) {
-                Column(
-                    modifier = Modifier.padding(16.dp)
-                ) {
-                    Text(
-                        modifier = Modifier.align(Alignment.CenterHorizontally),
-                        text = "Inicio de sessión", style = MaterialTheme.typography.headlineMedium,
-                        fontWeight = FontWeight.Bold
-                    )
-                    Text(
-                        text = "Ingresa tus credenciales para continuar en nuestra App",
-                        style = MaterialTheme.typography.bodyMedium
-                    )
-                    Spacer(Modifier.height(16.dp))
-                    ProSalesTextField(
-                        hint = "Correo electronico",
-                        startIcon = Icons.Default.Email,
-                        error = state.emailError,
-                        state = state.email,
-                        keyboardOptions = KeyboardOptions(
-                            imeAction = ImeAction.Next,
-                            keyboardType = KeyboardType.Email
-                        ),
-                        onTextChange = {
-                            onAction(LoginAction.OnEmailChange(it))
-                        }
-                    )
-                    Spacer(Modifier.height(8.dp))
-                    ProSalesTextField(
-                        state = state.password,
-                        hint = "Contraseña",
-                        isPassword = true,
-                        startIcon = Icons.Default.Lock,
-                        error = state.passwordError,
-                        onTextChange = {
-                            onAction(LoginAction.OnPasswordChange(it))
-                        },
-                        keyboardOptions = KeyboardOptions(
-                            imeAction = ImeAction.Done
-                        ),
-                    )
-                    Spacer(Modifier.height(16.dp))
-                    ProSalesActionButton(
-                        text = "Iniciar sesión",
-                        isLoading = state.isLogging,
-                        onClick = {
-                            focusManager.clearFocus()
-                            onAction(LoginAction.OnLoginClick)
-                        }
-                    )
-                }
-            }
-            Spacer(
-                modifier = Modifier.weight(0.5f)
-            )
-            Text(
-                modifier = Modifier.align(Alignment.CenterHorizontally),
-                text = "V 1.0.0",
-                style = MaterialTheme.typography.titleMedium,
-                color = Color.Black
-            )
-            Spacer(
-                modifier = Modifier.height(8.dp)
+        if(calculateWindowSizeClass().isMobile){
+           LoginMobileScreen(
+               state = state,
+               onAction = onAction
+           )
+        }else{
+            LoginDesktopScreen(
+                state = state,
+                onAction = onAction
             )
         }
 

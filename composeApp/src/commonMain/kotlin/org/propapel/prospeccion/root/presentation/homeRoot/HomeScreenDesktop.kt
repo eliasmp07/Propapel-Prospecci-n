@@ -32,6 +32,7 @@ import androidx.compose.material.icons.outlined.DateRange
 import androidx.compose.material.icons.outlined.MyLocation
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.DrawerState
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
@@ -145,7 +146,13 @@ fun HomeScreenSalesDesktop(
                         }
                     }else{
                         AsyncImage(
-                            modifier = Modifier.fillMaxSize(),
+                            modifier = Modifier.fillMaxSize().border(
+                                BorderStroke(
+                                    2.dp,
+                                    MaterialTheme.colorScheme.onBackground
+                                ),
+                                CircleShape
+                            ),
                             model = state.user.image,
                             contentDescription = null,
                             contentScale = ContentScale.Crop
@@ -228,11 +235,7 @@ fun HomeScreenSalesDesktop(
                     onAddLead = onAddLead,
                     onMenu = {
                         corrutine.launch {
-                            if (drawerState.isOpen){
-                                drawerState.close()
-                            }else{
-                                drawerState.open()
-                            }
+                            drawerState.toggle()
                         }
 
                     },
@@ -258,7 +261,7 @@ fun HomeScreenSalesDesktop(
                     when (selectedItemIndex) {
                         0 -> {
                             DashBoardScreenRoot(
-                                dashboardSMViewModel,
+                                viewModel = dashboardSMViewModel,
                                 user = state.user,
                                 windowSizeClass = windowClass,
                                 onDetailReminderCustomer = {
@@ -280,8 +283,11 @@ fun HomeScreenSalesDesktop(
                         1 -> {
                             DateScreenRoot(
                                 viewModel = datesViewModel,
-                                windowWidthSizeClass = windowClass
-                            )  // Pantalla de Citas
+                                windowWidthSizeClass = windowClass,
+                                onDetailReminderCustomer = {
+                                    onDetailReminderCustomer(it)
+                                }
+                            )
                         }
                         2 -> {
                             LeadScreenRoot(
@@ -292,7 +298,7 @@ fun HomeScreenSalesDesktop(
                                 onUpdateLead = onUpdateLead,
                                 onCreaReminder = onCreateReminder,
                                 onSearchLead = onSearchLead
-                            )  // Pantalla de Leads
+                            )
                         }
 
                         3 -> {
@@ -317,6 +323,11 @@ fun HomeScreenSalesDesktop(
 
 
 }
+
+suspend fun DrawerState.toggle() {
+    if (isOpen) close() else open()
+}
+
 
 
 private fun provideScreenHome(): List<NavigationItem>{

@@ -46,13 +46,21 @@ import prospeccion.composeapp.generated.resources.empty_info
 @Composable
 fun DateScreenRoot(
     windowWidthSizeClass: WindowSizeClass,
-    viewModel: DatesSMViewModel
+    viewModel: DatesSMViewModel,
+    onDetailReminderCustomer : (String) -> Unit,
 ) {
     val state by viewModel.state.collectAsState()
     DateScreen(
         windowWidthSizeClass,
         state = state,
-        onAction = viewModel::onAction
+        onAction = { action ->
+            when(action){
+                is DatesAction.OnDetailReminder -> {
+                    onDetailReminderCustomer(action.reminderId)
+                }
+                else -> viewModel.onAction(action)
+            }
+        }
     )
 }
 
@@ -69,7 +77,8 @@ private fun DateScreen(
         )
     } else {
         DatesScreenDesktop(
-            state = state
+            state = state,
+            onAction = onAction
         )
     }
 }
@@ -78,6 +87,7 @@ private fun DateScreen(
 fun DisplayAppointments(
     date: LocalDate,
     dates: List<LocalDate>,
+    onDetailReminderCustomer: (String) -> Unit,
     reminders: List<Reminder>
 ) {
 
@@ -123,7 +133,7 @@ fun DisplayAppointments(
                 ItemUserDate(
                     reminder = reminder,
                     onDetailReminder = {
-
+                        onDetailReminderCustomer(reminder.reminderId.toString())
                     }
                 )
             }

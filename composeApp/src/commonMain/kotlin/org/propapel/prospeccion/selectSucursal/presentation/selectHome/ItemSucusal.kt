@@ -24,9 +24,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import coil3.compose.AsyncImage
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 import org.propapel.prospeccion.core.presentation.designsystem.components.util.animateAttention
+import org.propapel.prospeccion.selectSucursal.domain.model.Sucursale
 import prospeccion.composeapp.generated.resources.Res
 import prospeccion.composeapp.generated.resources.logo
 import prospeccion.composeapp.generated.resources.merida
@@ -36,7 +38,7 @@ import prospeccion.composeapp.generated.resources.monterrey
 
 @Composable
 fun ItemSucusal(
-    sucusales: Sucusales,
+    sucusales: Sucursale,
     selected: Boolean,
     onSelect: (Int) -> Unit
 ) {
@@ -57,7 +59,7 @@ fun ItemSucusal(
             .size(width = 300.dp, height = 400.dp)
             .then(
                 if (selected) Modifier.animateAttention(
-                    initialValue = 0.5f
+                    initialValue = 0.9f
                 )
                     .background(brush = gradientBrush, shape = RoundedCornerShape(16.dp))
                     .padding(6.dp)
@@ -81,13 +83,13 @@ fun ItemSucusal(
                 Box(
                     modifier = Modifier.fillMaxWidth().height(300.dp)
                 ){
-                    Image(
+                    AsyncImage(
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(300.dp),
-                        painter = painterResource(getImageSucursalSelected(sucusal = sucusales.sucursal) ?:Res.drawable.monterrey),
-                        contentScale = ContentScale.FillBounds,
-                        contentDescription = null
+                        contentDescription = null,
+                        model = sucusales.image ?:Res.drawable.monterrey,
+                        contentScale = ContentScale.FillBounds
                     )
                     Image(
                         modifier = Modifier.padding(16.dp).size(height = 50.dp, width = 80.dp).align(Alignment.TopStart),
@@ -97,7 +99,7 @@ fun ItemSucusal(
                     )
                 }
                 Text(
-                    text = sucusales.sucursal,
+                    text = sucusales.nombre,
                     style = MaterialTheme.typography.titleMedium,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.padding(16.dp)
