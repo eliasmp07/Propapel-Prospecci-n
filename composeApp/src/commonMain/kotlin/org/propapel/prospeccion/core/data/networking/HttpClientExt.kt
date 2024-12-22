@@ -86,6 +86,12 @@ suspend inline fun <reified Request, reified Response: Any> HttpClient.delete(
     }
 }
 
+/**
+ * Funcion que hace una llamada segura a la Api o servicio
+ *
+ * @param execute Respuesta que va a ejecutar
+ * @return respuesta generica o error para manejarlo en la vista
+ */
 suspend inline fun <reified T> safeCall(execute: () -> HttpResponse): ResultExt<T, DataError.Network> {
     val response = try {
         execute()
@@ -104,6 +110,11 @@ suspend inline fun <reified T> safeCall(execute: () -> HttpResponse): ResultExt<
     return responseToResult(response)
 }
 
+/**
+ * Manejador de la respuesta
+ * @param response Respuesta HTTP de la Api o servicio
+ * @return respuesta mapeada como un generico y un error
+ */
 suspend inline fun <reified T> responseToResult(response: HttpResponse): ResultExt<T, DataError.Network> {
     return when(response.status.value) {
         in 200..299 -> ResultExt.Success(response.body<T>())
@@ -119,6 +130,7 @@ suspend inline fun <reified T> responseToResult(response: HttpResponse): ResultE
     }
 }
 
+private const val controlProduction: Boolean = true
 /**
  * Funcion que crea la ruta de la API
  *
@@ -128,8 +140,8 @@ suspend inline fun <reified T> responseToResult(response: HttpResponse): ResultE
 
 fun constructRoute(route: String): String {
     return when {
-        route.contains(URLBackend.detectMode(true)) -> route
-        route.startsWith("/") -> URLBackend.detectMode(true) + route
-        else -> URLBackend.detectMode(true) + "/$route"
+        route.contains(URLBackend.detectMode(controlProduction)) -> route
+        route.startsWith("/") -> URLBackend.detectMode(controlProduction) + route
+        else -> URLBackend.detectMode(controlProduction) + "/$route"
     }
 }

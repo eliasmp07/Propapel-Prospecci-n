@@ -38,12 +38,14 @@ import org.propapel.prospeccion.core.presentation.designsystem.SoporteSaiBlue30
 import org.propapel.prospeccion.core.presentation.ui.extensions.minusMonths
 import org.propapel.prospeccion.core.presentation.ui.extensions.plusMonths
 import org.propapel.prospeccion.core.presentation.ui.utils.generateDatesForMonth
+import org.propapel.prospeccion.root.presentation.dates.DatesAction
 import org.propapel.prospeccion.root.presentation.dates.DatesSMState
 import org.propapel.prospeccion.root.presentation.dates.DisplayAppointments
 
 @Composable
 fun DatesScreenDesktop(
-    state: DatesSMState
+    state: DatesSMState,
+    onAction: (DatesAction) -> Unit
 ) {
     val currentDateTime = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
     var currentMonth by remember { mutableStateOf(currentDateTime.date) }
@@ -130,6 +132,9 @@ fun DatesScreenDesktop(
                     DisplayAppointments(
                         date,
                         state.datesReminders,
+                        onDetailReminderCustomer = {
+                            onAction(DatesAction.OnDetailReminder(it))
+                        },
                         state.reminders
                     )
                 }

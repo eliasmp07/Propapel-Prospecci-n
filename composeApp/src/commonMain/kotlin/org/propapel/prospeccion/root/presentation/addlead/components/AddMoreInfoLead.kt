@@ -175,7 +175,7 @@ private fun AddMoreInfoLeadDesktop(
                 contentDescription = null
             )
             Column(
-                modifier = Modifier.weight(0.5f).padding(horizontal = 32.dp)
+                modifier = Modifier.weight(0.5f).padding(horizontal = 32.dp).verticalScroll(rememberScrollState())
             ) {
                 Text(
                     modifier = Modifier.align(Alignment.CenterHorizontally),

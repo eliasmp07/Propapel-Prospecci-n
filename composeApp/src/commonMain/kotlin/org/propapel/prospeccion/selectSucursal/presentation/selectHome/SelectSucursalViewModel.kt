@@ -10,21 +10,48 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.propapel.prospeccion.core.domain.AuthInfo
+import org.propapel.prospeccion.core.domain.ResultExt
 import org.propapel.prospeccion.core.domain.SessionStorage
+import org.propapel.prospeccion.selectSucursal.domain.repository.SucursalesRepository
 
 class SelectSucursalViewModel(
-    private val sessionStorage: SessionStorage
+    private val sessionStorage: SessionStorage,
+    private val sucursalesRepository: SucursalesRepository
 ): ViewModel() {
 
     private val _state = MutableStateFlow(SelectSucursalState())
     val state: StateFlow<SelectSucursalState> get() = _state.asStateFlow()
 
     init {
+        getSucursales()
         viewModelScope.launch(Dispatchers.IO) {
             _state.update {
                 it.copy(
                     authInfo = sessionStorage.get()?: AuthInfo()
                 )
+            }
+        }
+    }
+
+    private fun getSucursales(){
+        viewModelScope.launch(Dispatchers.IO){
+            val result = sucursalesRepository.getAllSucursales()
+
+            when(result){
+                is ResultExt.Error ->{
+                    _state.update {
+                        it.copy(
+                            sucusales = emptyList()
+                        )
+                    }
+                }
+                is ResultExt.Success -> {
+                    _state.update {
+                        it.copy(
+                            sucusales = result.data
+                        )
+                    }
+                }
             }
         }
     }

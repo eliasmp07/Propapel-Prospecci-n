@@ -13,20 +13,47 @@ import org.propapel.prospeccion.core.domain.ResultExt
 import org.propapel.prospeccion.core.presentation.ui.toImageAndTextError
 import org.propapel.prospeccion.root.presentation.leads.UiState
 import org.propapel.prospeccion.root.presentation.leads.toState
+import org.propapel.prospeccion.selectSucursal.domain.model.Sucursale
+import org.propapel.prospeccion.selectSucursal.domain.repository.SucursalesRepository
 import org.propapel.prospeccion.selectSucursal.domain.repository.UserRepository
 
 class DashboardGerenteViewModel(
-    private val userRepository: UserRepository
-): ViewModel() {
+    private val userRepository: UserRepository,
+    private val sucursalesRepository: SucursalesRepository
+) : ViewModel() {
 
     private val _state = MutableStateFlow(DashboardGerenteState())
-    val state: StateFlow<DashboardGerenteState> get() =_state.asStateFlow()
+    val state: StateFlow<DashboardGerenteState> get() = _state.asStateFlow()
 
-    fun getUserBySucursal(sucursalId: Int){
+    fun getSucursal(id: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+
+            val result = sucursalesRepository.getSucursalById(id)
+
+            when (result) {
+                is ResultExt.Error -> {
+                    _state.update {
+                        it.copy(
+                            sucursal = UiState.Error(result.error.toImageAndTextError())
+                        )
+                    }
+                }
+                is ResultExt.Success -> {
+                    _state.update {
+                        it.copy(
+                            sucursal = UiState.Success(result.data)
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    fun getUserBySucursal(sucursalId: Int) {
         viewModelScope.launch(Dispatchers.IO) {
             val result = userRepository.getAllUsersBySucursal(sucursalId)
 
-            when(result){
+            when (result) {
                 is ResultExt.Error -> {
                     _state.update {
                         it.copy(
@@ -44,7 +71,7 @@ class DashboardGerenteViewModel(
 
                     // Manejo de estado para los proyectos
                     val projects = customers.flatMap { it.projects }
-                    _state.update { it.copy(projectsCustomer = projects.toState()) }
+                    _state.update { it.copy(projectsCustomer = projects.toState(), leadsBySucursal = customers.size, projectsBySucursal = projects.size) }
 
                 }
             }

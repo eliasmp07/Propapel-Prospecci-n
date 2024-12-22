@@ -7,7 +7,6 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import android.util.Log
 import androidx.core.app.NotificationCompat
 import org.koin.core.component.KoinComponent
 import org.propapel.prospeccion.MainActivity
@@ -17,31 +16,46 @@ import org.propapel.prospeccion.alarm.ext.goAsync
 class AlarmReceiver : BroadcastReceiver(), KoinComponent {
 
     companion object {
-        const val REMINDER_ID = "habit_id"
-        const val CHANNEL_ID = "habits_channel"
-        const val COSTUMER = "cliente"
-        const val MINUTS = "minuts"
-        const val HOUR = "hour"
+        const val MESSAGE = "message_reminder"
+        const val REMINDER_ID = "reminder_id"
+        const val NOTES = "description_reminder"
+        const val CHANNEL_ID = "reminder_channel"
         const val detailNotificacion = "detail"
 
     }
 
-    override fun onReceive(context: Context?, intent: Intent?) = goAsync {
+    override fun onReceive(
+        context: Context?,
+        intent: Intent?
+    ) = goAsync {
         if (context == null || intent == null) return@goAsync
-        Log.d("AlarmReceiver", "onReceive called")
+        val message = intent.getStringExtra(MESSAGE) ?: return@goAsync
         val id = intent.getStringExtra(REMINDER_ID) ?: return@goAsync
-        val customer = intent.getStringExtra(COSTUMER) ?: return@goAsync
-        val minuts = intent.getStringExtra(MINUTS)?: return@goAsync
-        val hour = intent.getStringExtra(HOUR)?:return@goAsync
+        val notes = intent.getStringExtra(NOTES)?:"No tienes notas para la cita"
         createNotificationChannel(context)
-        showNotification(id.toInt(), customer = customer, hour = hour, minuts = minuts, context)
+        showNotification(
+            reminderId = id.toInt(),
+            message = message,
+            notes = notes ,
+            context = context
+        )
     }
 
-    private fun showNotification(reminderId: Int, customer: String, hour: String, minuts: String, context: Context) {
-        // Create an Intent to open your app's main activity
-        val intent = Intent(context, MainActivity::class.java).apply {
+    private fun showNotification(
+        message: String,
+        reminderId: Int,
+        notes: String,
+        context: Context
+    ) {
+        val intent = Intent(
+            context,
+            MainActivity::class.java
+        ).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-            putExtra(detailNotificacion, "Detalle notificacion")
+            putExtra(
+                detailNotificacion,
+                "Detalle notificacion"
+            )
         }
 
         // Create a PendingIntent that starts the activity when the button is clicked
@@ -53,17 +67,23 @@ class AlarmReceiver : BroadcastReceiver(), KoinComponent {
         )
 
         val notificationManager = context.getSystemService(NotificationManager::class.java)
-        val notification = NotificationCompat.Builder(context, CHANNEL_ID)
+        val notification = NotificationCompat.Builder(
+            context,
+            CHANNEL_ID
+        )
             .setContentTitle("Recordatorio")
             .setContentIntent(pendingIntent)
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
-            .setContentText("Hoy es tu cita con ${customer} a las $hour: $minuts ${org.propapel.prospeccion.core.presentation.ui.typeHour(hour.toInt())} 🕐🤝")
+            .setContentText(message)
             .setSmallIcon(R.drawable.appointmente_today)
             .setSound(android.provider.Settings.System.DEFAULT_NOTIFICATION_URI) // Configura el sonido
             .setAutoCancel(true)
             .build()
 
-        notificationManager.notify(reminderId.hashCode(), notification)
+        notificationManager.notify(
+            reminderId.hashCode(),
+            notification
+        )
     }
 
 
@@ -75,7 +95,10 @@ class AlarmReceiver : BroadcastReceiver(), KoinComponent {
                 NotificationManager.IMPORTANCE_HIGH
             )
             channel.description = "Get your appointment reminder!"
-            channel.setSound(android.provider.Settings.System.DEFAULT_NOTIFICATION_URI, null) // Establecer sonido predeterminado
+            channel.setSound(
+                android.provider.Settings.System.DEFAULT_NOTIFICATION_URI,
+                null
+            ) // Establecer sonido predeterminado
             val notificationManager = context.getSystemService(NotificationManager::class.java)
             notificationManager.createNotificationChannel(channel)
         }

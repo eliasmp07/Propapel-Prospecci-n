@@ -13,7 +13,7 @@ data class UserDto(
     @SerialName("id")
     val id: Int,
     @SerialName("image")
-    val image: String,
+    val image: String?,
     @SerialName("lastname")
     val lastname: String,
     @SerialName("name")

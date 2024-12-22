@@ -1,6 +1,7 @@
 package org.propapel.prospeccion.selectSucursal.presentation.dashboard.components
 
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -8,10 +9,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import org.propapel.prospeccion.core.presentation.designsystem.PrimaryYellowLight
+import org.propapel.prospeccion.core.presentation.designsystem.SoporteSaiBlue30
 import org.propapel.prospeccion.core.presentation.designsystem.SuccessGreen
 import org.propapel.prospeccion.root.data.dto.customer.TypeOfClient
 import org.propapel.prospeccion.root.presentation.leads.GenericContentLoading
@@ -19,6 +24,9 @@ import org.propapel.prospeccion.selectSucursal.presentation.dashboard.DashboardG
 import org.propapel.prospeccion.selectSucursal.presentation.dashboard.DashboardGerenteState
 import prospeccion.composeapp.generated.resources.Res
 import prospeccion.composeapp.generated.resources.calendar_date
+import prospeccion.composeapp.generated.resources.create_project_img
+import prospeccion.composeapp.generated.resources.customer_person
+import prospeccion.composeapp.generated.resources.project_confirm
 
 @Composable
 fun DashboardGerenteDesktop(
@@ -27,23 +35,45 @@ fun DashboardGerenteDesktop(
 ) {
 
     Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxSize().background(
+            Brush.verticalGradient(
+                0f to PrimaryYellowLight,
+                0.6f to SoporteSaiBlue30,
+                1f to MaterialTheme.colorScheme.primary
+            )
+        ),
     ) {
         Row(
             modifier = Modifier.fillMaxWidth().padding(16.dp),
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ){
-            CardSucursalDesktop(
-                modifier = Modifier.weight(1f),
-                sucursalId = 10
+            GenericContentLoading(
+                modifier = Modifier.weight(1f).height(320.dp),
+                data = state.sucursal,
+                success = {
+                    CardSucursalDesktop(
+                        modifier = Modifier.weight(1f),
+                        sucursalId = it.id,
+                        leads = state.leadsBySucursal,
+                        projects = state.projectsBySucursal,
+                        sucursale = it
+                    )
+                },
+                retry = {
+
+                }
             )
+
             GenericContentLoading(
                 modifier = Modifier.height(150.dp).weight(0.3f),
                 data = state.customersUser,
                 success = {
+                    val dates = it.flatMap {
+                        it.reminderUsers
+                    }
                     CardInfoDesktop(
                         title = "Citas",
-                        value = 19,
+                        value = dates.size,
                         imageTypeCard = Res.drawable.calendar_date
                     )
                 },
@@ -55,10 +85,13 @@ fun DashboardGerenteDesktop(
                 modifier = Modifier.height(150.dp).weight(0.3f),
                 data = state.customersUser,
                 success = {
+                    val projects = it.flatMap {
+                        it.projects
+                    }
                     CardInfoDesktop(
                         title = "Proyectos",
-                        value = 19,
-                        imageTypeCard = Res.drawable.calendar_date
+                        value = projects.size,
+                        imageTypeCard = Res.drawable.project_confirm
                     )
                 },
                 retry = {
@@ -71,8 +104,8 @@ fun DashboardGerenteDesktop(
                 success = {
                     CardInfoDesktop(
                         title = "Clientes",
-                        value = 19,
-                        imageTypeCard = Res.drawable.calendar_date
+                        value = it.size,
+                        imageTypeCard = Res.drawable.customer_person
                     )
                 },
                 retry = {
@@ -83,9 +116,14 @@ fun DashboardGerenteDesktop(
                 modifier = Modifier.height(150.dp).weight(0.3f),
                 data = state.customersUser,
                 success = {
+                    val sales = it.flatMap {
+                        it.projects
+                    }.filter {
+                        it.isCancel
+                    }
                     CardInfoDesktop(
                         title = "Venta perdidas",
-                        value = 19,
+                        value = sales.size,
                         imageTypeCard = Res.drawable.calendar_date
                     )
                 },

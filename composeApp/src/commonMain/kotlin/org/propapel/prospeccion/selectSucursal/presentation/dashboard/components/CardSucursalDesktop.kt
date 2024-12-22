@@ -45,10 +45,12 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import coil3.compose.AsyncImage
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.vectorResource
 import org.propapel.prospeccion.core.domain.AuthInfo
+import org.propapel.prospeccion.selectSucursal.domain.model.Sucursale
 import org.propapel.prospeccion.selectSucursal.presentation.selectHome.getImageSucursalSelected
 import prospeccion.composeapp.generated.resources.Res
 import prospeccion.composeapp.generated.resources.merida
@@ -59,7 +61,10 @@ import prospeccion.composeapp.generated.resources.projects_ic_dra
 @Composable
 fun CardSucursalDesktop(
     modifier: Modifier = Modifier,
-    sucursalId: Int
+    sucursalId: Int,
+    leads: Int,
+    projects: Int,
+    sucursale: Sucursale
 ) {
 
     val value by rememberInfiniteTransition().animateFloat(
@@ -111,9 +116,9 @@ fun CardSucursalDesktop(
                     }
                 }.size(100.dp).clip(CircleShape).align(Alignment.CenterHorizontally)
             ) {
-                Image(
+               AsyncImage(
                     modifier = Modifier.fillMaxSize(),
-                    painter = painterResource(Res.drawable.mexico),
+                    model = sucursale.image,
                     contentDescription = null,
                     contentScale = ContentScale.Crop
                 )
@@ -122,14 +127,14 @@ fun CardSucursalDesktop(
                 modifier = Modifier.height(16.dp)
             )
             Text(
-                text = "MERIDA",
+                text = sucursale.nombre,
                 style = MaterialTheme.typography.titleMedium
             )
             Spacer(
                 modifier = Modifier.height(8.dp)
             )
             Text(
-                text = "Avenida Ruiz Cortines 2700-3 Oriente, Col. Provivienda de la Esperanza,Guadalupe, Nuevo León, Méx.",
+                text = sucursale.direccion,
                 textAlign = TextAlign.Center,
                 style = MaterialTheme.typography.bodyMedium
             )
@@ -140,11 +145,11 @@ fun CardSucursalDesktop(
             ) {
                 ItemSucursalDetailInfo(
                     icon = Icons.Outlined.Person,
-                    value = 10
+                    value = leads
                 )
                 ItemSucursalDetailInfo(
                     icon = vectorResource(Res.drawable.projects_ic_dra),
-                    value = 80
+                    value = projects
                 )
                 ItemSucursalDetailInfo(
                     icon = Icons.Outlined.CalendarMonth,

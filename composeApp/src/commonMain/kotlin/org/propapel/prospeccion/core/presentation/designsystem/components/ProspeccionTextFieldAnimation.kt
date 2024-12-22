@@ -35,6 +35,7 @@ import androidx.compose.material.Icon
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.sharp.Visibility
 import androidx.compose.material.icons.sharp.VisibilityOff
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -52,8 +53,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.input.pointer.PointerIcon
+import androidx.compose.ui.input.pointer.pointerHoverIcon
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -73,7 +77,6 @@ fun ProspeccionTextFieldAnimation(
     startIcon: ImageVector? = null,
     endIcon: ImageVector? = null,
     onTextChange: (String) -> Unit,
-    visualTransformation: VisualTransformation = VisualTransformation.None,
 ) {
 
     val interactionSource = remember { MutableInteractionSource() }
@@ -98,7 +101,7 @@ fun ProspeccionTextFieldAnimation(
             keyboardOptions = keyboardOptions,
             keyboardActions = keyboardActions,
             interactionSource = interactionSource,
-            visualTransformation = visualTransformation,
+            visualTransformation =  if (isPassword && hidePassword) PasswordVisualTransformation() else VisualTransformation.None,
             textStyle = textFieldTextStyle(),
             cursorBrush = SolidColor(MaterialTheme.colorScheme.onSurface),
             decorationBox = { innerTextField ->
@@ -113,7 +116,7 @@ fun ProspeccionTextFieldAnimation(
                         Column {
                             Box(Modifier.padding(start = 2.dp)) {
                                 InvisibleTextAsPlaceholder(exteriorHintTextStyle())
-                                if (showHintAbove) {
+                                if (showHintAbove || text.isNotEmpty()) {
                                     TextAsIndividualLetters(
                                         animatedContentScope = this@AnimatedContent,
                                         text = hint,
@@ -130,13 +133,7 @@ fun ProspeccionTextFieldAnimation(
                                     )
                                     .defaultMinSize(minWidth = 300.dp)
                                     .background(
-                                        Color.Black.copy(alpha = 0.05f),
-                                        shape = RoundedCornerShape(30.dp)
-                                    )
-                                    .border(
-                                        width = 1.dp,
-                                        color = Color.Black,
-                                        shape = RoundedCornerShape(30.dp)
+                                        Color.Transparent
                                     )
                                     .padding(
                                         horizontal = 10.dp,
@@ -156,7 +153,7 @@ fun ProspeccionTextFieldAnimation(
                                         )
                                         Spacer(modifier = Modifier.width(16.dp))
                                     }
-                                    if (!showHintAbove) {
+                                    if (!showHintAbove && text.isEmpty()) {
                                         TextAsIndividualLetters(
                                             animatedContentScope = this@AnimatedContent,
                                             text = hint,
@@ -181,12 +178,15 @@ fun ProspeccionTextFieldAnimation(
                                             tint = Color.Black,
                                             modifier = Modifier
                                                 .clip(CircleShape)
-                                                .clickable { hidePassword = !hidePassword }
+                                                .clickable { hidePassword = !hidePassword }.pointerHoverIcon(PointerIcon.Hand)
 
                                         )
                                     }
                                 }
                             }
+                            HorizontalDivider(
+                                color = Color.Black
+                            )
                         }
                     }
                 }

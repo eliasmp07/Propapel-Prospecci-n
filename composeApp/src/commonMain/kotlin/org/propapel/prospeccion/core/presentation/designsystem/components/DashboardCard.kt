@@ -103,18 +103,6 @@ fun DashboardCard(
                                 Spacer(
                                     modifier = Modifier.weight(1f)
                                 )
-                                IconButton(
-                                    modifier = Modifier.pointerHoverIcon(PointerIcon.Hand),
-                                    onClick = {
-                                        showMoreInfo = !showMoreInfo
-                                    },
-                                    content = {
-                                        Icon(
-                                            imageVector = if (showMoreInfo) Icons.Outlined.ExpandLess else Icons.Outlined.ExpandMore,
-                                            contentDescription = null,
-                                        )
-                                    }
-                                )
                             }
                             Spacer(modifier = Modifier.height(8.dp))
                             Text(
@@ -153,21 +141,6 @@ fun DashboardCard(
                             )
                         }
                         Spacer(modifier = Modifier.width(8.dp))
-                    }
-                    if (showMoreInfo) {
-                        LazyRow(
-                            modifier = Modifier.fillMaxWidth().padding(end = 50.dp)
-                        ) {
-                            items(
-                                customers
-                            ){
-                                Text(
-                                    text = it.companyName,
-                                    fontSize = 14.sp,
-                                    color = Color.Black,
-                                )
-                            }
-                        }
                     }
                 }
                 Image(

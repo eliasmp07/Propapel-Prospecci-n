@@ -214,7 +214,10 @@ fun HomeScreen(
                 1 -> {
                     DateScreenRoot(
                         viewModel = datesViewModel,
-                        windowWidthSizeClass = windowClass
+                        windowWidthSizeClass = windowClass,
+                        onDetailReminderCustomer = {
+                            onDetailReminderCustomer(it)
+                        },
                     )  // Pantalla de Citas
                 }
                 2 -> {

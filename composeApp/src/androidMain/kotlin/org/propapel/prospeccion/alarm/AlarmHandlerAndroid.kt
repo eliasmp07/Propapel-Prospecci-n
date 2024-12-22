@@ -2,7 +2,6 @@ package org.propapel.prospeccion.alarm
 
 import android.app.AlarmManager
 import android.app.PendingIntent
-import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
 import android.os.Build
@@ -11,11 +10,12 @@ import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import org.propapel.prospeccion.core.domain.repository.AlarmHandler
+import org.propapel.prospeccion.core.presentation.ui.typeHour
 import org.propapel.prospeccion.root.domain.models.Reminder
 import java.util.Calendar
 
 @RequiresApi(Build.VERSION_CODES.O)
-fun formatTime(time: Long): Long{
+fun formatTime(time: Long): Long {
     val calendar = Calendar.getInstance()
     calendar.timeInMillis = time
 
@@ -26,6 +26,12 @@ fun formatTime(time: Long): Long{
     val localTimeInMillis = calendar.timeInMillis - offset
     return localTimeInMillis
 }
+
+
+data class MessageSchedule(
+    val moment: Long,
+    val message: String
+)
 
 /**
  *  Manejador de las notificaciones
@@ -41,23 +47,37 @@ class AlarmHandlerAndroid(
     @RequiresApi(Build.VERSION_CODES.O)
     override fun setRecurringAlarm(reminder: Reminder) {
         val baseMoment = formatTime(reminder.reminderDate.toLong())
+        val convertedTime = Instant.fromEpochMilliseconds(reminder.reminderDate.toLong()).toLocalDateTime(TimeZone.currentSystemDefault())
+
 
         val moments = listOf(
-            baseMoment, // Momento exacto
-            formatTime(reminder.reminderDate.toLong() - (24 * 60 * 60 * 1000)),
-            formatTime(reminder.reminderDate.toLong() - (60 * 60 * 1000))
+            MessageSchedule(
+                moment = baseMoment,
+                message = "Hoy es tu cita con ${reminder.customer.companyName} a las ${convertedTime.hour}:${convertedTime.minute} ${typeHour(convertedTime.hour)}"
+            ),
+            MessageSchedule(
+                moment = formatTime(reminder.reminderDate.toLong() - (24 * 60 * 60 * 1000)),
+                message = "Recuerda que mañana tienes una cita con ${reminder.customer.companyName} a las ${convertedTime.hour}:${convertedTime.minute} ${typeHour(convertedTime.hour)}."
+            ),
+            MessageSchedule(
+                moment = formatTime(reminder.reminderDate.toLong() - (60 * 60 * 1000)),
+                message = "En una hora tienes tu cita con ${reminder.customer.companyName}."
+            )
         )
 
         moments.forEachIndexed { index, moment ->
             alarmManager.setExact(
                 AlarmManager.RTC_WAKEUP,
-                moment,
-                createPendingIntent(reminder, index )
+                moment.moment,
+                createPendingIntent(
+                    reminder =  reminder,
+                    index = index,
+                    notes = reminder.description,
+                    message =  moment.message
+                )
             )
         }
     }
-
-
 
 
     override fun cancel(reminder: Reminder) {
@@ -65,13 +85,29 @@ class AlarmHandlerAndroid(
         alarmManager.cancel(pending)
     }
 
-    private fun createPendingIntent(reminder: Reminder, index: Int = 1): PendingIntent {
-        val converteTime = Instant.fromEpochMilliseconds(reminder.reminderDate.toLong()).toLocalDateTime(TimeZone.UTC)
-        val intent = Intent(context, AlarmReceiver::class.java).apply {
-            putExtra(AlarmReceiver.REMINDER_ID, reminder.reminderId.toString())
-            putExtra(AlarmReceiver.COSTUMER, reminder.customer.contactName)
-            putExtra(AlarmReceiver.MINUTS, converteTime.minute.toString())
-            putExtra(AlarmReceiver.HOUR, converteTime.hour.toString())
+    private fun createPendingIntent(
+        reminder: Reminder,
+        index: Int = 1,
+        notes: String = "",
+        message: String = ""
+    ): PendingIntent {
+        val intent = Intent(
+            context,
+            AlarmReceiver::class.java
+        ).apply {
+            putExtra(
+                AlarmReceiver.MESSAGE,
+                message
+            )
+            putExtra(
+                AlarmReceiver.REMINDER_ID,
+                reminder.reminderId.toString()
+            )
+            putExtra(
+                AlarmReceiver.NOTES,
+                notes
+
+            )
         }
         return PendingIntent.getBroadcast(
             context,

@@ -1,77 +1,104 @@
-package org.propapel.prospeccion.auth.presentation.login.components.mobile
+package org.propapel.prospeccion.auth.presentation.login.components
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.delay
 import org.jetbrains.compose.resources.painterResource
 import org.propapel.prospeccion.auth.presentation.login.LoginAction
 import org.propapel.prospeccion.auth.presentation.login.LoginState
 import org.propapel.prospeccion.core.presentation.designsystem.components.ProSalesActionButton
 import org.propapel.prospeccion.core.presentation.designsystem.components.ProspeccionTextFieldAnimation
+import org.propapel.prospeccion.root.presentation.addlead.GenericContentWindowsSize
 import prospeccion.composeapp.generated.resources.Res
-import prospeccion.composeapp.generated.resources.customer_person
 import prospeccion.composeapp.generated.resources.logo
+import prospeccion.composeapp.generated.resources.merida
+import prospeccion.composeapp.generated.resources.mexico
+import prospeccion.composeapp.generated.resources.monterrey
 
 @Composable
-fun LoginMobileScreen(
+fun LoginDesktopScreen(
     state: LoginState,
-    onAction: (LoginAction) -> Unit
+    onAction: (LoginAction)  -> Unit
 ) {
+    val items = listOf(
+        Res.drawable.merida,
+        Res.drawable.mexico,
+        Res.drawable.monterrey
+    )
+
+    val pagerState = rememberPagerState(pageCount = { items.size })
+
+    // Auto-desplazamiento del pager
+    LaunchedEffect(pagerState) {
+        while (true) {
+            delay(5000) // Cambia de página cada minuto
+            pagerState.animateScrollToPage((pagerState.currentPage + 1) % items.size)
+        }
+    }
+
     val focusManager = LocalFocusManager.current
-    Box {
-        Image(
-            modifier = Modifier.size(150.dp).align(Alignment.BottomEnd),
-            painter = painterResource(Res.drawable.customer_person),
-            contentDescription = null
-        )
-        Column(
+    Box(
+        modifier = Modifier.fillMaxSize().padding(16.dp),
+    ) {
+        ElevatedCard(
             modifier = Modifier.fillMaxSize()
-        ) {
-            Spacer(
-                modifier = Modifier.weight(0.2f)
-            )
-            Image(
-                painter = painterResource(Res.drawable.logo),
-                contentDescription = null,
-                modifier = Modifier.padding(16.dp).align(Alignment.CenterHorizontally)
-            )
-            Spacer(
-                modifier = Modifier.weight(0.2f)
-            )
-            ElevatedCard(
-                modifier = Modifier.width(500.dp).padding(16.dp)
-                    .align(Alignment.CenterHorizontally),
-                elevation = CardDefaults.elevatedCardElevation(20.dp)
-            ) {
+        ){
+            Row {
+                HorizontalPager(
+                    state = pagerState,
+                    modifier = Modifier.weight(0.5f).fillMaxHeight().padding(60.dp).clip(RoundedCornerShape(30.dp))
+                ){page ->
+                    val image  = items[page]
+                    Image(
+                        modifier = Modifier.fillMaxSize(),
+                        contentScale = ContentScale.Crop,
+                        painter = painterResource(image),
+                        contentDescription = null
+                    )
+                }
                 Column(
-                    modifier = Modifier.padding(16.dp)
+                    modifier = Modifier.weight(0.5f).fillMaxHeight().padding(100.dp),
+                    verticalArrangement = Arrangement.Center
                 ) {
+                    Image(
+                        painter = painterResource(Res.drawable.logo),
+                        contentDescription = null,
+                        modifier = Modifier.padding(16.dp)
+                    )
                     Text(
-                        modifier = Modifier.align(Alignment.CenterHorizontally),
-                        text = "Inicio de sessión",
-                        style = MaterialTheme.typography.headlineMedium,
+                        text = "Inicio de sessión", style = MaterialTheme.typography.headlineMedium,
                         fontWeight = FontWeight.Bold
                     )
                     Text(
@@ -109,6 +136,7 @@ fun LoginMobileScreen(
                     Spacer(Modifier.height(16.dp))
                     ProSalesActionButton(
                         text = "Iniciar sesión",
+                        shape = RoundedCornerShape(12.dp),
                         isLoading = state.isLogging,
                         onClick = {
                             focusManager.clearFocus()
@@ -117,9 +145,6 @@ fun LoginMobileScreen(
                     )
                 }
             }
-            Spacer(
-                modifier = Modifier.weight(0.5f)
-            )
         }
     }
 }
