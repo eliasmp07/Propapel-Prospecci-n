@@ -1,4 +1,6 @@
-@file:OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
+@file:OptIn(ExperimentalMaterial3WindowSizeClassApi::class,
+            ExperimentalMaterial3WindowSizeClassApi::class
+)
 
 package org.propapel.prospeccion.root.presentation.createReminder
 
@@ -15,6 +17,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
@@ -22,6 +25,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Notes
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.Timer
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -49,6 +53,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.datetime.Clock
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import network.chaintech.kmp_date_time_picker.ui.datetimepicker.WheelDateTimePickerView
@@ -56,7 +62,11 @@ import network.chaintech.kmp_date_time_picker.utils.DateTimePickerView
 import network.chaintech.kmp_date_time_picker.utils.TimeFormat
 import network.chaintech.kmp_date_time_picker.utils.WheelPickerDefaults
 import network.chaintech.kmp_date_time_picker.utils.dateTimeToString
+import network.chaintech.kmp_date_time_picker.utils.now
+import network.chaintech.kmp_date_time_picker.utils.timeToString
 import org.jetbrains.compose.resources.painterResource
+import org.propapel.prospeccion.core.presentation.designsystem.components.AdvancedTimePicker
+import org.propapel.prospeccion.core.presentation.designsystem.components.DatePickerDialog
 import org.propapel.prospeccion.core.presentation.designsystem.components.LoadingPropapel
 import org.propapel.prospeccion.core.presentation.designsystem.components.ProSalesActionButton
 import org.propapel.prospeccion.core.presentation.designsystem.components.ProSalesActionButtonOutline
@@ -94,6 +104,23 @@ fun CreateReminderScreenRoot(
     )
 }
 
+
+fun Int.getMouthString(): String{
+   return when(this){
+        1 -> "Enero"
+       2 -> "Febrero"
+       3 -> "Marzo"
+       4 -> "Abril"
+       5 -> "Mayo"
+       6 -> "Junio"
+       7 -> "Julio"
+       8 -> "Agosto"
+       9 -> "Septiembre"
+       10 -> "Octubre"
+       11 -> "Noviembre"
+       else -> "Diciembre"
+    }
+}
 @Composable
 private fun CreateReminderScreen(
     state: CreateReminderState,
@@ -101,8 +128,11 @@ private fun CreateReminderScreen(
 ) {
     val focusManager = LocalFocusManager.current
     val windowSizeClass = calculateWindowSizeClass()
-    val date = Clock.System.now().toLocalDateTime(TimeZone.UTC)
-    var selectedDate by remember { mutableStateOf("${date.dayOfMonth}-${date.monthNumber}-${date.year} ${date.hour}:${date.minute} ${typeHour(date.hour)}") }
+    val date = LocalDateTime.now()
+    var selectedDate by remember { mutableStateOf("${date.dayOfMonth}-${date.monthNumber.getMouthString()}-${date.year}") }
+    var timeSelected by remember {
+        mutableStateOf(timeToString(date.time, "hh:mm a"))
+    }
     val imeState = rememberImeState()
     val scrollState = rememberScrollState()
 
@@ -112,6 +142,13 @@ private fun CreateReminderScreen(
         }
     }
 
+    var showTimePicker by remember {
+        mutableStateOf(false)
+    }
+
+    var showDialogPickerDate by remember {
+        mutableStateOf(false)
+    }
     val result = handleResultView(
         isLoading = state.isLoading,
         contentLoading = {
@@ -283,10 +320,25 @@ private fun CreateReminderScreen(
                 listOptions = state.customers
             )
             ProSalesTextField(
-                title = "Fecha y hora:",
+                title = "Hora:",
                 readOnly = true,
                 modifierTextField = Modifier.clickable {
-                    onAction(CreateReminderAction.OnShowDatePicker)
+                    showTimePicker = !showTimePicker
+                },
+                colors = Color.White,
+                state = timeSelected,
+                onTextChange = {
+
+                },
+                startIcon = Icons.Filled.Timer,
+                maxLines = 104
+
+            )
+            ProSalesTextField(
+                title = "Fecha:",
+                readOnly = true,
+                modifierTextField = Modifier.clickable {
+                    showDialogPickerDate = !showDialogPickerDate
                 },
                 colors = Color.White,
                 state = selectedDate,
@@ -342,6 +394,7 @@ private fun CreateReminderScreen(
             )
             ProSalesActionButton(
                 text = "Guardar",
+                shape = RoundedCornerShape(12.dp),
                 isLoading = state.isCreatingAppointment,
                 onClick = {
                     onAction(CreateReminderAction.CreateAppointmentClick)
@@ -357,45 +410,25 @@ private fun CreateReminderScreen(
                 onAction = onAction
             )
         }
-        if (state.showDatePicker) {
-            WheelDateTimePickerView(
-                title = "Fecha y hora de la cita",
-                modifier = Modifier.padding(
-                    top = 18.dp,
-                    bottom = 10.dp
-                ).fillMaxWidth(),
-                showDatePicker = state.showDatePicker,
-                titleStyle = TextStyle(
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color(0xFF333333),
-                ),
-                doneLabel = "Seleccionar",
-                doneLabelStyle = TextStyle(
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight(600),
-                    color = Color(0xFF007AFF),
-                ),
-                selectorProperties = WheelPickerDefaults.selectorProperties(
-                    borderColor = Color.LightGray,
-                ),
-                timeFormat = TimeFormat.AM_PM,
-                dateTextColor = Color(0xff007AFF),
-                rowCount = 5,
-                height = 170.dp,
-                dateTextStyle = TextStyle(
-                    fontWeight = FontWeight(600),
-                ),
-                onDoneClick = {
-                    onAction(CreateReminderAction.OnDateNextReminder(localDateTimeToLong(it)))
-                    selectedDate = dateTimeToString(
-                        it,
-                        "dd-MM-yyyy hh:mm a"
-                    )
-                },
-                dateTimePickerView = DateTimePickerView.DIALOG_VIEW,
+        if (showTimePicker){
+            AdvancedTimePicker(
                 onDismiss = {
-                    onAction(CreateReminderAction.OnShowDatePicker)
+                    showTimePicker = false
+                },
+                onConfirm = { long, string ->
+                    onAction(CreateReminderAction.OnTimeNextReminder(long))
+                    timeSelected = string
+                }
+            )
+        }
+        if (showDialogPickerDate) {
+            DatePickerDialog(
+                onDateSelected = { long, string ->
+                    onAction(CreateReminderAction.OnDateNextReminder(long?:0))
+                    selectedDate = string
+                },
+                onDismiss = {
+                    showDialogPickerDate = !showDialogPickerDate
                 }
             )
         }

@@ -13,13 +13,14 @@ data class CreateReminderState(
     val customers: List<Customer> = listOf(Customer()),
     val reminders: List<LocalDateTime> = listOf(),
     val typeAppointment: String = "",
-    val showDatePicker: Boolean = false,
     val dateNoAvailable: Boolean = false,
     val notesAppointment: String = "",
     val error: UiText? = null,
     val isLoading: Boolean = false,
     val leadId: Int = 0,
     val isCreatingAppointment: Boolean = false,
+    val time: Long = 0L,
+    val date: Long = 0L,
     val dateNextReminder: Long = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).toInstant(TimeZone.currentSystemDefault()).toEpochMilliseconds(),
     val isSuccessCreate: Boolean = false
 )
