@@ -37,14 +37,13 @@ class CreateReminderViewModel(
     ) {
         when (action) {
             CreateReminderAction.CreateAppointmentClick -> {
-                if (validAvailableDate(convertLocalDate(_state.value.dateNextReminder))) {
-                    _state.update {
-                        it.copy(
-                            dateNoAvailable = !it.dateNoAvailable
-                        )
-                    }
-                }else{
-                    createReminder()
+               createReminder()
+            }
+            is CreateReminderAction.OnTimeNextReminder -> {
+                _state.update {
+                    it.copy(
+                        time = action.time
+                    )
                 }
             }
             is CreateReminderAction.OnTypeAppointmentChange -> {
@@ -61,30 +60,12 @@ class CreateReminderViewModel(
                     )
                 }
             }
-            CreateReminderAction.OnShowDatePicker -> {
+            is CreateReminderAction.OnDateNextReminder -> {
                 _state.update {
                     it.copy(
-                        showDatePicker = !it.showDatePicker
+                        dateNextReminder = action.date
                     )
                 }
-            }
-            is CreateReminderAction.OnDateNextReminder -> {
-                if (validAvailableDate(convertLocalDate(action.date))) {
-                    _state.update {
-                        it.copy(
-                            dateNoAvailable = !it.dateNoAvailable
-                        )
-                    }
-
-                } else {
-                    _state.update {
-                        it.copy(
-                            showDatePicker = !it.showDatePicker,
-                            dateNextReminder = action.date
-                        )
-                    }
-                }
-
             }
             CreateReminderAction.OnBackClick -> {
                 if (_state.value.isSuccessCreate) {
@@ -176,36 +157,46 @@ class CreateReminderViewModel(
 
     fun createReminder() {
         viewModelScope.launch(Dispatchers.IO) {
-            _state.update {
-                it.copy(
-                    isCreatingAppointment = true,
-                    error = null
+            val dateReminder = _state.value.time + _state.value.date
+            if (validAvailableDate(convertLocalDate(date = dateReminder))) {
+                _state.update {
+                    it.copy(
+                        dateNoAvailable = !it.dateNoAvailable
+                    )
+                }
+            }else{
+                _state.update {
+                    it.copy(
+                        isCreatingAppointment = true,
+                        error = null
+                    )
+                }
+                val result = reminderRepository.createReminder(
+                    reminderDate = dateReminder,
+                    customerId = _state.value.customer.idCustomer,
+                    description = _state.value.notesAppointment,
+                    typeAppointment = _state.value.typeAppointment
                 )
-            }
-            val result = reminderRepository.createReminder(
-                reminderDate = _state.value.dateNextReminder,
-                customerId = _state.value.customer.idCustomer,
-                description = _state.value.notesAppointment,
-                typeAppointment = _state.value.typeAppointment
-            )
-            when (result) {
-                is ResultExt.Error -> {
-                    _state.update {
-                        it.copy(
-                            error = result.error.asUiText()
-                        )
+                when (result) {
+                    is ResultExt.Error -> {
+                        _state.update {
+                            it.copy(
+                                error = result.error.asUiText()
+                            )
+                        }
                     }
-                }
-                is ResultExt.Success -> {
-                    _state.update {
-                        it.copy(
-                            isSuccessCreate = true,
-                            isCreatingAppointment = false,
-                            error = null,
-                        )
+                    is ResultExt.Success -> {
+                        _state.update {
+                            it.copy(
+                                isSuccessCreate = true,
+                                isCreatingAppointment = false,
+                                error = null,
+                            )
+                        }
                     }
                 }
             }
+
         }
     }
 

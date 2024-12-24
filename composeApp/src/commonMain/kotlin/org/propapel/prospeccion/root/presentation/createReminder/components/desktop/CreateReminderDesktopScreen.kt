@@ -124,7 +124,7 @@ fun CreateReminderDesktopScreen(
                     title = "Fecha y hora:",
                     readOnly = true,
                     modifierTextField = Modifier.clickable {
-                        onAction(CreateReminderAction.OnShowDatePicker)
+
                     },
                     colors = Color.White,
                     state = selectedDate,

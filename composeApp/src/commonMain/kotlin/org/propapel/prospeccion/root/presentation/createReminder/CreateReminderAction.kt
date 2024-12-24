@@ -8,8 +8,8 @@ sealed interface CreateReminderAction {
     data class OnNoteAppointmentChange(val notes: String): CreateReminderAction
     data object CreateAppointmentClick: CreateReminderAction
     data class OnDateNextReminder(val date: Long): CreateReminderAction
+    data class OnTimeNextReminder(val time: Long): CreateReminderAction
     data class OnCustomerChange(val customer: Customer): CreateReminderAction
     data object OnBackClick: CreateReminderAction
     data object OnToggleDateNoAvailable: CreateReminderAction
-    data object OnShowDatePicker: CreateReminderAction
 }
