@@ -18,6 +18,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowLeft
+import androidx.compose.material.icons.automirrored.filled.ArrowRight
 import androidx.compose.material.icons.filled.ArrowLeft
 import androidx.compose.material.icons.filled.ArrowRight
 import androidx.compose.material.icons.filled.Close
@@ -207,7 +209,7 @@ actual fun WebViewScreenView(
                             navigator.navigateBack()
                         },
                         textAction = "Regresar",
-                        icon = Icons.Default.ArrowLeft
+                        icon = Icons.AutoMirrored.Filled.ArrowLeft
                     )
                     ItemActionWebView(
                         isEnable = navigator.canGoForward,
@@ -220,7 +222,7 @@ actual fun WebViewScreenView(
                             navigator.navigateForward()
                         },
                         textAction = "Adelante",
-                        icon = Icons.Default.ArrowRight
+                        icon = Icons.AutoMirrored.Filled.ArrowRight
                     )
                     ItemActionWebView(
                         onClickAction = {

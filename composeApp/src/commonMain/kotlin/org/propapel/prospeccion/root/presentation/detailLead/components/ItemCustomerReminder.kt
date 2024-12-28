@@ -28,8 +28,11 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import kotlinx.datetime.Instant
+import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
+import org.propapel.prospeccion.core.presentation.ui.extensions.toHourAndMinute
+import org.propapel.prospeccion.core.presentation.ui.extensions.toLocalDateTime
 import org.propapel.prospeccion.core.presentation.ui.typeHour
 import org.propapel.prospeccion.root.domain.models.Customer
 import org.propapel.prospeccion.root.domain.models.Reminder
@@ -44,14 +47,16 @@ fun ItemCustomerReminder(
     customer: Customer,
     onDetailReminder: (String) -> Unit
 ) {
-    val reminderDate = Instant.fromEpochMilliseconds(reminder.reminderDate.toLong()).toLocalDateTime(TimeZone.UTC)
+
+    val reminderDate = reminder.reminderDate.toLong().toLocalDateTime(TimeZone.currentSystemDefault())
+
     Box(
         modifier = Modifier
             .fillMaxWidth()
     ) {
         ElevatedCard(
             shape = RoundedCornerShape(
-                if(isExpanded) 0.dp else 20.dp
+                if (isExpanded) 0.dp else 20.dp
             ),
             onClick = {
                 onDetailReminder(reminder.reminderId.toString())
@@ -121,7 +126,10 @@ fun ItemCustomerReminder(
                         )
                     }
                 }
-                Text(text = "${reminderDate.hour}: ${reminderDate.minute} ${typeHour(reminderDate.hour)}", style = MaterialTheme.typography.titleSmall)
+                Text(
+                    text = reminderDate.toHourAndMinute(),
+                    style = MaterialTheme.typography.titleSmall
+                )
                 Box(
                     modifier = Modifier
                         .padding(8.dp)

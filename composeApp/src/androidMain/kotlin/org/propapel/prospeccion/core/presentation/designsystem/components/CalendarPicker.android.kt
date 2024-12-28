@@ -8,6 +8,9 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
+import kotlinx.datetime.Clock
+import kotlinx.datetime.toJavaLocalDateTime
+import org.propapel.prospeccion.core.presentation.ui.extensions.toLocalDateTime
 import org.propapel.prospeccion.root.presentation.createReminder.convertLocalDate
 import org.propapel.prospeccion.root.presentation.createReminder.getMouthString
 
@@ -22,10 +25,10 @@ actual fun DatePickerDialog(
         onDismissRequest = onDismiss,
         confirmButton = {
             TextButton(onClick = {
-                val date = convertLocalDate(datePickerState.selectedDateMillis ?: 0)
+                val date = datePickerState.selectedDateMillis?.toLocalDateTime()
                 onDateSelected(
                     datePickerState.selectedDateMillis,
-                    "${date.dayOfMonth}-${date.monthNumber.getMouthString()}-${date.year}"
+                    "${date?.dayOfMonth}-${date?.monthNumber?.getMouthString()}-${date?.year?:""}"
                 )
                 onDismiss()
             }) {

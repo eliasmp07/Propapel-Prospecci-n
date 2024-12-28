@@ -17,7 +17,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import kotlinx.datetime.TimeZone
 import network.chaintech.kmp_date_time_picker.utils.timeToString
+import org.propapel.prospeccion.core.presentation.ui.extensions.toLocalDateTime
 import org.propapel.prospeccion.root.presentation.createReminder.convertLocalDate
 import java.util.Calendar
 
@@ -54,7 +56,7 @@ actual fun AdvancedTimePicker(
                 set(Calendar.SECOND, 0)
                 set(Calendar.MILLISECOND, 0)
             }
-            val localDateTime = convertLocalDate(selectedTime.timeInMillis).time
+            val localDateTime = selectedTime.timeInMillis.toLocalDateTime(TimeZone.currentSystemDefault()).time
             val timeInMillis = selectedTime.timeInMillis // Convertir a long
             onConfirm(timeInMillis, timeToString(localDateTime, "hh:mm a")) // Enviar el valor de tiempo en milisegundos
         },

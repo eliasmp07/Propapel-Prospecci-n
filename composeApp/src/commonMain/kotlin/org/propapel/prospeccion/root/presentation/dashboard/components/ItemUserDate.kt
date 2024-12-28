@@ -35,6 +35,8 @@ import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import org.propapel.prospeccion.core.presentation.designsystem.components.util.animateEnterRight
+import org.propapel.prospeccion.core.presentation.ui.extensions.toHourAndMinute
+import org.propapel.prospeccion.core.presentation.ui.extensions.toLocalDateTime
 import org.propapel.prospeccion.core.presentation.ui.typeHour
 import org.propapel.prospeccion.root.domain.models.Reminder
 
@@ -44,7 +46,6 @@ fun ItemUserDate(
     reminder: Reminder,
     onDetailReminder: (String) -> Unit
 ) {
-    val reminderDate = Instant.fromEpochMilliseconds(reminder.reminderDate.toLong()).toLocalDateTime(TimeZone.UTC)
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -117,7 +118,11 @@ fun ItemUserDate(
                         color = Color.Gray
                     )
                 }
-                Text(text = "${reminderDate.hour}: ${reminderDate.minute} ${typeHour(reminderDate.hour)}", style = MaterialTheme.typography.titleSmall)
+                Text(
+                    text = reminder.reminderDate.toLong().toLocalDateTime(TimeZone.currentSystemDefault())
+                        .toHourAndMinute(),
+                    style = MaterialTheme.typography.titleSmall
+                )
                 Box(
                     modifier = Modifier
                         .padding(8.dp)

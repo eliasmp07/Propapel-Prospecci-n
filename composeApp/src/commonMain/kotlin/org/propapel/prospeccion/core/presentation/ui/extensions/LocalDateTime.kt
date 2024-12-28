@@ -22,6 +22,10 @@ fun LocalDateTime.previewTwoMoth(): Int{
     return  if (currentDate.monthNumber == 1) 12 else currentDate.monthNumber - 2
 }
 
+fun LocalDateTime.toHourAndMinute(): String{
+    return "${this.hour.toNumberAmAndPmHour()}:${this.minute.toCorrectNumberMinute()} ${this.hour.toPMOrAM()}"
+}
+
 fun LocalDate.formatToMonthString(): String {
     val monthNames = listOf(
         "Enero",

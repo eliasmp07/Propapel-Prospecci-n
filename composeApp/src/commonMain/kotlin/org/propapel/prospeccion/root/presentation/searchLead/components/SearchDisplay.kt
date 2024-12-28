@@ -1,3 +1,7 @@
+@file:OptIn(FlowPreview::class,
+            ExperimentalCoroutinesApi::class
+)
+
 package org.propapel.prospeccion.root.presentation.searchLead.components
 
 import androidx.compose.runtime.Composable
@@ -8,6 +12,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.text.input.TextFieldValue
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged

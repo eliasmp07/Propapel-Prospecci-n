@@ -218,6 +218,6 @@ class CreateReminderViewModel(
 
 }
 
-fun convertLocalDate(date: Long): LocalDateTime {
-    return Instant.fromEpochMilliseconds(date).toLocalDateTime(TimeZone.UTC)
+fun convertLocalDate(date: Long,  timeZone: TimeZone = TimeZone.UTC): LocalDateTime {
+    return Instant.fromEpochMilliseconds(date).toLocalDateTime(timeZone)
 }
