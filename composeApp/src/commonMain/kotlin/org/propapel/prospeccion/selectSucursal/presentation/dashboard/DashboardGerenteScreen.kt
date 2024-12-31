@@ -23,7 +23,10 @@ import prospeccion.composeapp.generated.resources.monterrey
 @Composable
 fun DashboardGerenteScreenRoot(
     user: AuthInfo,
-    sucursalId: Int,
+    onAddLead: () -> Unit,
+    onLogout: () -> Unit,
+    onSearchLead: () -> Unit,
+    onUpdateProfile: () -> Unit,
     viewModel: DashboardGerenteViewModel
 ) {
 
@@ -31,8 +34,14 @@ fun DashboardGerenteScreenRoot(
 
     DashboardGerenteScreen(
         state = state,
-        onAction = {
-
+        onAction = {action ->
+            when(action){
+                DashboardGerenteAction.OnAddLead -> onAddLead()
+                DashboardGerenteAction.OnEditProfile -> onUpdateProfile()
+                DashboardGerenteAction.OnLogout -> onLogout()
+                DashboardGerenteAction.OnSearchLead -> onSearchLead()
+                else -> Unit
+            }
         },
         user = user
     )

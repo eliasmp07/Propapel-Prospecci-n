@@ -28,15 +28,12 @@ actual fun AdvancedTimePicker(
     onConfirm: (Long, String) -> Unit,
     onDismiss: () -> Unit
 ) {
-    var time by remember {
-        mutableStateOf(0L)
-    }
     val currentTime = Calendar.getInstance()
 
     val timePickerState = rememberTimePickerState(
         initialHour = currentTime.get(Calendar.HOUR_OF_DAY),
         initialMinute = currentTime.get(Calendar.MINUTE),
-        is24Hour = true,
+        is24Hour = false
     )
 
     /** Determines whether the time picker is dial or input */
@@ -58,10 +55,10 @@ actual fun AdvancedTimePicker(
                 set(Calendar.SECOND, 0)
                 set(Calendar.MILLISECOND, 0)
             }
-            val timeInMillis = selectedTime.timeInMillis // Convertir a long
             val localDateTime = convertLocalDate(selectedTime.timeInMillis).time
+            val timeInMillis = selectedTime.timeInMillis // Convertir a long
             onConfirm(timeInMillis, timeToString(localDateTime, "hh:mm a")) // Enviar el valor de tiempo en milisegundos
-                    },
+        },
         toggle = {
             IconButton(onClick = { showDial = !showDial }) {
                 Icon(

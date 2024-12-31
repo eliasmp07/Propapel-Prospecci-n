@@ -32,7 +32,7 @@ actual fun AdvancedTimePicker(
     val timePickerState = rememberTimePickerState(
         initialHour = currentTime.get(Calendar.HOUR_OF_DAY),
         initialMinute = currentTime.get(Calendar.MINUTE),
-        is24Hour = false,
+        is24Hour = false
     )
 
     /** Determines whether the time picker is dial or input */

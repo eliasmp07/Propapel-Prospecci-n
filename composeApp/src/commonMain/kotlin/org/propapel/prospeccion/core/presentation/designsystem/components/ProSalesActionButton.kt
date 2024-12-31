@@ -1,4 +1,5 @@
 package org.propapel.prospeccion.core.presentation.designsystem.components
+
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -40,7 +41,7 @@ fun ProSalesActionButton(
     textColor: Color = Color.Black,
     shape: Shape = RoundedCornerShape(100f),
     enabled: Boolean = true,
-    colors: ButtonColors =  ButtonDefaults.buttonColors(
+    colors: ButtonColors = ButtonDefaults.buttonColors(
         containerColor = MaterialTheme.colorScheme.primary,
         contentColor = MaterialTheme.colorScheme.onPrimary,
         disabledContainerColor = Color.Gray,
@@ -55,9 +56,9 @@ fun ProSalesActionButton(
         enabled = enabled,
         border = border,
         shape = shape,
-        colors =colors,
+        colors = colors,
         onClick = onClick,
-        ) {
+    ) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -75,9 +76,12 @@ fun ProSalesActionButton(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center
-            ){
-                if (icon != null){
-                    Icon(imageVector = icon, contentDescription = null)
+            ) {
+                if (icon != null) {
+                    Icon(
+                        imageVector = icon,
+                        contentDescription = null
+                    )
                 }
                 Text(
                     text = text,
@@ -137,9 +141,12 @@ fun ProSalesActionButtonOutline(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center
-            ){
-                if (icon != null){
-                    Icon(imageVector = icon, contentDescription = null)
+            ) {
+                if (icon != null) {
+                    Icon(
+                        imageVector = icon,
+                        contentDescription = null
+                    )
                 }
                 Text(
                     text = text,

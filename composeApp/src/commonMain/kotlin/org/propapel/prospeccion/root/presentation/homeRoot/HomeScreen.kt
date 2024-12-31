@@ -207,6 +207,12 @@ fun HomeScreen(
                         },
                         onWebView = {
                             onWebViewClick(it)
+                        },
+                        onUpdateProfile = {
+                            onUpdateProfile()
+                        },
+                        onLogout = {
+                            onLogout()
                         }
                     )
                 }

@@ -12,4 +12,6 @@ sealed interface DashboardSMAction {
     data object OnSearchLead: DashboardSMAction
     data class OnDetailReminderCustomer(val idReminder: String): DashboardSMAction
     data object OnMoveLeadScreenClick: DashboardSMAction
+    data object OnUpdateProfile : DashboardSMAction
+    data object OnLogout : DashboardSMAction
 }

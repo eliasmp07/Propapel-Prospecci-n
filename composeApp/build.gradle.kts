@@ -42,12 +42,11 @@ kotlin {
             implementation("com.google.accompanist:accompanist-permissions:0.34.0")
             implementation(libs.androidx.activity.compose)
             implementation(libs.koin.android)
-            implementation(libs.ktor.client.okhttp)
+          // implementation(libs.ktor.client.okhttp)
             implementation(libs.core.splashscreen)
 
         }
         commonMain.dependencies {
-
             api("io.github.kevinnzou:compose-webview-multiplatform:1.9.40")
 
             implementation(compose.runtime)

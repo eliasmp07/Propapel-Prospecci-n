@@ -1,5 +1,6 @@
 package org.propapel.prospeccion
 
+
 import android.Manifest
 import android.app.Activity
 import android.content.Context
@@ -50,6 +51,7 @@ class MainActivity : ComponentActivity() {
                             }
 
                             val  view = LocalView.current
+
                             if (!view.isInEditMode){
                                 SideEffect {
                                     val windows = (view.context as Activity).window

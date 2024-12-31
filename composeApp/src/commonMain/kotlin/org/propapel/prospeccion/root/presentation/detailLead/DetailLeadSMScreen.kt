@@ -1,4 +1,6 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
+@file:OptIn(ExperimentalMaterial3Api::class,
+            ExperimentalMaterial3WindowSizeClassApi::class
+)
 
 package org.propapel.prospeccion.root.presentation.detailLead
 
@@ -15,6 +17,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -36,6 +39,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
+import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
+import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -59,6 +64,7 @@ import org.propapel.prospeccion.core.presentation.designsystem.components.Loadin
 import org.propapel.prospeccion.core.presentation.designsystem.components.util.animateEnterBottom
 import org.propapel.prospeccion.root.domain.models.Project
 import org.propapel.prospeccion.root.presentation.addlead.components.utils.KottieAnimationUtil
+import org.propapel.prospeccion.root.presentation.dashboard.isMobile
 import org.propapel.prospeccion.root.presentation.detailLead.components.CreateReminderDialog
 import org.propapel.prospeccion.root.presentation.detailLead.components.DialogConfirmOption
 import org.propapel.prospeccion.root.presentation.detailLead.components.InfoLeadPagerScreen
@@ -67,6 +73,7 @@ import org.propapel.prospeccion.root.presentation.detailLead.components.ModalBot
 import org.propapel.prospeccion.root.presentation.detailLead.components.ModalBottomStateProject
 import org.propapel.prospeccion.root.presentation.detailLead.components.NotificationPager
 import org.propapel.prospeccion.root.presentation.detailLead.components.UpdateReminderDialog
+import org.propapel.prospeccion.root.presentation.detailLead.components.desktop.DetailLeadDesktop
 import prospeccion.composeapp.generated.resources.Res
 import prospeccion.composeapp.generated.resources.calendar_date
 import prospeccion.composeapp.generated.resources.cita_client
@@ -201,7 +208,7 @@ fun DetailCustomerSMScreen(
                     )
                 }
             }
-        ) { innerPadding ->
+        ) {
             Crossfade(
                 targetState = state.isLoading,
                 animationSpec = tween(
@@ -211,51 +218,76 @@ fun DetailCustomerSMScreen(
                 if (tarjetValue) {
                     LoadingPropapel()
                 } else {
-                    Column(
-                        modifier = Modifier.fillMaxSize().background(
-                            Brush.verticalGradient(
-                                0f to PrimaryYellowLight,
-                                0.6f to SoporteSaiBlue30,
-                                1f to MaterialTheme.colorScheme.primary
-                            )
-                        ),
-                    ) {
-                        Box(
-                            modifier = Modifier.weight(0.3f).fillMaxWidth()
-                        ) {
-                            Crossfade(
-                                modifier = Modifier.padding(16.dp).align(Alignment.CenterStart),
-                                targetState = currentText,
-                                animationSpec = tween(durationMillis = 500) // Duración de la animación
-                            ) { text ->
-                                Text(
-                                    text = text,
-                                    style = MaterialTheme.typography.titleMedium,
+                    if (calculateWindowSizeClass().isMobile) {
+                        Column(
+                            modifier = Modifier.fillMaxSize().background(
+                                Brush.verticalGradient(
+                                    0f to PrimaryYellowLight,
+                                    0.6f to SoporteSaiBlue30,
+                                    1f to MaterialTheme.colorScheme.primary
                                 )
+                            ),
+                        ) {
+                            Box(
+                                modifier = Modifier.weight(0.3f).fillMaxWidth()
+                            ) {
+                                Crossfade(
+                                    modifier = Modifier.padding(16.dp).align(Alignment.CenterStart),
+                                    targetState = currentText,
+                                    animationSpec = tween(durationMillis = 500) // Duración de la animación
+                                ) { text ->
+                                    Text(
+                                        text = text,
+                                        style = MaterialTheme.typography.titleMedium,
+                                    )
+                                }
+                                Crossfade(
+                                    modifier = Modifier.align(Alignment.BottomEnd),
+                                    targetState = currentImageResource,
+                                    animationSpec = tween(durationMillis = 0) // Duración de la animación
+                                ) { image ->
+                                    Image(
+                                        modifier = Modifier.size(150.dp).animateEnterBottom(),
+                                        painter = painterResource(image),
+                                        contentDescription = null
+                                    )
+                                }
                             }
-                            Crossfade(
-                                modifier = Modifier.align(Alignment.BottomEnd),
-                                targetState = currentImageResource,
-                                animationSpec = tween(durationMillis = 0) // Duración de la animación
-                            ) { image ->
-                                Image(
-                                    modifier = Modifier.size(150.dp).animateEnterBottom(),
-                                    painter = painterResource(image),
-                                    contentDescription = null
+                            ElevatedCard(
+                                modifier = Modifier.weight(0.7f).fillMaxWidth()
+                                    .animateEnterBottom(initialOffsetY = 100f),
+                                shape = RoundedCornerShape(
+                                    topEnd = 30.dp,
+                                    topStart = 30.dp
+                                ),
+                                colors = CardDefaults.cardColors(
+                                    containerColor = Color.White
+                                )
+                            ) {
+                                InfoLeadPagerScreen(
+                                    state = state,
+                                    customer = state.customer,
+                                    pagerState = pagerState,
+                                    pages = pages,
+                                    onCloseAppointment = {
+                                        onAction(DetailLeadAction.OnCloseReminder(it))
+                                        showBottomSheetCloseAppointment = true
+                                    },
+                                    onDeleteProject = {
+                                        onAction(DetailLeadAction.OnDeleteProject(it))
+                                        scope.launch {
+                                            sheetStateProject.expand()
+                                        }
+                                        showBottomSheetInfoProject = true
+                                    },
+                                    projects = state.project,
+                                    onAction = onAction
                                 )
                             }
                         }
-                        ElevatedCard(
-                            modifier = Modifier.weight(0.7f).fillMaxWidth().animateEnterBottom(initialOffsetY = 100f),
-                            shape = RoundedCornerShape(
-                                topEnd = 30.dp,
-                                topStart = 30.dp
-                            ),
-                            colors = CardDefaults.cardColors(
-                                containerColor = Color.White
-                            )
-                        ) {
-                            InfoLeadPagerScreen(
+                    } else {
+                        Row {
+                            DetailLeadDesktop(
                                 state = state,
                                 customer = state.customer,
                                 pagerState = pagerState,
@@ -275,36 +307,36 @@ fun DetailCustomerSMScreen(
                                 onAction = onAction
                             )
                         }
-                        if (showBottomSheetInfoProject) {
-                            ModalBottomStateProject(
-                                sheetState = sheetStateProject,
-                                state = state,
-                                onDismissRequest = {
-                                    showBottomSheetInfoProject = false
-                                    onAction(DetailLeadAction.OnDeleteProject(Project()))
-                                },
-                                onCloseProject = {
-                                    showBottomSheetInfoProject = false
-                                    onAction(DetailLeadAction.OnCloseProject)
-                                },
-                                onDeleteProject = {
-                                    showBottomSheetInfoProject = false
-                                    showBottomSheet = true
-                                }
-                            )
-                        }
-                        if (showBottomSheetCloseAppointment) {
-                            ModalBottomCloseAppointment(
-                                state = state,
-                                sheetState = sheetStateCloseAppointment,
-                                scope = scope,
-                                onAction = onAction,
-                                onDismissRequest = {
-                                    showBottomSheetCloseAppointment = false
-                                }
-                            )
-                        }
                     }
+                }
+                if (showBottomSheetInfoProject) {
+                    ModalBottomStateProject(
+                        sheetState = sheetStateProject,
+                        state = state,
+                        onDismissRequest = {
+                            showBottomSheetInfoProject = false
+                            onAction(DetailLeadAction.OnDeleteProject(Project()))
+                        },
+                        onCloseProject = {
+                            showBottomSheetInfoProject = false
+                            onAction(DetailLeadAction.OnCloseProject)
+                        },
+                        onDeleteProject = {
+                            showBottomSheetInfoProject = false
+                            showBottomSheet = true
+                        }
+                    )
+                }
+                if (showBottomSheetCloseAppointment) {
+                    ModalBottomCloseAppointment(
+                        state = state,
+                        sheetState = sheetStateCloseAppointment,
+                        scope = scope,
+                        onAction = onAction,
+                        onDismissRequest = {
+                            showBottomSheetCloseAppointment = false
+                        }
+                    )
                 }
                 if (state.showCancelNotification) {
                     DialogConfirmOption(
@@ -386,7 +418,7 @@ fun DetailCustomerSMScreen(
             }
         }
     }
-    if (state.isDeletingProject){
+    if (state.isDeletingProject) {
         LoadingPropapel()
     }
     if (showBottomSheet) {

@@ -5,12 +5,14 @@ import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
+import org.propapel.prospeccion.core.domain.AuthInfo
 import org.propapel.prospeccion.root.domain.models.Customer
 import org.propapel.prospeccion.root.domain.models.Reminder
 import org.propapel.prospeccion.root.presentation.dashboard.components.mobile.Banner
 import org.propapel.prospeccion.root.presentation.leads.UiState
 
 data class DashboardSMState(
+    val user: AuthInfo = AuthInfo(),
     val banners: UiState<List<Banner>> = UiState.Loading(),
     val myCustomer: UiState<List<Customer>> = UiState.Loading(),
     val reminderDate: LocalDateTime = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()),

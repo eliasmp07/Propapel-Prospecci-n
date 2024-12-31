@@ -7,12 +7,15 @@ import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
+import org.propapel.prospeccion.core.domain.AuthInfo
 import org.propapel.prospeccion.core.domain.ResultExt
+import org.propapel.prospeccion.core.domain.SessionStorage
 import org.propapel.prospeccion.core.presentation.ui.TimeUtils
 import org.propapel.prospeccion.core.presentation.ui.toImageAndTextError
 import org.propapel.prospeccion.root.domain.repository.BannerRepository
@@ -26,13 +29,23 @@ class DashboardSMViewModel(
     private val reminderRepository: ReminderRepository,
     private val customerRepository: CustomerRepository,
     private val bannerRepository: BannerRepository,
-    private val interactionRepository: InteractionRepository
+    private val sessionStorage: SessionStorage
 ) : ViewModel() {
 
     private var _state = MutableStateFlow(DashboardSMState())
     val state: StateFlow<DashboardSMState> get() = _state.asStateFlow()
 
     init {
+        viewModelScope.launch(Dispatchers.IO) {
+            sessionStorage.getUserFlow().collectLatest { user ->
+                _state.update {
+                    it.copy(
+                        user = user?: AuthInfo()
+                    )
+                }
+            }
+
+        }
         getAllBanners()
         getAllMyReminders()
         getMyCustomer()

@@ -41,6 +41,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -64,6 +65,7 @@ import org.jetbrains.compose.resources.vectorResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.annotation.KoinExperimentalAPI
 import org.propapel.prospeccion.core.presentation.designsystem.components.CustomTopAppBar
+import org.propapel.prospeccion.navigation.SidebarMenu
 import org.propapel.prospeccion.navigation.utils.NavigationItem
 import org.propapel.prospeccion.root.presentation.account.AccountSMAction
 import org.propapel.prospeccion.root.presentation.account.AccountSMViewModel
@@ -96,7 +98,6 @@ fun GerentePanelScreen(
     onUpdateProfile: () -> Unit
 ) {
 
-    val windowClass = calculateWindowSizeClass()
 
     val state by viewModel.state.collectAsState()
 
@@ -114,153 +115,33 @@ fun GerentePanelScreen(
 
     val dashboardGerenteViewModel = koinViewModel<DashboardGerenteViewModel>()
 
+    val windowClass = calculateWindowSizeClass()
+    val showNavigationRail = windowClass.widthSizeClass != WindowWidthSizeClass.Compact
 
-    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
 
-    ModalNavigationDrawer(
-        drawerState = drawerState,
-        drawerContent = {
-            ModalDrawerSheet(
-            ) {
-                Spacer(
-                    modifier = Modifier.height(16.dp)
-                )
-                Box(
-                    modifier = Modifier.align(Alignment.CenterHorizontally).size(200.dp).clip(CircleShape)
-                ){
-                    if (
-                        state.user.image.isEmpty()
-                    ){
-                        Box(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .clip(CircleShape)
-                                .border(
-                                    BorderStroke(
-                                        2.dp,
-                                        MaterialTheme.colorScheme.onBackground
-                                    ),
-                                    CircleShape
-                                ).background(Color.White)
-                        ) {
-                            Image(
-                                modifier = Modifier
-                                    .align(Alignment.Center)
-                                    .fillMaxSize()
-                                    .clip(CircleShape)
-                                    .background(MaterialTheme.colorScheme.background),
-                                contentScale = ContentScale.Crop,
-                                imageVector = Icons.Default.Person,
-                                contentDescription = null
-                            )
-                        }
-                    }else{
-                        AsyncImage(
-                            modifier = Modifier.fillMaxSize().border(
-                                BorderStroke(
-                                    2.dp,
-                                    MaterialTheme.colorScheme.onBackground
-                                ),
-                                CircleShape
-                            ),
-                            model = state.user.image,
-                            contentDescription = null,
-                            contentScale = ContentScale.Crop
-                        )
-                    }
-                }
-                Spacer(
-                    modifier = Modifier.height(32.dp)
-                )
-                items.forEachIndexed { index, item ->
-                    NavigationDrawerItem(
-                        colors = NavigationDrawerItemDefaults.colors(
-                            selectedContainerColor = MaterialTheme.colorScheme.primary,
-                            selectedTextColor = Color.White,
-                            selectedIconColor = Color.White
-                        ),
-                        modifier = Modifier.padding(horizontal = 12.dp).pointerHoverIcon(PointerIcon.Hand),
-                        icon = {
-                            Icon(
-                                imageVector = if(index == selectedItemIndex) item.selectedIcon else item.unselectedIcon,
-                                contentDescription = null
-                            )
-                        },
-                        shape = RoundedCornerShape(12.dp),
-                        onClick = {
-                            corrutine.launch {
-                                drawerState.close()
-                            }
-                            selectedItemIndex = index
-                        },
-                        label = {
-                            Text(
-                                text = item.title,
-                                style = MaterialTheme.typography.titleMedium
-                            )
-                        },
-                        selected = selectedItemIndex == index
-                    )
-                }
-                Spacer(
-                    modifier = Modifier.weight(1f)
-                )
-                NavigationDrawerItem(
-                    colors = NavigationDrawerItemDefaults.colors(
-                        selectedContainerColor = MaterialTheme.colorScheme.primary
-                    ),
-                    modifier = Modifier.padding(horizontal = 12.dp),
-                    icon = {
-                        Icon(
-                            imageVector = Icons.Default.Logout,
-                            contentDescription = null
-                        )
-                    },
-                    shape = RoundedCornerShape(12.dp),
-                    onClick = {
-                        corrutine.launch {
-                            drawerState.close()
-                        }
-                        onLogout()
-                    },
-                    label = {
-                        Text(
-                            text = "Cerrar sesion",
-                            style = MaterialTheme.typography.titleMedium
-                        )
-                    },
-                    selected = false
-                )
-                Spacer(
-                    modifier = Modifier.height(16.dp)
-                )
-            }
-        },
-    ) {
-        Scaffold(
-            topBar = {
-                CustomTopAppBar(
-                    windowSizeClass = windowClass,
-                    onLogout = onLogout,
-                    onAddLead = onAddLead,
-                    onMenu = {
-                        corrutine.launch {
-                            drawerState.toggle()
-                        }
-                    },
-                    onDarkTheme = onDarkTheme,
-                    reminders = state.reminders,
+    Scaffold(
+    ){ innerPadding ->
+        Row(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(top = innerPadding.calculateTopPadding())
+        ) {
+            if (showNavigationRail) {
+                SidebarMenu(
+                    items = items,
                     user = state.user,
-                    onSearch = onSearchLead,
-                    editProfile = onUpdateProfile,
-                    totalNotifications = state.reminders.size
+                    selectedItemIndex = selectedItemIndex,
+                    onMenuItemClick = { index ->
+                        selectedItemIndex = index
+                    },
+                    initialExpandedState = false
                 )
             }
-        ){ innerPadding ->
-            Row(
+
+            Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(top = innerPadding.calculateTopPadding())
+                    .padding(start = if (showNavigationRail) 0.dp else 0.dp)
             ) {
                 when (selectedItemIndex) {
                     0 -> {
@@ -270,7 +151,10 @@ fun GerentePanelScreen(
                         }
                         DashboardGerenteScreenRoot(
                             user = state.user,
-                            sucursalId = state.sucursalId,
+                            onLogout = onLogout,
+                            onAddLead = onAddLead,
+                            onUpdateProfile = onUpdateProfile,
+                            onSearchLead = onSearchLead,
                             viewModel = dashboardGerenteViewModel
                         )
                     }
@@ -312,8 +196,7 @@ fun GerentePanelScreen(
                 }
             }
 
-        }
-    }
+        }}
 
 }
 

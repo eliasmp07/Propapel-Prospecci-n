@@ -66,7 +66,7 @@ import network.chaintech.kmp_date_time_picker.utils.now
 import network.chaintech.kmp_date_time_picker.utils.timeToString
 import org.jetbrains.compose.resources.painterResource
 import org.propapel.prospeccion.core.presentation.designsystem.components.AdvancedTimePicker
-import org.propapel.prospeccion.core.presentation.designsystem.components.DatePickerDialog
+import org.propapel.prospeccion.core.presentation.designsystem.components.CalendarPicker
 import org.propapel.prospeccion.core.presentation.designsystem.components.LoadingPropapel
 import org.propapel.prospeccion.core.presentation.designsystem.components.ProSalesActionButton
 import org.propapel.prospeccion.core.presentation.designsystem.components.ProSalesActionButtonOutline
@@ -422,7 +422,7 @@ private fun CreateReminderScreen(
             )
         }
         if (showDialogPickerDate) {
-            DatePickerDialog(
+            CalendarPicker(
                 onDateSelected = { long, string ->
                     onAction(CreateReminderAction.OnDateNextReminder(long?:0))
                     selectedDate = string

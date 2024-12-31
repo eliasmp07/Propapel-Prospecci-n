@@ -2,6 +2,7 @@ package org.propapel.prospeccion.core.presentation.designsystem.components
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedContentScope
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.ExperimentalSharedTransitionApi
@@ -9,6 +10,8 @@ import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -62,6 +65,8 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import org.propapel.prospeccion.core.presentation.designsystem.EyeClosedIcon
+import org.propapel.prospeccion.core.presentation.designsystem.EyeOpenedIcon
 import org.propapel.prospeccion.core.presentation.designsystem.SoporteSaiDarkRed
 
 @OptIn(ExperimentalSharedTransitionApi::class)
@@ -173,7 +178,7 @@ fun ProspeccionTextFieldAnimation(
                                     if (isPassword) {
                                         Spacer(modifier = Modifier.weight(1f))
                                         Icon(
-                                            imageVector = if (hidePassword) Icons.Sharp.Visibility else Icons.Sharp.VisibilityOff,
+                                            imageVector = if (hidePassword) EyeOpenedIcon else EyeClosedIcon,
                                             contentDescription = null,
                                             tint = Color.Black,
                                             modifier = Modifier
@@ -192,19 +197,23 @@ fun ProspeccionTextFieldAnimation(
                 }
             }
         )
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            if (error != null) {
+        AnimatedVisibility(
+            visible = error != null,
+            enter = scaleIn(),
+            exit = scaleOut()
+        ){
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 FormError()
                 Spacer(modifier = Modifier.width(5.dp))
                 androidx.compose.material.Text(
-                    text = error,
+                    text = error?:"",
                     fontWeight = FontWeight.Bold
                 )
+                Spacer(modifier = Modifier.weight(1f))
             }
-            Spacer(modifier = Modifier.weight(1f))
         }
     }
 }

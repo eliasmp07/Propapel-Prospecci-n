@@ -7,9 +7,12 @@ import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import org.propapel.prospeccion.core.domain.AuthInfo
 import org.propapel.prospeccion.core.domain.ResultExt
+import org.propapel.prospeccion.core.domain.SessionStorage
 import org.propapel.prospeccion.core.presentation.ui.toImageAndTextError
 import org.propapel.prospeccion.root.presentation.leads.UiState
 import org.propapel.prospeccion.root.presentation.leads.toState
@@ -19,11 +22,25 @@ import org.propapel.prospeccion.selectSucursal.domain.repository.UserRepository
 
 class DashboardGerenteViewModel(
     private val userRepository: UserRepository,
+    private val sessionStorage: SessionStorage,
     private val sucursalesRepository: SucursalesRepository
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(DashboardGerenteState())
     val state: StateFlow<DashboardGerenteState> get() = _state.asStateFlow()
+
+    init {
+        viewModelScope.launch(Dispatchers.IO) {
+            sessionStorage.getUserFlow().collectLatest { user ->
+                _state.update {
+                    it.copy(
+                        user = user?: AuthInfo()
+                    )
+                }
+            }
+
+        }
+    }
 
     fun getSucursal(id: Int) {
         viewModelScope.launch(Dispatchers.IO) {

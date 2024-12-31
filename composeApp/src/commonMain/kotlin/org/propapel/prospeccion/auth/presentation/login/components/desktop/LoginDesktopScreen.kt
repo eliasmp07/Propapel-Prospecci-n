@@ -1,4 +1,4 @@
-package org.propapel.prospeccion.auth.presentation.login.components
+package org.propapel.prospeccion.auth.presentation.login.components.desktop
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -12,10 +12,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
@@ -24,8 +22,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
@@ -38,9 +34,10 @@ import kotlinx.coroutines.delay
 import org.jetbrains.compose.resources.painterResource
 import org.propapel.prospeccion.auth.presentation.login.LoginAction
 import org.propapel.prospeccion.auth.presentation.login.LoginState
+import org.propapel.prospeccion.core.presentation.designsystem.EmailIcon
+import org.propapel.prospeccion.core.presentation.designsystem.LockIcon
 import org.propapel.prospeccion.core.presentation.designsystem.components.ProSalesActionButton
 import org.propapel.prospeccion.core.presentation.designsystem.components.ProspeccionTextFieldAnimation
-import org.propapel.prospeccion.root.presentation.addlead.GenericContentWindowsSize
 import prospeccion.composeapp.generated.resources.Res
 import prospeccion.composeapp.generated.resources.logo
 import prospeccion.composeapp.generated.resources.merida
@@ -108,7 +105,7 @@ fun LoginDesktopScreen(
                     Spacer(Modifier.height(16.dp))
                     ProspeccionTextFieldAnimation(
                         hint = "Correo electronico",
-                        startIcon = Icons.Default.Email,
+                        startIcon = EmailIcon,
                         error = state.emailError,
                         text = state.email,
                         keyboardOptions = KeyboardOptions(
@@ -124,7 +121,7 @@ fun LoginDesktopScreen(
                         text = state.password,
                         hint = "Contraseña",
                         isPassword = true,
-                        startIcon = Icons.Default.Lock,
+                        startIcon = LockIcon,
                         error = state.passwordError,
                         onTextChange = {
                             onAction(LoginAction.OnPasswordChange(it))

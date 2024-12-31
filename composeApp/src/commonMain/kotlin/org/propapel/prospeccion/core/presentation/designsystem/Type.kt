@@ -1,10 +1,20 @@
 package org.propapel.prospeccion.core.presentation.designsystem
 
 import androidx.compose.material3.Typography
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.unit.sp
+import org.jetbrains.compose.resources.Font
+import prospeccion.composeapp.generated.resources.Res
+import prospeccion.composeapp.generated.resources.poppins_bold
+import prospeccion.composeapp.generated.resources.poppins_light
+import prospeccion.composeapp.generated.resources.poppins_medium
+import prospeccion.composeapp.generated.resources.poppins_regular
+import prospeccion.composeapp.generated.resources.poppins_semibold
+
 
 val Typography = Typography(
     bodySmall = TextStyle(

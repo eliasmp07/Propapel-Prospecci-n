@@ -1,3 +1,7 @@
+@file:OptIn(ExperimentalMaterial3WindowSizeClassApi::class,
+            ExperimentalMaterial3Api::class
+)
+
 package org.propapel.prospeccion.root.presentation.dashboard.components.desktop
 
 import androidx.compose.animation.animateContentSize
@@ -25,8 +29,11 @@ import androidx.compose.material.icons.outlined.Groups
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
+import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -48,6 +55,7 @@ import org.propapel.prospeccion.core.presentation.designsystem.PrimaryYellowLigh
 import org.propapel.prospeccion.core.presentation.designsystem.SoporteSaiBlue30
 import org.propapel.prospeccion.core.presentation.designsystem.SuccessGreen
 import org.propapel.prospeccion.core.presentation.designsystem.components.CalendarDatesCard
+import org.propapel.prospeccion.core.presentation.designsystem.components.CustomTopAppBar
 import org.propapel.prospeccion.core.presentation.designsystem.components.DashboardCard
 import org.propapel.prospeccion.root.data.dto.customer.TypeOfClient
 import org.propapel.prospeccion.root.presentation.dashboard.DashboardSMAction
@@ -57,6 +65,7 @@ import org.propapel.prospeccion.root.presentation.dashboard.components.mobile.Ba
 import org.propapel.prospeccion.root.presentation.dashboard.components.mobile.GoalCard
 import org.propapel.prospeccion.root.presentation.leads.GenericContentLoading
 import org.propapel.prospeccion.root.presentation.leads.UiState
+import org.propapel.prospeccion.selectSucursal.presentation.dashboard.DashboardGerenteAction
 import org.propapel.prospeccion.selectSucursal.presentation.dashboard.components.CardInfoDesktop
 import org.propapel.prospeccion.selectSucursal.presentation.dashboard.components.LeadSixMothProjects
 import prospeccion.composeapp.generated.resources.Res
@@ -153,6 +162,31 @@ fun DashboardScreenWindows(
             )
         )
     ) {
+        CustomTopAppBar(
+            windowSizeClass = calculateWindowSizeClass(),
+            user = state.user,
+            onRefresh = {
+                onAction(DashboardSMAction.OnRefresh)
+            },
+            reminders = listOf(),
+            onAddLead = {
+                onAction(DashboardSMAction.OnMoveLeadScreenClick)
+            },
+            profileImage = state.user.image,
+            editProfile = {
+                onAction(DashboardSMAction.OnUpdateProfile)
+            },
+            onDarkTheme = {
+
+            },
+            totalNotifications = 10,
+            onLogout = {
+                onAction(DashboardSMAction.OnLogout)
+            },
+            onSearch = {
+                onAction(DashboardSMAction.OnSearchLead)
+            }
+        )
         LazyVerticalStaggeredGrid(
             modifier = Modifier.weight(1f).fillMaxWidth().padding(16.dp),
             columns = StaggeredGridCells.Fixed(2),

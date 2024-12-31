@@ -1,9 +1,13 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
+@file:OptIn(ExperimentalMaterial3Api::class,
+            ExperimentalAnimationApi::class
+)
 
 package org.propapel.prospeccion.core.presentation.designsystem.components
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -32,6 +36,7 @@ import androidx.compose.material.icons.outlined.LightMode
 import androidx.compose.material.icons.outlined.Menu
 import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material.icons.outlined.Person
+import androidx.compose.material.icons.outlined.Refresh
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Card
@@ -42,6 +47,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -71,6 +77,9 @@ import org.jetbrains.compose.resources.painterResource
 import org.propapel.prospeccion.core.domain.AuthInfo
 import org.propapel.prospeccion.core.presentation.designsystem.PrimaryYellowLight
 import org.propapel.prospeccion.root.domain.models.Reminder
+import org.propapel.prospeccion.root.presentation.detailLead.DetailLeadAction
+import org.propapel.prospeccion.root.presentation.searchLead.components.SearchBar
+import org.propapel.prospeccion.root.presentation.searchLead.components.SearchTextField
 import prospeccion.composeapp.generated.resources.Res
 import prospeccion.composeapp.generated.resources.customer_ref
 import prospeccion.composeapp.generated.resources.logo
@@ -85,7 +94,7 @@ fun CustomTopAppBar(
     windowSizeClass: WindowSizeClass,
     user: AuthInfo,
     reminders: List<Reminder>,
-    onMenu: () -> Unit = {},
+    onRefresh: () -> Unit = {},
     totalNotifications: Int,
     onLogout: () -> Unit = {},
     onSearch: () -> Unit,
@@ -333,23 +342,10 @@ fun CustomTopAppBar(
                 modifier = Modifier
                     .fillMaxWidth()
                     .animateContentSize()
-                    .background(Color(0XFFf1f4f9))
                     .padding(6.dp),
                 horizontalArrangement = Arrangement.Start,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                IconButton(
-                    modifier = Modifier.pointerHoverIcon(PointerIcon.Hand),
-                    onClick = {
-                        onMenu()
-                    },
-                    content = {
-                        Icon(
-                            imageVector = Icons.Outlined.Menu,
-                            contentDescription = null
-                        )
-                    }
-                )
                 Spacer(modifier = Modifier.width(12.dp))
                 Image(
                     painter = painterResource(Res.drawable.logo),
@@ -365,7 +361,7 @@ fun CustomTopAppBar(
                 )
                 Box(
                     modifier = Modifier
-                        .fillMaxWidth().padding(horizontal = 32.dp).weight(0.4f).pointerHoverIcon(PointerIcon.Hand)
+                        .fillMaxWidth().padding(horizontal = 32.dp).weight(0.2f).pointerHoverIcon(PointerIcon.Hand)
                 ) {
                     Card(
                         shape = RoundedCornerShape(12.dp),
@@ -375,10 +371,10 @@ fun CustomTopAppBar(
                         colors = CardDefaults.cardColors(
                             containerColor = Color.White
                         ),
+                        border = BorderStroke(1.dp, Color.Black.copy(alpha = 0.5f)),
                         onClick = {
                             onSearch()
                         },
-                        elevation = CardDefaults.elevatedCardElevation(15.dp)
                     ) {
                         Row(
                             modifier = Modifier.fillMaxSize(),
@@ -426,37 +422,43 @@ fun CustomTopAppBar(
                         }
                     }
                 }
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth().padding(end = 16.dp).weight(0.12f).pointerHoverIcon(PointerIcon.Hand)
+                OutlinedButton(
+                    modifier = Modifier.pointerHoverIcon(PointerIcon.Hand).height(50.dp),
+                    shape = RoundedCornerShape(12.dp),
+                    onClick = {
+                        onAddLead()
+                    },
+                    content = {
+                        Text(
+                            text = "Crear lead"
+                        )
+                    }
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Card(
+                    modifier = Modifier.size(40.dp),
+                    shape = RoundedCornerShape(8.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = Color(0xFFe6f0f9)
+                    ),
+                    elevation = CardDefaults.elevatedCardElevation(8.dp)
                 ) {
-                    Card(
-                        shape = RoundedCornerShape(12.dp),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(50.dp),
-                        colors = CardDefaults.cardColors(
-                            containerColor = Color.White
-                        ),
-                        onClick = {
-                            onAddLead()
-                        },
-                        elevation = CardDefaults.elevatedCardElevation(15.dp)
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
                     ) {
-                        Row(
-                            modifier = Modifier.fillMaxSize().padding(horizontal = 8.dp),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            Icon(
-                                imageVector = Icons.Outlined.Add,
-                                contentDescription = null
-                            )
-                            Text(
-                                text = "Agregar lead",
-                                style = MaterialTheme.typography.titleSmall
-                            )
-                        }
+                        IconButton(
+                            onClick = {
+                                onRefresh()
+                            },
+                            content = {
+                                Icon(
+                                    imageVector = Icons.Outlined.Refresh,
+                                    contentDescription = "Refresh",
+                                    modifier = Modifier.pointerHoverIcon(PointerIcon.Hand)
+                                )
+                            }
+                        )
                     }
                 }
                 Spacer(

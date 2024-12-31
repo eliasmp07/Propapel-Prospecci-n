@@ -44,6 +44,7 @@ import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -204,7 +205,9 @@ fun InfoLeadPagerScreen(
                             state = lazyColumState,
                         ) {
                             if (customer.interactions.isNotEmpty()) {
-                                items(customer.interactions) {
+                                items(
+                                    customer.interactions,
+                                    key = { it.interactionId }) {
                                     ItemInterationCustomer(it)
                                 }
                                 items(

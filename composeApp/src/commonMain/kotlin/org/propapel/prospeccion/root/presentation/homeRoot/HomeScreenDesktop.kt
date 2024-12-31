@@ -47,6 +47,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -107,220 +108,101 @@ fun HomeScreenSalesDesktop(
 
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
 
-    ModalNavigationDrawer(
-        drawerState = drawerState,
-        drawerContent = {
-            ModalDrawerSheet(
-            ) {
-                Spacer(
-                    modifier = Modifier.height(16.dp)
-                )
-                Box(
-                    modifier = Modifier.align(Alignment.CenterHorizontally).size(200.dp).clip(CircleShape)
-                ){
-                    if (
-                        state.user.image.isEmpty()
-                    ){
-                        Box(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .clip(CircleShape)
-                                .border(
-                                    BorderStroke(
-                                        2.dp,
-                                        MaterialTheme.colorScheme.onBackground
-                                    ),
-                                    CircleShape
-                                ).background(Color.White)
-                        ) {
-                            Image(
-                                modifier = Modifier
-                                    .align(Alignment.Center)
-                                    .fillMaxSize()
-                                    .clip(CircleShape)
-                                    .background(MaterialTheme.colorScheme.background),
-                                contentScale = ContentScale.Crop,
-                                imageVector = Icons.Default.Person,
-                                contentDescription = null
-                            )
-                        }
-                    }else{
-                        AsyncImage(
-                            modifier = Modifier.fillMaxSize().border(
-                                BorderStroke(
-                                    2.dp,
-                                    MaterialTheme.colorScheme.onBackground
-                                ),
-                                CircleShape
-                            ),
-                            model = state.user.image,
-                            contentDescription = null,
-                            contentScale = ContentScale.Crop
-                        )
-                    }
-                }
-                Spacer(
-                    modifier = Modifier.height(32.dp)
-                )
-                items.forEachIndexed { index, item ->
-                    NavigationDrawerItem(
-                        colors = NavigationDrawerItemDefaults.colors(
-                            selectedContainerColor = MaterialTheme.colorScheme.primary,
-                            selectedTextColor = Color.White,
-                            selectedIconColor = Color.White
-                        ),
-                        modifier = Modifier.padding(horizontal = 12.dp).pointerHoverIcon(PointerIcon.Hand),
-                        icon = {
-                            Icon(
-                                imageVector = if(index == selectedItemIndex) item.selectedIcon else item.unselectedIcon,
-                                contentDescription = null
-                            )
-                        },
-                        shape = RoundedCornerShape(12.dp),
-                        onClick = {
-                            corrutine.launch {
-                                drawerState.close()
-                            }
-                            selectedItemIndex = index
-                        },
-                        label = {
-                            Text(
-                                text = item.title,
-                                style = MaterialTheme.typography.titleMedium
-                            )
-                        },
-                        selected = selectedItemIndex == index
-                    )
-                }
-                Spacer(
-                    modifier = Modifier.weight(1f)
-                )
-                NavigationDrawerItem(
-                    colors = NavigationDrawerItemDefaults.colors(
-                        selectedContainerColor = MaterialTheme.colorScheme.primary
-                    ),
-                    modifier = Modifier.padding(horizontal = 12.dp),
-                    icon = {
-                        Icon(
-                            imageVector = Icons.Default.Logout,
-                            contentDescription = null
-                        )
-                    },
-                    shape = RoundedCornerShape(12.dp),
-                    onClick = {
-                        corrutine.launch {
-                            drawerState.close()
-                        }
-                        onLogout()
-                    },
-                    label = {
-                        Text(
-                            text = "Cerrar sesion",
-                            style = MaterialTheme.typography.titleMedium
-                        )
-                    },
-                    selected = false
-                )
-                Spacer(
-                    modifier = Modifier.height(16.dp)
-                )
-            }
-        },
-    ) {
-        Scaffold(
-            topBar = {
-                CustomTopAppBar(
-                    windowSizeClass = windowClass,
-                    onLogout = onLogout,
-                    onAddLead = onAddLead,
-                    onMenu = {
-                        corrutine.launch {
-                            drawerState.toggle()
-                        }
+    val windowClass = calculateWindowSizeClass()
+    val showNavigationRail = windowClass.widthSizeClass != WindowWidthSizeClass.Compact
 
-                    },
-                    onDarkTheme = onDarkTheme,
-                    reminders = state.reminders,
+    Scaffold(
+
+    ){ innerPadding ->
+        Row(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(top = innerPadding.calculateTopPadding())
+        ) {
+            if (showNavigationRail) {
+                SidebarMenu(
+                    items = items,
                     user = state.user,
-                    onSearch = onSearchLead,
-                    editProfile = onUpdateProfile,
-                    totalNotifications = state.reminders.size
+                    selectedItemIndex = selectedItemIndex,
+                    onMenuItemClick = { index ->
+                        selectedItemIndex = index
+                    },
+                    initialExpandedState = false
                 )
             }
-        ){ innerPadding ->
-            Row(
+
+            Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(top = innerPadding.calculateTopPadding())
+                    .padding(start = if (showNavigationRail) 0.dp else 0.dp)
             ) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(start = 0.dp)
-                ) {
-                    when (selectedItemIndex) {
-                        0 -> {
-                            DashBoardScreenRoot(
-                                viewModel = dashboardSMViewModel,
-                                user = state.user,
-                                windowSizeClass = windowClass,
-                                onDetailReminderCustomer = {
-                                    onDetailReminderCustomer(it)
-                                },
-                                onSearchLead = onSearchLead,
-                                onMoveLeadScreen = {
-                                    onAddLead()
-                                },
-                                onCreateReminder = {
-                                    onCreateReminder()
-                                },
-                                onWebView = {
-                                    onWebViewClick(it)
-                                }
-                            )
-                        }
+                when (selectedItemIndex) {
+                    0 -> {
+                        DashBoardScreenRoot(
+                            viewModel = dashboardSMViewModel,
+                            user = state.user,
+                            windowSizeClass = windowClass,
+                            onDetailReminderCustomer = {
+                                onDetailReminderCustomer(it)
+                            },
+                            onSearchLead = onSearchLead,
+                            onMoveLeadScreen = {
+                                onAddLead()
+                            },
+                            onCreateReminder = {
+                                onCreateReminder()
+                            },
+                            onLogout = {
+                                onLogout()
+                            },
+                            onUpdateProfile = {
+                                onUpdateProfile()
+                            },
+                            onWebView = {
+                                onWebViewClick(it)
+                            }
+                        )
+                    }
 
-                        1 -> {
-                            DateScreenRoot(
-                                viewModel = datesViewModel,
-                                windowWidthSizeClass = windowClass,
-                                onDetailReminderCustomer = {
-                                    onDetailReminderCustomer(it)
-                                }
-                            )
-                        }
-                        2 -> {
-                            LeadScreenRoot(
-                                viewModel = leadVieModel,
-                                windowSizeClass = windowClass,
-                                onDetailLead = onDetailLead,
-                                onAddLead = onAddLead,
-                                onUpdateLead = onUpdateLead,
-                                onCreaReminder = onCreateReminder,
-                                onSearchLead = onSearchLead
-                            )
-                        }
+                    1 -> {
+                        DateScreenRoot(
+                            viewModel = datesViewModel,
+                            windowWidthSizeClass = windowClass,
+                            onDetailReminderCustomer = {
+                                onDetailReminderCustomer(it)
+                            }
+                        )
+                    }
+                    2 -> {
+                        LeadScreenRoot(
+                            viewModel = leadVieModel,
+                            windowSizeClass = windowClass,
+                            onDetailLead = onDetailLead,
+                            onAddLead = onAddLead,
+                            onUpdateLead = onUpdateLead,
+                            onCreaReminder = onCreateReminder,
+                            onSearchLead = onSearchLead
+                        )
+                    }
 
-                        3 -> {
-                            AccountScreenRoot(
-                                viewModelAccount,
-                                windowSizeClass = windowClass,
-                                onAction = { action ->
-                                    when (action) {
-                                        AccountSMAction.EditProfileClick -> onUpdateProfile()
-                                        AccountSMAction.OnLogoutClick -> onLogout()
-                                        else -> {}
-                                    }
-                                    viewModelAccount.onAction(action)
-                                })
-                        }
+                    3 -> {
+                        AccountScreenRoot(
+                            viewModelAccount,
+                            windowSizeClass = windowClass,
+                            onAction = { action ->
+                                when (action) {
+                                    AccountSMAction.EditProfileClick -> onUpdateProfile()
+                                    AccountSMAction.OnLogoutClick -> onLogout()
+                                    else -> {}
+                                }
+                                viewModelAccount.onAction(action)
+                            })
                     }
                 }
             }
-
         }
-    }
 
+    }
 
 }
 

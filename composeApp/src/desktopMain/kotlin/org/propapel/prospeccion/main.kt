@@ -66,6 +66,7 @@ import org.jetbrains.compose.resources.painterResource
 import org.koin.mp.KoinPlatform.getKoin
 import org.propapel.prospeccion.core.presentation.designsystem.components.ProvideDesktopPlatformConfiguration
 import org.propapel.prospeccion.core.presentation.designsystem.components.util.animateAttentionRepeat
+import org.propapel.prospeccion.core.presentation.ui.TimeUtils
 import org.propapel.prospeccion.di.initKoin
 import org.propapel.prospeccion.navigation.RootGraph
 import prospeccion.composeapp.generated.resources.Res
@@ -182,7 +183,7 @@ fun DownloadingScreen(
             in 0..30 -> "Estamos descargando algunas cosas, por favor espere a que se termine."
             in 31..80 -> "La descarga está progresando. Espere un poco más."
             in 80..99 -> "Ya estamos por terminar. Espere un poco más."
-            else -> ""
+            else -> "Ya hemos terminado.."
         }
     }
     val infiniteTransition = rememberInfiniteTransition(label = "infinite")
@@ -275,7 +276,7 @@ fun SplashScreen(onTimeout: () -> Unit) {
                 modifier = Modifier.weight(1f)
             )
             Text(
-                text = "© 2024 Propapel.\n Todos los derechos reservados.",
+                text = "© ${TimeUtils.yearNow} Propapel.\n Todos los derechos reservados.",
                 style = MaterialTheme.typography.bodySmall,
                 color = Color.Gray,
                 textAlign = TextAlign.Center
