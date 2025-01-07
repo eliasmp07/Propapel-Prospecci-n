@@ -8,7 +8,9 @@ plugins {
     alias(libs.plugins.jetbrainsCompose)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.kotlinxSerialization)
-    alias(libs.plugins.kspCompose)
+    alias(libs.plugins.googleServices)
+    alias(libs.plugins.crashlytics)
+
 }
 
 kotlin {
@@ -44,7 +46,12 @@ kotlin {
             implementation(libs.koin.android)
             implementation(libs.ktor.client.okhttp)
             implementation(libs.core.splashscreen)
-
+            implementation(project.dependencies.platform(libs.firebase.bom))
+            implementation(libs.firebase.crashlytics)
+            implementation(libs.firebase.auth)
+            implementation(libs.firebase.firestore)
+            implementation(libs.firebase.realtime)
+            implementation(libs.firebase.config)
         }
         commonMain.dependencies {
 
@@ -136,7 +143,7 @@ android {
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 1
-        versionName = "1.0"
+        versionName = "1.0.0"
     }
     buildFeatures {
         compose = true

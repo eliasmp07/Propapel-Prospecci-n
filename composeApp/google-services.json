@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1076568776756",
+    "project_id": "prosales-c49e5",
+    "storage_bucket": "prosales-c49e5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1076568776756:android:ec57a624cee0b17111ea61",
+        "android_client_info": {
+          "package_name": "org.propapel.prospeccion"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDF5Jsl2IMk0fjhOBc4OxMlwNM9Yau67Ac"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

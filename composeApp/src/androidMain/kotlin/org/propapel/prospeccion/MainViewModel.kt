@@ -1,21 +1,37 @@
 package org.propapel.prospeccion
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import org.propapel.prospeccion.core.domain.SessionStorage
+import org.propapel.prospeccion.updateApk.UpdateAppRepository
+import java.io.File
 
 class MainViewModel(
     private val sessionStorage: SessionStorage,
+    private val updateAppRepository: UpdateAppRepository
     //private val updateAppRepository: UpdateAppRepository
 ) : ViewModel() {
 
     var state by mutableStateOf(MainState())
         private set
+
+    private val _blockVersion = MutableStateFlow<Boolean>(false)
+    val blockVersion: StateFlow<Boolean> = _blockVersion
+
+    private val _downloadProgress = MutableStateFlow(0)
+    val downloadProgress: StateFlow<Int> = _downloadProgress
+
+   var apkFile: File? = null
+
     init {
+        canAccessApp()
         viewModelScope.launch {
             state = state.copy(isCheckingAuth = true)
             state = state.copy(
@@ -25,31 +41,30 @@ class MainViewModel(
             state = state.copy(isCheckingAuth = false)
         }
     }
-    /*
-        private val _downloadProgress = MutableStateFlow(0)
-    val downloadProgress: StateFlow<Int> = _downloadProgress
 
-    private val _isUpdateAvailable = MutableStateFlow(false)
-    val isUpdateAvailable: StateFlow<Boolean> = _isUpdateAvailable
 
-    private var apkFile: File? = null
-
-    fun checkForUpdate(currentVersion: String) {
+    fun downloadApk() {
         viewModelScope.launch {
-
-        }
-    }
-
-    private fun downloadApk(url: String) {
-        viewModelScope.launch {
-            apkFile = updateAppRepository.downloadApk(url) { progress ->
+            apkFile = updateAppRepository.downloadApk { progress ->
                 _downloadProgress.value = progress
             }
         }
     }
 
-    fun getApkFile() = apkFile
-     */
+    private fun canAccessApp(){
+        viewModelScope.launch {
+            val currentVersion = updateAppRepository.getCurrentVersion() //1.0.3
+            val minAllowedVersion = updateAppRepository.getMinAllowedVersion() //1.0.2
 
+            for((currentPart, minVersionPart) in currentVersion.zip(minAllowedVersion)){
+                if(currentPart!=minVersionPart){
+                    Log.i("UPDATE APP", _blockVersion.toString())
+                    _blockVersion.value =  currentPart > minVersionPart
+                    Log.i("UPDATE APP", _blockVersion.toString())
+
+                }
+            }
+        }
+    }
 
 }
