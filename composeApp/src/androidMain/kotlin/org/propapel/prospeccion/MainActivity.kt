@@ -82,8 +82,6 @@ class MainActivity : ComponentActivity() {
                                     Manifest.permission.READ_EXTERNAL_STORAGE
                                 )
                             )
-                            val blockVersion by viewModel.blockVersion.collectAsState()
-                            val downloadProgress by viewModel.downloadProgress.collectAsStateWithLifecycle()
 
                             val view = LocalView.current
                             if (!view.isInEditMode) {
@@ -95,64 +93,10 @@ class MainActivity : ComponentActivity() {
                                     ).isAppearanceLightStatusBars = true
                                 }
                             }
-                            Box {
-                                LaunchedEffect(downloadProgress) {
-                                    if (downloadProgress == 100) {
-                                        // Instalar el APK desde el archivo en caché
-                                        installApk(this@MainActivity, viewModel.apkFile)
-                                    }
-                                }
-
-                                RootGraph(
-                                    isLogging = viewModel.state.isLoggedIn,
-                                    isManager = viewModel.state.isManager
-                                )
-                                if (blockVersion == false) {
-                                    Dialog(
-                                        onDismissRequest = { },
-                                        properties = DialogProperties(
-                                            dismissOnBackPress = false,
-                                            dismissOnClickOutside = false
-                                        )
-                                    ) {
-                                        Card(colors = CardDefaults.cardColors(containerColor = Color.White)) {
-                                            Column(
-                                                modifier = Modifier
-                                                    .padding(24.dp)
-                                                    .fillMaxWidth()
-                                                    .height(300.dp),
-                                                horizontalAlignment = Alignment.CenterHorizontally
-                                            ) {
-                                                Text(
-                                                    text = "ACTUALIZA",
-                                                    fontSize = 22.sp,
-                                                    color = Black,
-                                                    fontWeight = FontWeight.Bold
-                                                )
-                                                Spacer(modifier = Modifier.height(24.dp))
-                                                Text(
-                                                    text = "Para poder disfrutar de todo nuestro contenido actualice la app",
-                                                    fontSize = 16.sp,
-                                                    color = Color.Gray,
-                                                    textAlign = TextAlign.Center
-                                                )
-                                                Spacer(modifier = Modifier.weight(1f))
-                                                Button(onClick = {
-                                                    viewModel.downloadApk()
-                                                }) {
-                                                    if (downloadProgress == 0){
-                                                        Text(text = "¡Actualizar!")
-                                                    }else if (downloadProgress in 1..99){
-                                                        CircularProgressIndicator()
-                                                    }
-                                                }
-                                                Spacer(modifier = Modifier.height(8.dp))
-                                            }
-                                        }
-
-                                    }
-                                }
-                            }
+                            RootGraph(
+                                isLogging = viewModel.state.isLoggedIn,
+                                isManager = viewModel.state.isManager
+                            )
                         }
                     )
                 }

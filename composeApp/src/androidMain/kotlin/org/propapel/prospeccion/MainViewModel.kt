@@ -31,7 +31,6 @@ class MainViewModel(
    var apkFile: File? = null
 
     init {
-        canAccessApp()
         viewModelScope.launch {
             state = state.copy(isCheckingAuth = true)
             state = state.copy(

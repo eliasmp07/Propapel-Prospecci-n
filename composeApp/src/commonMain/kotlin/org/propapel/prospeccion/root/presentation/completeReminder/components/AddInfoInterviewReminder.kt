@@ -92,6 +92,7 @@ fun AddInfoInterviewReminder(
         Spacer(
             modifier = Modifier.height(32.dp)
         )
+
         ProSalesTextField(
             title = "Fecha de la visita del dia de hoy",
             readOnly = true,

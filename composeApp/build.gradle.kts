@@ -42,6 +42,7 @@ kotlin {
 
             // Permissions
             implementation("com.google.accompanist:accompanist-permissions:0.34.0")
+            implementation("com.github.Breens-Mbaka:Searchable-Dropdown-Menu-Jetpack-Compose:0.2.8")
             implementation(libs.androidx.activity.compose)
             implementation(libs.koin.android)
             implementation(libs.ktor.client.okhttp)
