@@ -36,8 +36,7 @@ class CreateInteractionViewModel(
         _state.update {
             it.copy(
                 idCustomer = idCustomer,
-                date = if (reminderId != 0) convertLocalDate(date) else Clock.System.now()
-                    .toLocalDateTime(TimeZone.currentSystemDefault()),
+                date = if (reminderId != 0) date else Clock.System.now().toEpochMilliseconds(),
                 reminderId = reminderId
             )
         }
@@ -102,11 +101,26 @@ class CreateInteractionViewModel(
                     )
                 }
             }
+            is CreateInteractionAction.OnDateNextReminder -> {
+                _state.update {
+                    it.copy(
+                        date =  action.date
+                    )
+                }
+            }
+            is CreateInteractionAction.OnTimeNextReminder -> {
+                _state.update {
+                    it.copy(
+                        time = action.time
+                    )
+                }
+            }
         }
     }
 
     private fun createInteraction() {
         viewModelScope.launch(Dispatchers.IO) {
+            val dateReminder = _state.value.date + _state.value.time
             _state.update {
                 it.copy(
                     isCreatingInteraction = true,
@@ -117,7 +131,7 @@ class CreateInteractionViewModel(
                 idCustomer = _state.value.idCustomer,
                 interaction = Interaction(
                     interactionType = _state.value.typeClient.name,
-                    interactionDate = Clock.System.now().toEpochMilliseconds(),
+                    interactionDate = dateReminder,
                     notes = _state.value.notesAppointment,
                 ),
                 purchese = _state.value.productsIntereses,

@@ -110,12 +110,12 @@ fun ProSalesTextField(
             keyboardOptions = keyboardOptions,
             keyboardActions = keyboardActions,
             modifier = Modifier
-                .clip(RoundedCornerShape(30.dp))
+                .clip(RoundedCornerShape(12.dp))
                 .background(Color.Black.copy(alpha = 0.05f))
                 .border(
                     width = 1.dp,
                     color = colors,
-                    shape = RoundedCornerShape(30.dp)
+                    shape = RoundedCornerShape(12.dp)
                 )
                 .padding(12.dp)
                 .onFocusChanged { isFocused = it.isFocused },

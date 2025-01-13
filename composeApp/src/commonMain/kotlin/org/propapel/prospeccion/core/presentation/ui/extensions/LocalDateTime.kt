@@ -3,9 +3,22 @@ package org.propapel.prospeccion.core.presentation.ui.extensions
 import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.LocalTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
+import network.chaintech.kmp_date_time_picker.utils.timeToString
 import org.propapel.prospeccion.core.presentation.ui.utils.getDaysInMonth
+import org.propapel.prospeccion.root.presentation.createReminder.getMouthString
+
+fun LocalDateTime.toFormatStringDate(timeZone: TimeZone = TimeZone.UTC): String{
+    return "${date.dayOfMonth.formatZeroDayOfMonth()} de ${monthNumber.getMouthString()} del $year"
+}
+
+fun LocalDateTime.toFormatStringTime(): String{
+   return timeToString(time, "hh:mm a")
+}
+
+
 
 fun LocalDateTime.previousYear(): Int{
     val currentDate = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())

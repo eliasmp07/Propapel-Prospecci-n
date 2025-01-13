@@ -12,11 +12,12 @@ data class CreateInteractionLeadState(
     val typeClient : InteractionType = InteractionType.PRESENCIAL,
     val idCustomer: String = "",
     val reminderId: Int = 0,
-    val date: LocalDateTime = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()),
     val notesAppointment: String = "",
     val productsIntereses: List<PurchaseRequest> = emptyList(),
     val productInterested: String = "Seleccione una opción",
     val price : String = "",
     val isCreatingInteraction: Boolean = false,
-    val isSuccessCreate: Boolean = false
+    val isSuccessCreate: Boolean = false,
+    val time: Long = 0L,
+    val date: Long = 0L,
 )

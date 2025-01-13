@@ -38,7 +38,7 @@ fun ProSalesActionButton(
     modifier: Modifier = Modifier,
     border: BorderStroke? = null,
     textColor: Color = Color.Black,
-    shape: Shape = RoundedCornerShape(100f),
+    shape: Shape = RoundedCornerShape(12.dp),
     enabled: Boolean = true,
     colors: ButtonColors =  ButtonDefaults.buttonColors(
         containerColor = MaterialTheme.colorScheme.primary,

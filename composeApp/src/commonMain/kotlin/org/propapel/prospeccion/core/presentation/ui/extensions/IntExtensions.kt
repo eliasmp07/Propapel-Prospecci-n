@@ -1,6 +1,11 @@
 package org.propapel.prospeccion.core.presentation.ui.extensions
 
-
+fun Int.formatZeroDayOfMonth(): String{
+    return when(this){
+        in 0..9 -> "0$this"
+        else -> this.toNumberAmAndPmHour()
+    }
+}
 
 fun Int?.orZero(): Int = this ?: 0
 
@@ -27,7 +32,7 @@ fun Int.toCorrectNumberMinute(): String {
 
 fun Int.toNumberAmAndPmHour(): String {
     return when (this) {
-        in 1..9 -> "0$this"
+        in 0..9 -> "0$this"
         in 10..12 -> "$this"
         13 -> "01"
         14 -> "02"

@@ -88,6 +88,7 @@ fun CustomTopAppBar(
     onMenu: () -> Unit = {},
     totalNotifications: Int,
     onLogout: () -> Unit = {},
+    title: String = "",
     onSearch: () -> Unit,
     onAddLead: () -> Unit = {},
     scrollBehavior: TopAppBarScrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(),
@@ -111,7 +112,13 @@ fun CustomTopAppBar(
             ),
             scrollBehavior = scrollBehavior,
             title = {
-
+                if (title.isNotEmpty()){
+                    Text(
+                        text = title,
+                        style = MaterialTheme.typography.headlineMedium,
+                        color = Color.Black
+                    )
+                }
             },
             actions = {
                 Box(

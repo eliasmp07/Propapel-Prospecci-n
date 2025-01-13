@@ -24,10 +24,13 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Dashboard
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.MyLocation
+import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material.icons.filled.NotificationsActive
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.outlined.Dashboard
 import androidx.compose.material.icons.outlined.DateRange
 import androidx.compose.material.icons.outlined.MyLocation
+import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -73,6 +76,8 @@ import org.propapel.prospeccion.root.presentation.dates.DateScreenRoot
 import org.propapel.prospeccion.root.presentation.dates.DatesSMViewModel
 import org.propapel.prospeccion.root.presentation.leads.LeadSMViewModel
 import org.propapel.prospeccion.root.presentation.leads.LeadScreenRoot
+import org.propapel.prospeccion.root.presentation.notificationsScreen.NotificationScreen
+import org.propapel.prospeccion.root.presentation.notificationsScreen.NotificationScreenRoot
 
 @Composable
 fun HomeScreen(
@@ -127,6 +132,7 @@ fun HomeScreen(
                 profileImage = state.user.image,
                 totalNotifications = state.reminders.size,
                 scrollBehavior = scrollBehavior,
+                title = if (selectedItemIndex == 3) "Notificaciones" else "",
                 onLogout = {
                     viewModel.onAction(HomeRootAction.OnLogoutClick)
                     onLogout()
@@ -174,7 +180,7 @@ fun HomeScreen(
                             },
                             label = {
                                 if (selectedItemIndex == index) {
-                                    Text(item.title, overflow = TextOverflow.Ellipsis)
+                                    Text(item.title, overflow = TextOverflow.Ellipsis, maxLines = 1)
                                 }
                             }
                         )
@@ -231,8 +237,11 @@ fun HomeScreen(
                         onSearchLead = onSearchLead
                     )  // Pantalla de Leads
                 }
-
                 3 -> {
+                    NotificationScreenRoot(
+                        reminders = state.reminders)
+                }
+                4 -> {
                     AccountScreenRoot(
                         viewModelAccount,
                         windowSizeClass = windowClass,
@@ -287,6 +296,12 @@ private fun provideItemNavigationHomeScreenMobile(): List<NavigationItem>{
             "Leads",
             Icons.Outlined.MyLocation,
             Icons.Default.MyLocation,
+            false
+        ),
+        NavigationItem(
+            "Notificaciones",
+            Icons.Outlined.Notifications,
+            Icons.Default.Notifications,
             false
         ),
         NavigationItem(
