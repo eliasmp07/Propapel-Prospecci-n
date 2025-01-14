@@ -37,10 +37,8 @@ actual fun AdvancedTimePicker(
         is24Hour = false,
     )
 
-    /** Determines whether the time picker is dial or input */
     var showDial by remember { mutableStateOf(true) }
 
-    /** The icon used for the icon button that switches from dial to input */
     val toggleIcon = if (showDial) {
         Icons.Filled.EditCalendar
     } else {
@@ -57,7 +55,7 @@ actual fun AdvancedTimePicker(
                 set(Calendar.MILLISECOND, 0)
             }
             val localDateTime = selectedTime.timeInMillis.toLocalDateTime(TimeZone.currentSystemDefault()).time
-            val timeInMillis = selectedTime.timeInMillis // Convertir a long
+            val timeInMillis = (timePickerState.hour * 60 * 60 * 1000L) + (timePickerState.minute * 60 * 1000L)
             onConfirm(timeInMillis, timeToString(localDateTime, "hh:mm a")) // Enviar el valor de tiempo en milisegundos
         },
         toggle = {

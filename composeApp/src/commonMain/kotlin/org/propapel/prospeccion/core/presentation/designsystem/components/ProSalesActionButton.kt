@@ -99,7 +99,7 @@ fun ProSalesActionButtonOutline(
     text: String,
     isLoading: Boolean = false,
     modifier: Modifier = Modifier,
-    shape: Shape = RoundedCornerShape(100f),
+    shape: Shape = RoundedCornerShape(12.dp),
     textColor: Color = MaterialTheme.colorScheme.onBackground,
     borderColor: Color = MaterialTheme.colorScheme.onBackground,
     enabled: Boolean = true,

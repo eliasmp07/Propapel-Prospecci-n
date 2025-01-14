@@ -3,7 +3,7 @@ package org.propapel.prospeccion.core.presentation.ui.extensions
 fun Int.formatZeroDayOfMonth(): String{
     return when(this){
         in 0..9 -> "0$this"
-        else -> this.toNumberAmAndPmHour()
+        else -> this.toString()
     }
 }
 

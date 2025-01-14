@@ -1,5 +1,6 @@
 package org.propapel.prospeccion.root.presentation.addlead
 
+import androidx.compose.foundation.text.input.TextFieldState
 import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
@@ -7,9 +8,13 @@ import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
 import org.propapel.prospeccion.root.data.dto.customer.InteractionType
 import org.propapel.prospeccion.root.data.dto.customer.TypeOfClient
+import org.propapel.prospeccion.root.domain.models.Customer
 import org.propapel.prospeccion.root.domain.models.PurchaseRequest
 
 data class AddLeadState(
+
+    //Customers
+    val listAllCustomers: List<Customer>  = listOf(),
     val nameCompany: String = "",
     val contactName: String = "",
     val task: String = "Lead Nuevo",
@@ -26,7 +31,6 @@ data class AddLeadState(
     val productsInterest: List<PurchaseRequest> = listOf(),
     val productInterest: String = "Seleccione una opción",
     //Reminder
-    val dateNextReminder: Long = Clock.System.now().toLocalDateTime(TimeZone.UTC).toInstant(TimeZone.UTC).toEpochMilliseconds(),
     val descriptionNextAppointment: String = "",
     val typeAppointment: String = "",
     //Oportunity
@@ -47,5 +51,9 @@ data class AddLeadState(
     val errorNameCompany: String? = null,
     val errorEmailLead: String? = null,
     val errorPhoneNumber: String? = null,
+    val time: Long = 0L,
+    val date: Long = 0L,
+    val timeInteraction: Long = 0L,
+    val dateInteraction: Long = 0L
 
     )

@@ -1,5 +1,9 @@
 package org.propapel.prospeccion.root.presentation.addlead
 
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
@@ -7,6 +11,10 @@ import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filterNot
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
@@ -27,9 +35,40 @@ class AddLeadViewModel(
     private var _state = MutableStateFlow(AddLeadState())
     val state: StateFlow<AddLeadState> get() = _state.asStateFlow()
 
-
     init {
+        getAllCustomers()
         getAllMyReminders()
+        viewModelScope.launch {
+            _state.map { it.nameCompany }
+                .distinctUntilChanged()
+                .collectLatest { name ->
+                    val trimmedName = name?.trim().orEmpty() // Asegura que el nombre no sea nulo y elimina espacios
+                    if (trimmedName.isEmpty()) {
+                        // Si el campo está vacío, limpia el mensaje de error
+                        _state.update {
+                            it.copy(errorRazonSocial = null)
+                        }
+                    } else {
+                        // Verifica similitud con nombres existentes
+                        val isSimilarNameUnavailable = _state.value.listAllCustomers.any {
+                            val existingName = it.companyName.trim()
+                            existingName.contains(trimmedName, ignoreCase = true) ||
+                                    trimmedName.contains(existingName, ignoreCase = true)
+                        }
+                        // Actualiza el estado con el error correspondiente
+                        _state.update {
+                            it.copy(
+                                errorRazonSocial = if (isSimilarNameUnavailable) {
+                                    "Hay un cliente con un nombre similar"
+                                } else {
+                                    null
+                                }
+                            )
+                        }
+                    }
+                }
+        }
+
     }
 
     fun onAction(
@@ -57,6 +96,12 @@ class AddLeadViewModel(
             }
             is AddLeadAction.OnResponseOportunityChange -> {
                 _state.update { it.copy(isOportunity = action.response) }
+            }
+            is AddLeadAction.OnTimeModifierChange -> {
+                _state.update { it.copy(timeInteraction = action.time) }
+            }
+            is AddLeadAction.OnDateModifierChange -> {
+                _state.update { it.copy(dateInteraction = action.date) }
             }
             AddLeadAction.OnSaveTaskClick -> {
                 _state.update {
@@ -121,20 +166,10 @@ class AddLeadViewModel(
                 }
             }
             is AddLeadAction.OnDateNextReminder -> {
-                if (validAvailableDate(convertLocalDate(action.date))) {
-                    _state.update {
-                        it.copy(
-                            isDateAvailable = false,
-                            showAvailableDayDialog = !it.showAvailableDayDialog
-                        )
-                    }
-                } else {
-                    _state.update {
-                        it.copy(
-                            isDateAvailable = true,
-                            dateNextReminder = action.date
-                        )
-                    }
+                _state.update {
+                    it.copy(
+                        date = action.date
+                    )
                 }
 
             }
@@ -188,7 +223,17 @@ class AddLeadViewModel(
 
             is AddLeadAction.OnNextScreenClick -> {
                 if (action.screen == ContainerState.FINISH) {
-                    createCustomer()
+                    val dateReminder = _state.value.date + _state.value.time
+                    if (validAvailableDate(dateReminder)) {
+                        _state.update {
+                            it.copy(
+                                isDateAvailable = false,
+                                showAvailableDayDialog = !it.showAvailableDayDialog
+                            )
+                        }
+                    } else {
+                        createCustomer()
+                    }
                 } else {
                     if (!validateAndSetErrors()) {
                         _state.update {
@@ -199,7 +244,13 @@ class AddLeadViewModel(
                     }
                 }
             }
-
+            is AddLeadAction.OnTimeNextReminder -> {
+                _state.update {
+                    it.copy(
+                        time = action.time
+                    )
+                }
+            }
             AddLeadAction.OnToggleDateNoAvailable -> {
                 _state.update {
                     it.copy(
@@ -222,17 +273,35 @@ class AddLeadViewModel(
             else -> Unit
         }
     }
+    private fun getAllCustomers(){
+        viewModelScope.launch(Dispatchers.IO){
+            val result = customerRepository.getAllCustomers()
+            when(result){
+                is ResultExt.Error -> {
+                    _state.update {
+                        it.copy(
+                            listAllCustomers = emptyList()
+                        )
+                    }
+                }
+                is ResultExt.Success -> {
+                    _state.update {
+                        it.copy(
+                            listAllCustomers = result.data
+                        )
+                    }
+                }
+            }
+        }
+    }
 
-
-
-
-    private fun validAvailableDate(date: LocalDateTime): Boolean {
+    private fun validAvailableDate(date: Long): Boolean {
         val margenMinimoMillis = 3_600_000 // 1 hora en milisegundos
 
         return _state.value.reminders.any { reminder ->
             // Calcula la diferencia en milisegundos entre el recordatorio y la fecha dada
             val diferenciaMillis = kotlin.math.abs(
-                reminder.toInstant(TimeZone.UTC).toEpochMilliseconds() - date.toInstant(TimeZone.UTC).toEpochMilliseconds()
+                reminder.toInstant(TimeZone.UTC).toEpochMilliseconds() - date
             )
 
             // Valida si la diferencia es menor que el margen mínimo en milisegundos
@@ -261,9 +330,10 @@ class AddLeadViewModel(
         }
     }
 
-    fun createCustomer() {
+    private fun createCustomer() {
         viewModelScope.launch(Dispatchers.IO) {
-
+            val dateInteraction = _state.value.dateInteraction + _state.value.timeInteraction
+            val reminderDate = _state.value.date + _state.value.time
             val result = customerRepository.create(
                 companyName = _state.value.nameCompany,
                 contactName = _state.value.contactName,
@@ -277,11 +347,11 @@ class AddLeadViewModel(
                 followUpTasks = "",
                 interactionType = _state.value.interactionType,
                 notes = _state.value.notes,
-                reminderDate = _state.value.dateNextReminder,
+                reminderDate = reminderDate,
                 isCompleted = false,
                 potentialSale = 0.0,
                 typeAppointment = _state.value.typeAppointment,
-                interactionDate = _state.value.dateInteration,
+                interactionDate = if (dateInteraction > 0) dateInteraction else _state.value.dateInteration,
                 status = "Nuevo"
             )
             when (result) {

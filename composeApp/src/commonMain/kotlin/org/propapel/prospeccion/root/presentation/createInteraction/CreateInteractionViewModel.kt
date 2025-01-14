@@ -11,8 +11,11 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
+import kotlinx.datetime.TimeZone.Companion
+import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
 import org.propapel.prospeccion.core.domain.ResultExt
+import org.propapel.prospeccion.core.presentation.ui.extensions.toLocalDateTime
 import org.propapel.prospeccion.root.domain.models.Interaction
 import org.propapel.prospeccion.root.domain.models.PurchaseRequest
 import org.propapel.prospeccion.root.domain.repository.InteractionRepository
@@ -36,7 +39,6 @@ class CreateInteractionViewModel(
         _state.update {
             it.copy(
                 idCustomer = idCustomer,
-                date = if (reminderId != 0) date else Clock.System.now().toEpochMilliseconds(),
                 reminderId = reminderId
             )
         }
@@ -104,7 +106,7 @@ class CreateInteractionViewModel(
             is CreateInteractionAction.OnDateNextReminder -> {
                 _state.update {
                     it.copy(
-                        date =  action.date
+                        date = action.date
                     )
                 }
             }

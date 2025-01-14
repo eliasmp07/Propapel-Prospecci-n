@@ -3,8 +3,12 @@ package org.propapel.prospeccion.root.presentation.addlead
 import org.propapel.prospeccion.root.data.dto.customer.InteractionType
 import org.propapel.prospeccion.root.data.dto.customer.TypeOfClient
 import org.propapel.prospeccion.root.domain.models.PurchaseRequest
+import org.propapel.prospeccion.root.presentation.createInteraction.CreateInteractionAction
 
 sealed interface AddLeadAction {
+    data class OnTimeModifierChange(val time: Long): AddLeadAction
+    data class OnDateModifierChange(val date: Long): AddLeadAction
+    data class OnTimeNextReminder(val time: Long): AddLeadAction
 
     data class OnFullNameChange(val fullName: String): AddLeadAction
     data class OnRazonSocialChange(val razonSocial: String): AddLeadAction

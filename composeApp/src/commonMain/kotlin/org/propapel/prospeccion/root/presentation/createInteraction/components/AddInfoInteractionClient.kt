@@ -85,212 +85,120 @@ fun AddInfoInteractionClient(
         mutableStateOf(date.toFormatStringDate())
     }
     val focusManager = LocalFocusManager.current
-    if (isMobile) {
-        Column(
-            modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()).background(
-                Brush.verticalGradient(
-                    0f to PrimaryViolet,
-                    1f to PrimaryVioletDark
-                )
-            ).padding(16.dp)
-        ) {
-            IconButton(
-                modifier = Modifier.align(Alignment.End).padding(16.dp),
-                onClick = {
-                    onAction(CreateInteractionAction.OnBackClick)
-                },
-                content = {
-                    Icon(
-                        imageVector = Icons.Filled.Close,
-                        contentDescription = null,
-                        tint = Color.White
-                    )
-                }
-            )
-            Text(
-                modifier = Modifier.align(Alignment.CenterHorizontally),
-                text = "Informacion de la actividad",
-                fontWeight = FontWeight.ExtraBold,
-                style = MaterialTheme.typography.headlineSmall,
-                color = Color.White
-            )
-            KottieAnimationUtil(
-                modifier = Modifier.size(150.dp).align(Alignment.CenterHorizontally),
-                fileRoute = "files/anim_interview.json"
-            )
-            Spacer(
-                modifier = Modifier.height(32.dp)
-            )
-            ProSalesTextField(
-                title = "Hora:",
-                readOnly = true,
-                modifierTextField = Modifier.clickable {
-                    showTimePicker = !showTimePicker
-                },
-                colors = Color.White,
-                state = timeSelected,
-                onTextChange = {
-
-                },
-                startIcon = Icons.Filled.Timer,
-                maxLines = 104
-
-            )
-            ProSalesTextField(
-                title = "Fecha:",
-                readOnly = true,
-                modifierTextField = Modifier.clickable {
-                    showDialogPickerDate = !showDialogPickerDate
-                },
-                colors = Color.White,
-                state = dateSelected,
-                onTextChange = {
-
-                },
-                startIcon = Icons.Filled.DateRange,
-                maxLines = 104
-            )
-            Spacer(
-                modifier = Modifier.height(8.dp)
-            )
-            ExposedDropdownMenuTypeAppointment(
-                title = "Tipo de interaccion",
-                listOptions = listOf(
-                    InteractionType.EMAIL,
-                    InteractionType.LLAMADA,
-                    InteractionType.REUNION_REMOTA,
-                    InteractionType.PRESENCIAL
-                ),
-                optionSelectable = state.typeClient,
-                optionSelectableClick = {
-                    onAction(CreateInteractionAction.OnTypeClientChange(it))
-                }
-            )
-            Spacer(
-                modifier = Modifier.height(8.dp)
-            )
-            ProSalesTextField(
-                title = "Comentarios",
-                colors = Color.White,
-                state = state.notesAppointment,
-                onTextChange = {
-                    onAction(CreateInteractionAction.OnNoteAppointmentChange(it))
-                },
-                keyboardOptions = KeyboardOptions(
-                    imeAction = ImeAction.Done,
-                    keyboardType = KeyboardType.Text
-                ),
-                keyboardActions = KeyboardActions(
-                    onDone = {
-                        focusManager.clearFocus()
-                    }
-                ),
-                startIcon = Icons.AutoMirrored.Filled.Notes,
-                maxLines = 104
-            )
-            Spacer(
-                modifier = Modifier.weight(1f)
-            )
-            ProSalesActionButton(
-                text = "Guardar",
-                isLoading = false,
-                onClick = {
-                    onAction(CreateInteractionAction.OnNextScreen(CreateInteractionScreenState.He_Client_Intersed_A_Product))
-                }
-            )
-            Spacer(
-                modifier = Modifier.height(8.dp)
-            )
-        }
-    } else {
-        GenericContentWindowsSize(
-            onCloseScreen = {
-                onAction(CreateInteractionAction.OnBackClick)
-            },
-            content1 = {
-                Image(
-                    modifier = Modifier.weight(0.5f).aspectRatio(3f),
-                    painter = painterResource(
-                        Res.drawable.calendar_date
-                    ),
-                    contentDescription = null
-                )
-            },
-            brush = Brush.verticalGradient(
+    Column(
+        modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()).background(
+            Brush.verticalGradient(
                 0f to PrimaryViolet,
                 1f to PrimaryVioletDark
-            ),
-            content2 = {
-                Text(
-                    modifier = Modifier.align(Alignment.CenterHorizontally),
-                    text = "Informacion de la actividad",
-                    fontWeight = FontWeight.ExtraBold,
-                    style = MaterialTheme.typography.headlineSmall,
-                    color = Color.White
-                )
-                Spacer(
-                    modifier = Modifier.height(32.dp)
-                )
-                ProSalesTextField(
-                    title = "Fecha de la visita de la actividad",
-                    readOnly = true,
-                    colors = Color.White,
-                    state = "${state.date.dayOfMonth}/${monthGet(state.date.monthNumber)}/${state.date.year}",
-                    onTextChange = {
-
-                    },
-                    startIcon = Icons.Filled.DateRange,
-                    maxLines = 104
-                )
-                Spacer(
-                    modifier = Modifier.height(8.dp)
-                )
-                ExposedDropdownMenuTypeAppointment(
-                    title = "Tipo de interaccion",
-                    listOptions = listOf(
-                        InteractionType.EMAIL,
-                        InteractionType.LLAMADA,
-                        InteractionType.REUNION_REMOTA,
-                        InteractionType.PRESENCIAL
-                    ),
-                    optionSelectable = state.typeClient,
-                    optionSelectableClick = {
-                        onAction(CreateInteractionAction.OnTypeClientChange(it))
-                    }
-                )
-                Spacer(
-                    modifier = Modifier.height(8.dp)
-                )
-                ProSalesTextField(
-                    title = "Comentarios",
-                    colors = Color.White,
-                    state = state.notesAppointment,
-                    onTextChange = {
-                        onAction(CreateInteractionAction.OnNoteAppointmentChange(it))
-                    },
-                    keyboardOptions = KeyboardOptions(
-                        imeAction = ImeAction.Done,
-                        keyboardType = KeyboardType.Text
-                    ),
-                    keyboardActions = KeyboardActions(
-                        onDone = {
-                            focusManager.clearFocus()
-                        }
-                    ),
-                    startIcon = Icons.AutoMirrored.Filled.Notes,
-                    maxLines = 104
-                )
-                Spacer(
-                    modifier = Modifier.height(32.dp)
-                )
-                ProSalesActionButton(
-                    text = "Guardar",
-                    isLoading = false,
-                    onClick = {
-                        onAction(CreateInteractionAction.OnNextScreen(CreateInteractionScreenState.He_Client_Intersed_A_Product))
-                    }
+            )
+        ).padding(16.dp)
+    ) {
+        IconButton(
+            modifier = Modifier.align(Alignment.End).padding(16.dp),
+            onClick = {
+                onAction(CreateInteractionAction.OnBackClick)
+            },
+            content = {
+                Icon(
+                    imageVector = Icons.Filled.Close,
+                    contentDescription = null,
+                    tint = Color.White
                 )
             }
+        )
+        Text(
+            modifier = Modifier.align(Alignment.CenterHorizontally),
+            text = "Informacion de la actividad",
+            fontWeight = FontWeight.ExtraBold,
+            style = MaterialTheme.typography.headlineSmall,
+            color = Color.White
+        )
+        KottieAnimationUtil(
+            modifier = Modifier.size(150.dp).align(Alignment.CenterHorizontally),
+            fileRoute = "files/anim_interview.json"
+        )
+        Spacer(
+            modifier = Modifier.height(32.dp)
+        )
+        ProSalesTextField(
+            title = "Hora:",
+            readOnly = true,
+            modifierTextField = Modifier.clickable {
+                showTimePicker = !showTimePicker
+            },
+            colors = Color.White,
+            state = timeSelected,
+            onTextChange = {
+
+            },
+            startIcon = Icons.Filled.Timer,
+            maxLines = 104
+
+        )
+        ProSalesTextField(
+            title = "Fecha:",
+            readOnly = true,
+            modifierTextField = Modifier.clickable {
+                showDialogPickerDate = !showDialogPickerDate
+            },
+            colors = Color.White,
+            state = dateSelected,
+            onTextChange = {
+
+            },
+            startIcon = Icons.Filled.DateRange,
+            maxLines = 104
+        )
+        Spacer(
+            modifier = Modifier.height(8.dp)
+        )
+        ExposedDropdownMenuTypeAppointment(
+            title = "Tipo de interaccion",
+            listOptions = listOf(
+                InteractionType.EMAIL,
+                InteractionType.LLAMADA,
+                InteractionType.REUNION_REMOTA,
+                InteractionType.PRESENCIAL
+            ),
+            optionSelectable = state.typeClient,
+            optionSelectableClick = {
+                onAction(CreateInteractionAction.OnTypeClientChange(it))
+            }
+        )
+        Spacer(
+            modifier = Modifier.height(8.dp)
+        )
+        ProSalesTextField(
+            title = "Comentarios",
+            colors = Color.White,
+            state = state.notesAppointment,
+            onTextChange = {
+                onAction(CreateInteractionAction.OnNoteAppointmentChange(it))
+            },
+            keyboardOptions = KeyboardOptions(
+                imeAction = ImeAction.Done,
+                keyboardType = KeyboardType.Text
+            ),
+            keyboardActions = KeyboardActions(
+                onDone = {
+                    focusManager.clearFocus()
+                }
+            ),
+            startIcon = Icons.AutoMirrored.Filled.Notes,
+            maxLines = 104
+        )
+        Spacer(
+            modifier = Modifier.weight(1f)
+        )
+        ProSalesActionButton(
+            text = "Guardar",
+            isLoading = false,
+            onClick = {
+                onAction(CreateInteractionAction.OnNextScreen(CreateInteractionScreenState.He_Client_Intersed_A_Product))
+            }
+        )
+        Spacer(
+            modifier = Modifier.height(8.dp)
         )
     }
     if (showTimePicker){

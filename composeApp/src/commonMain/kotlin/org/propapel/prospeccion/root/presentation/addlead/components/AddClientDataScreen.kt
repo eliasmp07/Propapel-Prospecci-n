@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -19,6 +20,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.AlertDialog
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Business
 import androidx.compose.material.icons.filled.Close
@@ -34,6 +36,10 @@ import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSiz
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
@@ -51,6 +57,7 @@ import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.propapel.prospeccion.core.presentation.designsystem.PrimaryGreen
 import org.propapel.prospeccion.core.presentation.designsystem.PrimaryViolet
 import org.propapel.prospeccion.core.presentation.designsystem.components.ProSalesActionButton
+import org.propapel.prospeccion.core.presentation.designsystem.components.ProSalesActionButtonOutline
 import org.propapel.prospeccion.core.presentation.designsystem.components.ProSalesTextField
 import org.propapel.prospeccion.core.presentation.designsystem.components.util.rememberImeState
 import org.propapel.prospeccion.root.data.dto.customer.TypeOfClient
@@ -272,6 +279,9 @@ private fun AddClientDataMobileScreen(
 ) {
     val imeState = rememberImeState()
     val scrollState = rememberScrollState()
+    var showErrorEquals by remember {
+        mutableStateOf(false)
+    }
 
     LaunchedEffect(key1 = imeState.value) {
         if (imeState.value) {
@@ -434,8 +444,80 @@ private fun AddClientDataMobileScreen(
             text = "Guardar",
             isLoading = false,
             onClick = {
-                onAction(AddLeadAction.OnNextScreenClick(ContainerState.ADD_MORE_INFO_LEAD))
+                if(state.errorRazonSocial.equals("Hay un cliente con un nombre similar")){
+                    showErrorEquals = true
+                }else{
+                    onAction(AddLeadAction.OnNextScreenClick(ContainerState.ADD_MORE_INFO_LEAD))
+                }
+
             }
         )
     }
+
+    if (showErrorEquals){
+        ShowEqualsLeadSaveDialog(
+            onDismissRequest = {
+                showErrorEquals = false
+            },
+            primaryAction = {
+                showErrorEquals = false
+                onAction(AddLeadAction.OnNextScreenClick(ContainerState.ADD_MORE_INFO_LEAD))
+            },
+            secondaryAction = {
+                showErrorEquals = false
+            }
+        )
+    }
+}
+
+
+@Composable
+fun ShowEqualsLeadSaveDialog(
+    onDismissRequest: () -> Unit,
+    primaryAction: () -> Unit,
+    secondaryAction : () -> Unit
+){
+    AlertDialog(
+        onDismissRequest = {
+            onDismissRequest()
+        },
+        text = {
+            Text(
+                textAlign = TextAlign.Justify,
+                text = "Ya hay un cliente con el mismo nombre, ¿estas seguro de guardarlo?",
+                style = MaterialTheme.typography.bodyMedium
+            )
+        },
+        title = {
+            Text(
+                modifier = Modifier.fillMaxWidth(),
+                text = "¡Advertencia!",
+                style = MaterialTheme.typography.titleMedium,
+                textAlign = TextAlign.Center
+            )
+        },
+        buttons = {
+            Row(
+                modifier = Modifier.fillMaxWidth().padding(8.dp)
+            ) {
+                ProSalesActionButton(
+                    modifier = Modifier.weight(0.5f),
+                    onClick = {
+                        primaryAction()
+                    },
+                    text = "Si"
+                )
+                Spacer(
+                    modifier = Modifier.weight(0.1f)
+                )
+                ProSalesActionButtonOutline(
+                    modifier = Modifier.weight(0.5f),
+                    onClick = {
+                        secondaryAction()
+                    },
+                    text = "No"
+                )
+            }
+        }
+    )
 }
