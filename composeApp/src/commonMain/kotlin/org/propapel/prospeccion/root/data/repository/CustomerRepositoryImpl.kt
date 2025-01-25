@@ -41,7 +41,7 @@ class CustomerRepositoryImpl(
         isOpportunity: Boolean,
         potentialSale: Double,
         status: String,
-        typeOfClient: TypeOfClient,
+        typeOfClient: String,
         followUpTasks: String?,
         interactionType: InteractionType,
         purchese: List<PurchaseRequest>,
@@ -106,7 +106,7 @@ class CustomerRepositoryImpl(
             body = CreateCustomerRequest(
                 companyName = companyName,
                 contactName = contactName,
-                typeClient = typeOfClient.name,
+                typeClient = typeOfClient,
                 email = email,
                 phoneNumber = phoneNumber,
                 address = address,

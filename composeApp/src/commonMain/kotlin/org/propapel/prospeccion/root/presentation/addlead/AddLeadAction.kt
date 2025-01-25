@@ -35,7 +35,7 @@ sealed interface AddLeadAction {
     data object OnSelectAnswerProductInterestClick: AddLeadAction
     data object OnSelectHasPendientDateClick: AddLeadAction
 
-    data class OnTypeClientChange(val typeClient: TypeOfClient): AddLeadAction
+    data class OnTypeClientChange(val typeClient: String): AddLeadAction
     data class OnTypeDateChange(val typeInteraction: InteractionType): AddLeadAction
     data class OnProductInterestChange(val product: String): AddLeadAction
 

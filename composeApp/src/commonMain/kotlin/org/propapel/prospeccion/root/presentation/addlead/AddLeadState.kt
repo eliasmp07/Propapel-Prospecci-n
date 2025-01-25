@@ -22,7 +22,7 @@ data class AddLeadState(
     val isOtherDate: Boolean = false,
     val hasPendients: Boolean = false,
     val tasks: List<String> = listOf(),
-    val typeClient: TypeOfClient = TypeOfClient.NUEVO,
+    val typeClient: String = TypeOfClient.NUEVO.description,
     val screenState: ContainerState = ContainerState.ADDLEAD,
     val email: String = "",
     val phoneNumber: String = "",

@@ -75,9 +75,10 @@ private fun providesItemsScreen(
         ItemScreen {
             if (state.myCustomer is UiState.Success){
 
-                val customerNew = state.myCustomer.value.filter { it.typeClient == TypeOfClient.NUEVO.name }
-                val customerDesarrollo = state.myCustomer.value.filter { it.typeClient == TypeOfClient.DESARROLLO.name }
-                val customerRecuperacion = state.myCustomer.value.filter { it.typeClient == TypeOfClient.RECUPERACIÓN.name }
+                val customerNew = state.myCustomer.value.filter { it.typeClient == TypeOfClient.NUEVO.name || it.typeClient == TypeOfClient.NUEVO.description }
+                val customerDesarrollo =  state.myCustomer.value.filter{ it.typeClient == TypeOfClient.DESARROLLO.name || it.typeClient == TypeOfClient.DESARROLLO.description }
+                val customerRecuperacion = state.myCustomer.value.filter { it.typeClient == "RECUPERACIÓN" || it.typeClient == TypeOfClient.RECUPERACION.description }
+
 
                 ElevatedCard(
                     shape = RoundedCornerShape(12.dp),
@@ -211,10 +212,9 @@ fun DashboardScreenWindows(
                     if (state.myCustomer is UiState.Success){
 
                         val listCustomer = state.myCustomer
-                        val customerNew = listCustomer.value.filter { it.typeClient == TypeOfClient.NUEVO.name }
-                        val customerDesarrollo = listCustomer.value.filter { it.typeClient == TypeOfClient.DESARROLLO.name }
-                        val customerRecuperacion = listCustomer.value.filter { it.typeClient == TypeOfClient.RECUPERACIÓN.name }
-
+                        val customerNew = listCustomer.value.filter { it.typeClient == TypeOfClient.NUEVO.name || it.typeClient == TypeOfClient.NUEVO.description }
+                        val customerDesarrollo = listCustomer.value.filter { it.typeClient == TypeOfClient.DESARROLLO.name || it.typeClient == TypeOfClient.DESARROLLO.description }
+                        val customerRecuperacion = listCustomer.value.filter { it.typeClient == "RECUPERACIÓN" || it.typeClient == TypeOfClient.RECUPERACION.description }
 
                         DashboardCard(
                             title = "Clientes Totales",

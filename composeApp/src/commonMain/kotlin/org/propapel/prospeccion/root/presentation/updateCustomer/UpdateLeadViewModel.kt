@@ -50,7 +50,7 @@ class UpdateLeadViewModel(
                             email = result.data.email,
                             phone = result.data.phoneNumber,
                             address = result.data.address ?: "",
-                            typeOfClient = TypeOfClient.valueOf(result.data.typeClient)
+                            typeOfClient = result.data.typeClient
                         )
                     }
                 }
@@ -123,7 +123,7 @@ class UpdateLeadViewModel(
                         email = _state.value.email,
                         phoneNumber = _state.value.phone,
                         address = _state.value.address,
-                        typeClient = _state.value.typeOfClient.name
+                        typeClient = _state.value.typeOfClient
                     )
                 )
                 when (result) {

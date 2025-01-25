@@ -147,7 +147,7 @@ fun ResultSearchScreen(
                         onClickCustomer(it)
                     },
                     customers = customers.filter {
-                        it.typeClient == TypeOfClient.NUEVO.name
+                        it.typeClient == TypeOfClient.NUEVO.name || it.typeClient == TypeOfClient.NUEVO.description
                     }
                 )
             }
@@ -158,7 +158,7 @@ fun ResultSearchScreen(
                         onClickCustomer(it)
                     },
                     customers = customers.filter {
-                        it.typeClient == TypeOfClient.DESARROLLO.name
+                        it.typeClient == TypeOfClient.DESARROLLO.name || it.typeClient == TypeOfClient.DESARROLLO.description
                     }
                 )
             }
@@ -169,7 +169,7 @@ fun ResultSearchScreen(
                         onClickCustomer(it)
                     },
                     customers = customers.filter {
-                        it.typeClient == TypeOfClient.RECUPERACIÓN.name
+                        it.typeClient == "RECUPERACIÓN" || it.typeClient == TypeOfClient.RECUPERACION.description
                     }
                 )
             }

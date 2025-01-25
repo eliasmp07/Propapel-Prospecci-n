@@ -4,6 +4,7 @@ import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import java.io.File
 
 interface UpdateAppRepository {
+    suspend fun getApkLink(): String
     suspend fun getMinAllowedVersion(): List<Int>
     suspend fun getCurrentVersion(): List<Int>
     suspend fun downloadApk(

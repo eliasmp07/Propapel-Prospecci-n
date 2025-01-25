@@ -34,6 +34,7 @@ import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -43,6 +44,10 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
@@ -66,6 +71,7 @@ import org.propapel.prospeccion.core.presentation.designsystem.components.util.r
 import org.propapel.prospeccion.root.data.dto.customer.TypeOfClient
 import org.propapel.prospeccion.root.presentation.addlead.components.utils.ExpisedDropdownMenuTypeClient
 import org.propapel.prospeccion.root.presentation.addlead.components.utils.KottieAnimationUtil
+import org.propapel.prospeccion.root.presentation.createProject.componetns.ExposedDropdownMenuGereric
 import org.propapel.prospeccion.root.presentation.updateCustomer.UpdateLeadAction
 import org.propapel.prospeccion.root.presentation.updateCustomer.UpdateLeadState
 import prospeccion.composeapp.generated.resources.Res
@@ -201,18 +207,27 @@ fun UpdateCustomerMobileScreen(
                         modifier = Modifier.align(Alignment.CenterHorizontally).padding(12.dp).aspectRatio(3f),
                         fileRoute = "files/anim_customer.json"
                     )
-                    ExpisedDropdownMenuTypeClient(
+                    var expandedTypeOfClient by remember {
+                        mutableStateOf(false)
+                    }
+                    ExposedDropdownMenuGereric(
+                        state = expandedTypeOfClient,
+                        modifier = Modifier,
                         title = "Tipo de cliente",
-                        colors = Color.Black,
-                        listOptions = listOf(
-                            TypeOfClient.NUEVO,
-                            TypeOfClient.DESARROLLO,
-                            TypeOfClient.RECUPERACIÓN
-                        ),
+                        listOptions = TypeOfClient.getTypeOfClient(),
+                        onDimiss = {
+                            expandedTypeOfClient = !expandedTypeOfClient
+                        },
                         optionSelectable = state.typeOfClient,
-                        optionSelectableClick = {
-                            onAction(UpdateLeadAction.OnTypeOfClientChange(it))
-                        }
+                        content = {
+                            DropdownMenuItem(
+                                text = { androidx.compose.material.Text(text = it) },
+                                onClick = {
+                                    expandedTypeOfClient = !expandedTypeOfClient
+                                    onAction(UpdateLeadAction.OnTypeOfClientChange(it))
+                                }
+                            )
+                        },
                     )
                     ProSalesTextField(
                         title = "Razon social",

@@ -1,5 +1,6 @@
 @file:OptIn(
     ExperimentalResourceApi::class,
+    ExperimentalMaterial3WindowSizeClassApi::class,
     ExperimentalMaterial3WindowSizeClassApi::class
 )
 
@@ -28,6 +29,7 @@ import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Map
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Phone
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -66,6 +68,7 @@ import org.propapel.prospeccion.root.presentation.addlead.AddLeadState
 import org.propapel.prospeccion.root.presentation.addlead.ContainerState
 import org.propapel.prospeccion.root.presentation.addlead.components.utils.ExpisedDropdownMenuTypeClient
 import org.propapel.prospeccion.root.presentation.addlead.components.utils.KottieAnimationUtil
+import org.propapel.prospeccion.root.presentation.createProject.componetns.ExposedDropdownMenuGereric
 import org.propapel.prospeccion.root.presentation.dashboard.isMobile
 
 @Composable
@@ -140,18 +143,27 @@ private fun AddClientDataDesktopScreen(
                 Spacer(
                     modifier = Modifier.height(32.dp)
                 )
-                ExpisedDropdownMenuTypeClient(
-                    modifier = Modifier.padding(horizontal = 16.dp),
+                var expandedTypeOfClient by remember {
+                    mutableStateOf(false)
+                }
+                ExposedDropdownMenuGereric(
+                    state = expandedTypeOfClient,
+                    modifier = Modifier,
                     title = "Tipo de cliente",
-                    listOptions = listOf(
-                        TypeOfClient.NUEVO,
-                        TypeOfClient.DESARROLLO,
-                        TypeOfClient.RECUPERACIÓN
-                    ),
+                    listOptions = TypeOfClient.getTypeOfClient(),
+                    onDimiss = {
+                        expandedTypeOfClient = !expandedTypeOfClient
+                    },
                     optionSelectable = state.typeClient,
-                    optionSelectableClick = {
-                        onAction(AddLeadAction.OnTypeClientChange(it))
-                    }
+                    content = {
+                        DropdownMenuItem(
+                            text = { androidx.compose.material.Text(text = it) },
+                            onClick = {
+                                expandedTypeOfClient = !expandedTypeOfClient
+                                onAction(AddLeadAction.OnTypeClientChange(it))
+                            }
+                        )
+                    },
                 )
                 ProSalesTextField(
                     modifier = Modifier.padding(horizontal = 16.dp),
@@ -324,18 +336,27 @@ private fun AddClientDataMobileScreen(
             modifier = Modifier.align(Alignment.CenterHorizontally).padding(12.dp).aspectRatio(3f),
             fileRoute = "files/anim_customer.json"
         )
-        ExpisedDropdownMenuTypeClient(
-            modifier = Modifier.padding(horizontal = 16.dp),
+        var expandedTypeOfClient by remember {
+            mutableStateOf(false)
+        }
+        ExposedDropdownMenuGereric(
+            state = expandedTypeOfClient,
+            modifier = Modifier,
             title = "Tipo de cliente",
-            listOptions = listOf(
-                TypeOfClient.NUEVO,
-                TypeOfClient.DESARROLLO,
-                TypeOfClient.RECUPERACIÓN
-            ),
+            listOptions = TypeOfClient.getTypeOfClient(),
+            onDimiss = {
+                expandedTypeOfClient = !expandedTypeOfClient
+            },
             optionSelectable = state.typeClient,
-            optionSelectableClick = {
-                onAction(AddLeadAction.OnTypeClientChange(it))
-            }
+            content = {
+                DropdownMenuItem(
+                    text = { androidx.compose.material.Text(text = it) },
+                    onClick = {
+                        expandedTypeOfClient = !expandedTypeOfClient
+                        onAction(AddLeadAction.OnTypeClientChange(it))
+                    }
+                )
+            },
         )
         ProSalesTextField(
             modifier = Modifier.padding(horizontal = 16.dp),

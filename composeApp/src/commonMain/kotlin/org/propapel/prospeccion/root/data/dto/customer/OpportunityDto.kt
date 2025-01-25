@@ -13,6 +13,14 @@ data class OpportunityDto(
 )
 
 @Serializable
-enum class TypeOfClient {
-    NUEVO, RECUPERACIÓN, DESARROLLO
+enum class TypeOfClient(val description: String) {
+    NUEVO("Nuevo 🚀"),
+    RECUPERACION("Recuperación 🔄"),
+    DESARROLLO("Expansión de producto 🌱");
+
+    companion object {
+        fun getTypeOfClient(): List<String> {
+            return entries.map {  it.description }
+        }
+    }
 }

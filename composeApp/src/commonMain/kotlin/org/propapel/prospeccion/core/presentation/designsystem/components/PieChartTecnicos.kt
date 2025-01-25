@@ -68,9 +68,9 @@ fun PieChartLeadsStatus(
     var showMoreInfoRecuperacion by remember { mutableStateOf(false) }
 
 
-    val customerNew = listCustomer.filter { it.typeClient == TypeOfClient.NUEVO.name }
-    val customerDesarrollo = listCustomer.filter { it.typeClient == TypeOfClient.DESARROLLO.name }
-    val customerRecuperacion = listCustomer.filter { it.typeClient == TypeOfClient.RECUPERACIÓN.name }
+    val customerNew = listCustomer.filter { it.typeClient == TypeOfClient.NUEVO.name || it.typeClient == TypeOfClient.NUEVO.description }
+    val customerDesarrollo = listCustomer.filter { it.typeClient == TypeOfClient.DESARROLLO.name || it.typeClient == TypeOfClient.DESARROLLO.description }
+    val customerRecuperacion = listCustomer.filter { it.typeClient == "RECUPERACIÓN" || it.typeClient == TypeOfClient.RECUPERACION.description }
 
     ElevatedCard(
         shape = RoundedCornerShape(20.dp),

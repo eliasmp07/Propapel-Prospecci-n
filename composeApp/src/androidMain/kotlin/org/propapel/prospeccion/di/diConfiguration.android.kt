@@ -13,11 +13,17 @@ import org.propapel.prospeccion.MainViewModel
 import org.propapel.prospeccion.alarm.AlarmHandlerAndroid
 import org.propapel.prospeccion.core.data.datastore.DATA_STORE_FILE_NAME
 import org.propapel.prospeccion.core.domain.repository.AlarmHandler
+import org.propapel.prospeccion.data.AndroidDownloader
 import org.propapel.prospeccion.data.UpdateAppRepositoryImpl
+import org.propapel.prospeccion.domain.Downloader
+import org.propapel.prospeccion.dowloadapk.DownloadApk
 import org.propapel.prospeccion.updateApk.UpdateAppRepository
 
 actual fun platformModule(): Module {
     return module {
+        single<Downloader> {
+            AndroidDownloader(androidContext())
+        }
         single {
             FirebaseRemoteConfig.getInstance().apply {
                 setConfigSettingsAsync(remoteConfigSettings {
@@ -26,7 +32,6 @@ actual fun platformModule(): Module {
                 fetchAndActivate()
             }
         }
-
         single<UpdateAppRepository> { // Bind the interface to the implementation
             UpdateAppRepositoryImpl(
                 remoteConfig = get(),

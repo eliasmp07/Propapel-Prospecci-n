@@ -18,7 +18,7 @@ interface CustomerRepository {
         isOpportunity: Boolean,
         potentialSale: Double,
         status: String,
-        typeOfClient: TypeOfClient,
+        typeOfClient: String,
         followUpTasks: String?,
         interactionType: InteractionType,
         purchese: List<PurchaseRequest>,

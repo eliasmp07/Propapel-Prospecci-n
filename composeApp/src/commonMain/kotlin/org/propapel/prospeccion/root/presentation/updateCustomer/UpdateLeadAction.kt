@@ -9,7 +9,7 @@ sealed interface UpdateLeadAction {
     data class OnUpdateEmailChange(val email: String) : UpdateLeadAction
     data class OnUpdatePhoneChange(val phone: String) : UpdateLeadAction
     data class OnUpdateAddress(val address: String) : UpdateLeadAction
-    data class OnTypeOfClientChange(val typeOfClient: TypeOfClient) : UpdateLeadAction
+    data class OnTypeOfClientChange(val typeOfClient: String) : UpdateLeadAction
     data object UpdateLeadClick : UpdateLeadAction
     data class OnNameCompanyChange(val nameCompany: String) : UpdateLeadAction
     data object OnRetryClick : UpdateLeadAction

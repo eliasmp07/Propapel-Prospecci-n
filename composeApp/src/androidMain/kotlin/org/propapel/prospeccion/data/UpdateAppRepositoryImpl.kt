@@ -25,20 +25,38 @@ class UpdateAppRepositoryImpl(
         remoteConfig.fetchAndActivate()
     }
 
+    override suspend fun getApkLink(): String {
+        remoteConfig.fetch(0)
+        remoteConfig.activate().await()
+        val apkLink = remoteConfig.getString(APK_LINK)
+        return apkLink.ifBlank { "" }
+    }
+
     override suspend fun getMinAllowedVersion(): List<Int> {
         remoteConfig.fetch(0)
         remoteConfig.activate().await()
         val minVersion = remoteConfig.getString(MIN_VERSION)
-        return if (minVersion.isBlank()) listOf(0, 0, 0)
+        return if (minVersion.isBlank()) listOf(
+            0,
+            0,
+            0
+        )
         else minVersion.split(".").map { it.toInt() }
     }
 
     override suspend fun getCurrentVersion(): List<Int> {
         return try {
-            val packageInfo = context.packageManager.getPackageInfo(context.packageName, 0)
+            val packageInfo = context.packageManager.getPackageInfo(
+                context.packageName,
+                0
+            )
             packageInfo.versionName.split(".").map { it.toInt() }
         } catch (e: Exception) {
-            listOf(0, 0, 0)
+            listOf(
+                0,
+                0,
+                0
+            )
         }
     }
 
@@ -86,92 +104,3 @@ class UpdateAppRepositoryImpl(
         }
     }
 }
-
-/*
-class UpdateAppRepositoryImpl(
-    private val context: Context,
-    private val remoteConfig: FirebaseRemoteConfig
-) : UpdateAppRepository {
-    companion object {
-        const val APK_LINK = "apk_link"
-        const val MIN_VERSION = "min_version"
-    }
-
-    init {
-        remoteConfig.fetchAndActivate()
-    }
-
-    override suspend fun getMinAllowedVersion(): List<Int> {
-        remoteConfig.fetch(0)
-        remoteConfig.activate().await()
-        val minVersion = remoteConfig.getString(MIN_VERSION)
-        return if (minVersion.isBlank()) listOf(0, 0, 0)
-        else minVersion.split(".").map { it.toInt() }
-    }
-
-    override suspend fun getCurrentVersion(): List<Int> {
-        return try {
-            val packageInfo = context.packageManager.getPackageInfo(context.packageName, 0)
-            packageInfo.versionName.split(".").map { it.toInt() }
-        } catch (e: Exception) {
-            listOf(0, 0, 0)
-        }
-    }
-
-    override suspend fun installApp(downloadId: Long) {
-        val downloadManager = context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
-        val query = DownloadManager.Query().setFilterById(downloadId)
-        val cursor = downloadManager.query(query)
-
-        if (cursor.moveToFirst()) {
-            val status = cursor.getInt(cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_STATUS))
-            if (status == DownloadManager.STATUS_SUCCESSFUL) {
-                val uri = cursor.getString(cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_LOCAL_URI))
-                uri?.let {
-                    val file = File(Uri.parse(it).path ?: return)
-                    installApk(context, file)
-                }
-            }
-        }
-        cursor.close()
-    }
-    /*
-        override suspend fun getLinkAPKUpdate(): String {
-            remoteConfig.fetch(0)
-            remoteConfig.activate().await()
-            val apkLink = remoteConfig.getString(APK_LINK)
-            return apkLink.ifBlank { "" }
-        }
-
-        */
-
-    /**
-     * Descarga el APK desde el enlace proporcionado por RemoteConfig utilizando DownloadManager.
-     * @param onProgress Función callback para notificar el progreso de descarga.
-     * @return ID de la descarga gestionada por DownloadManager.
-     */
-    override suspend fun downloadApk(onProgress: (Int) -> Unit): Long {
-        return try {
-            val apkLink = remoteConfig.getString(APK_LINK)
-            if (apkLink.isBlank()) throw IllegalArgumentException("El enlace del APK está vacío")
-
-            val request = DownloadManager.Request(Uri.parse(apkLink)).apply {
-                setTitle("Actualizando aplicación")
-                setDescription("Descargando nueva versión...")
-                setDestinationInExternalFilesDir(context, Environment.DIRECTORY_DOWNLOADS, "app_update.apk")
-                setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
-            }
-
-            val downloadManager = context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
-            downloadManager.enqueue(request)
-
-        } catch (e: Exception) {
-            Log.e("UpdateAppRepository", "Error al descargar el APK", e)
-            -1L // Retorna un ID inválido si ocurre un error
-        }
-    }
-
-
-
-}
- */

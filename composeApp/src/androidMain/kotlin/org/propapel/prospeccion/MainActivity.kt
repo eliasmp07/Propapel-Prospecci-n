@@ -3,7 +3,6 @@ package org.propapel.prospeccion
 import android.Manifest
 import android.app.Activity
 import android.content.Context
-import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.os.Build
 import android.os.Bundle
@@ -11,47 +10,44 @@ import android.util.DisplayMetrics
 import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Color.Companion.Black
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Devices.DESKTOP
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
-import androidx.core.content.FileProvider
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import org.propapel.prospeccion.core.presentation.designsystem.components.ProvideAndroidPlatformConfiguration
+import org.propapel.prospeccion.core.presentation.designsystem.PrimaryYellowLight
+import org.propapel.prospeccion.core.presentation.designsystem.SoporteSaiBlue30
+import org.propapel.prospeccion.core.presentation.designsystem.components.ProSalesActionButton
+import org.propapel.prospeccion.core.presentation.designsystem.components.ProSalesActionButtonOutline
+import org.propapel.prospeccion.dowloadapk.DownloadApk
 import org.propapel.prospeccion.navigation.RootGraph
 import org.propapel.prospeccion.notifications.utils.HomeAskPermission
 import org.propapel.prospeccion.notifications.utils.MultiPermission
-import org.propapel.prospeccion.selectSucursal.presentation.selectHome.SelectSucursalScreen
-import org.propapel.prospeccion.selectSucursal.presentation.selectHome.SelectSucursalState
-import java.io.File
+
 
 class MainActivity : ComponentActivity() {
     private val viewModel by viewModel<MainViewModel>()
@@ -67,9 +63,26 @@ class MainActivity : ComponentActivity() {
             }
         }
         setContent {
-            if (!viewModel.state.isCheckingAuth) {
-                ProvideAndroidPlatformConfiguration {
-
+            val blockVersion by viewModel.blockVersion.collectAsState()
+            val linkVersion by viewModel.linkVersion.collectAsState()
+            val versionNew by viewModel.newVersion.collectAsState()
+            if (!blockVersion) {
+                val context = LocalContext.current
+                UpdateAppScreen(
+                    onUpdate = {
+                        val downloadApk = DownloadApk(this@MainActivity)
+                        // For starting download call the method startDownloadingApk() by passing the URL and the optional filename
+                        downloadApk.startDownloadingApk(
+                            linkVersion,
+                            versionNew
+                        )
+                    },
+                    onCloseApp = {
+                        this.finish()
+                    }
+                )
+            }else{
+                if (!viewModel.state.isCheckingAuth) {
                     App(
                         content = {
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -99,10 +112,9 @@ class MainActivity : ComponentActivity() {
                             )
                         }
                     )
+
                 }
-
             }
-
         }
     }
 
@@ -132,57 +144,57 @@ fun Context.limitFromScale(
     return if (exceedsFontScale || exceedsDpiScale) createConfigurationContext(configuration) else this
 }
 
-/*@Composable
-fun UpdateScreen(viewModel: MainViewModel, context: Context) {
-    val isUpdateAvailable by viewModel.isUpdateAvailable.collectAsState()
-    val downloadProgress by viewModel.downloadProgress.collectAsState()
-
-    LaunchedEffect(downloadProgress) {
-        if (downloadProgress == 100) {
-            // Instalar el APK desde el archivo en caché
-            installApk(context, viewModel.getApkFile())
-        }
-    }
-
+@Composable
+fun UpdateAppScreen(
+    onUpdate: () -> Unit,
+    onCloseApp: () -> Unit
+){
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
+        modifier = Modifier.fillMaxSize().background(
+            Brush.verticalGradient(
+                0f to PrimaryYellowLight,
+                0.6f to SoporteSaiBlue30,
+                1f to MaterialTheme.colorScheme.primary
+            )
+        ).padding(12.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        if (isUpdateAvailable) {
-            Text(text = "Nueva actualización disponible")
-            Spacer(modifier = Modifier.height(16.dp))
-            LinearProgressIndicator(progress = downloadProgress / 100f)
-            Spacer(modifier = Modifier.height(16.dp))
-            Text(text = "Progreso de descarga: $downloadProgress%")
-        } else {
-            Text(text = "No hay actualizaciones disponibles")
-        }
-    }
-}
-
-
- */
-
-fun installApk(
-    context: Context,
-    apkFile: File?
-) {
-    apkFile?.let {
-        val apkUri = FileProvider.getUriForFile(
-            context,
-            "${context.packageName}.provider",
-            it
+        Text(
+            text = "Nueva version disponible!!!",
+            style = MaterialTheme.typography.headlineMedium,
+            fontWeight = FontWeight.Bold
         )
-        val intent = Intent(Intent.ACTION_VIEW).apply {
-            setDataAndType(
-                apkUri,
-                "application/vnd.android.package-archive"
-            )
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_GRANT_READ_URI_PERMISSION
+        Spacer(
+            modifier = Modifier.height(16.dp)
+        )
+        Image(
+            modifier = Modifier.size(200.dp),
+            painter = painterResource(R.drawable.update_available),
+            contentScale = ContentScale.FillBounds,
+            contentDescription = null
+        )
+        Text(
+            text = "Instala la nueva version para gozar de las nuevas caracteristicas",
+            style = MaterialTheme.typography.bodyMedium,
+            textAlign = TextAlign.Justify
+        )
+        ProSalesActionButton(
+            text = "Descargar",
+            textColor = Color.White
+        ) {
+            onUpdate()
         }
-        context.startActivity(intent)
+        Spacer(
+            modifier = Modifier.height(8.dp)
+        )
+        Spacer(
+            modifier = Modifier.height(8.dp)
+        )
+        ProSalesActionButtonOutline(
+            text = "Cerrar app"
+        ) {
+            onCloseApp()
+        }
     }
 }

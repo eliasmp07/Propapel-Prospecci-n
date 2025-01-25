@@ -158,11 +158,11 @@ fun LayeredCardDesignEjecutivosDeVentas(
                     modifier = Modifier.padding(start = 13.dp),
                     verticalArrangement = Arrangement.spacedBy((-10).dp)
                 ) {
-                    val customerNew = ejecutivo.customers.filter { it.typeOfClient == TypeOfClient.NUEVO.name }
+                    val customerNew = ejecutivo.customers.filter {  it.typeOfClient == TypeOfClient.NUEVO.name || it.typeOfClient == TypeOfClient.NUEVO.description }
                     val customerDesarrollo =
-                        ejecutivo.customers.filter { it.typeOfClient == TypeOfClient.DESARROLLO.name }
+                        ejecutivo.customers.filter {  it.typeOfClient == TypeOfClient.DESARROLLO.name || it.typeOfClient == TypeOfClient.DESARROLLO.description }
                     val customerRecuperacion =
-                        ejecutivo.customers.filter { it.typeOfClient == TypeOfClient.RECUPERACIÓN.name }
+                        ejecutivo.customers.filter {     it.typeOfClient == "RECUPERACIÓN" || it.typeOfClient == TypeOfClient.RECUPERACION.description }
                     Text(
                         "Nuevos: ${customerNew.size}",
                         fontSize = 12.sp,
