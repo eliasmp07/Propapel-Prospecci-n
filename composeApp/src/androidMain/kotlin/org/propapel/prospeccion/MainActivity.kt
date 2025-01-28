@@ -163,7 +163,8 @@ fun UpdateAppScreen(
         Text(
             text = "Nueva version disponible!!!",
             style = MaterialTheme.typography.headlineMedium,
-            fontWeight = FontWeight.Bold
+            fontWeight = FontWeight.Bold,
+            textAlign = TextAlign.Center
         )
         Spacer(
             modifier = Modifier.height(16.dp)
